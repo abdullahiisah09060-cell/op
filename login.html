@@ -3,88 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SBA | Secure Login</title>
+    <title>SBA | Secure Authentication</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
-        .login-card { border-top: 6px solid var(--primary); animation: slideUp 0.6s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        :root { --sba-blue: #002e6d; --sba-red: #cc0000; }
+        .auth-card { border-top: 5px solid var(--sba-blue); border-radius: 0; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        input { border-radius: 2px !important; font-weight: 600; }
+        input:focus { border-color: var(--sba-blue) !important; ring: 0 !important; }
+        .btn-gov { background: var(--sba-blue); border-radius: 2px; font-weight: 900; letter-spacing: 1.5px; transition: 0.2s; }
+        .btn-gov:hover { background: #001a3d; transform: translateY(-1px); }
+        .gov-banner { background: #efefef; border-bottom: 1px solid #ddd; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col bg-slate-50">
+<body class="min-h-screen flex flex-col bg-[#f4f7f9]">
 
-    <div class="bg-slate-200/50 py-2 px-4 flex items-center justify-center gap-2 border-b border-gray-300">
-        <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" class="w-4 shadow-sm" alt="Flag">
-        <span class="text-[9px] font-bold text-slate-600 uppercase tracking-widest">Official SBA Authentication Node</span>
+    <div class="gov-banner py-2 px-4 flex items-center gap-3">
+        <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" class="w-5 shadow-sm" alt="U.S. Flag">
+        <span class="text-[10px] font-black text-gray-600 uppercase tracking-widest">Official Government System | Secure Node v2.6</span>
     </div>
+
+    <nav class="bg-white px-6 py-4 flex justify-between items-center border-b border-gray-200">
+        <div class="flex items-center border-2 border-[#002e6d] px-3 py-1">
+            <span class="text-xl font-black text-[#002e6d] tracking-tighter uppercase">SBA</span>
+        </div>
+        <a href="register.html" class="text-[11px] font-black text-[#002e6d] uppercase border-b-2 border-transparent hover:border-red-600 transition-all">Initialize Case</a>
+    </nav>
 
     <main class="flex-grow flex items-center justify-center p-6">
         <div class="w-full max-w-[420px]">
-            <div class="text-center mb-8">
-                <div class="inline-block p-2 border-2 border-[#002e6d] mb-4">
-                    <span class="text-2xl font-black text-[#002e6d] tracking-tighter uppercase">SBA</span>
+            <div class="auth-card bg-white p-8 md:p-10">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-black text-slate-800 uppercase tracking-tighter">Sign In</h2>
+                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em] mt-2">Authorized Personnel Only</p>
                 </div>
-                <h2 class="text-xl font-black text-slate-800 uppercase tracking-tight">Portal Access</h2>
-                <p class="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em] mt-1">Federal Finance & Case Ledger</p>
-            </div>
 
-            <div class="glass-card login-card p-8 shadow-2xl">
-                <div id="alertBox" class="hidden mb-6 p-4 bg-red-50 border-l-4 border-red-600 text-red-700 text-[11px] font-black uppercase italic animate-pulse"></div>
+                <div id="alertBox" class="hidden mb-6 p-4 bg-red-50 border-l-4 border-red-600 text-red-700 text-[11px] font-black uppercase italic shadow-sm"></div>
 
-                <form id="loginForm" class="space-y-5">
-                    <button type="button" id="googleBtn" class="w-full flex items-center justify-center gap-3 bg-white border border-slate-300 h-14 rounded-lg text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all shadow-sm">
-                        <img src="https://www.gstatic.com/lamda/images/google_logo_color_24dp.png" class="w-5" alt="G">
-                        Sign in with Google
+                <form id="loginForm" class="space-y-6">
+                    <button type="button" id="googleBtn" class="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 h-14 text-[12px] font-bold uppercase tracking-wider text-gray-700 hover:bg-gray-50 transition-all shadow-sm">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.21-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.99.66-2.26 1.05-3.71 1.05-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                        Google Authentication
                     </button>
 
-                    <div class="relative flex py-2 items-center">
-                        <div class="flex-grow border-t border-slate-200"></div>
-                        <span class="flex-shrink mx-3 text-[9px] font-black text-slate-400 uppercase tracking-widest">OR</span>
-                        <div class="flex-grow border-t border-slate-200"></div>
+                    <div class="relative flex items-center">
+                        <div class="flex-grow border-t border-gray-200"></div>
+                        <span class="flex-shrink mx-4 text-[9px] font-black text-gray-400 uppercase tracking-widest">OR SECURE MAIL</span>
+                        <div class="flex-grow border-t border-gray-200"></div>
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Government Email</label>
-                        <div class="relative">
-                            <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                            <input type="email" id="userEmail" required class="w-full pl-11 pr-4 h-14 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-[#002e6d] focus:bg-white transition-all text-sm" placeholder="user@sba.gov">
-                        </div>
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">E-Mail Address</label>
+                        <input type="email" id="userEmail" required class="w-full px-4 h-14 bg-gray-50 border border-gray-200 outline-none transition-all" placeholder="name@domain.com">
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Secure Passkey</label>
-                        <div class="relative">
-                            <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                            <input type="password" id="userPass" required class="w-full pl-11 pr-12 h-14 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-[#002e6d] focus:bg-white transition-all text-sm" placeholder="••••••••">
-                            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#002e6d]">
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Account Passkey</label>
+                        <div class="relative flex items-center">
+                            <input type="password" id="userPass" required class="w-full px-4 h-14 bg-gray-50 border border-gray-200 outline-none pr-12 transition-all" placeholder="••••••••">
+                            <span class="absolute right-4 text-slate-400 cursor-pointer" onclick="togglePasswordVisibility()">
                                 <i id="eyeIcon" class="fas fa-eye"></i>
-                            </button>
+                            </span>
                         </div>
                     </div>
 
                     <div class="flex items-center justify-between text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" class="accent-[#002e6d]"> Secure Session
+                            <input type="checkbox" class="accent-[#002e6d] w-3 h-3"> Remember Session
                         </label>
-                        <a href="forget-password.html" class="text-blue-700 hover:underline">Forgot Access?</a>
+                        <a href="forget-password.html" class="text-blue-700 hover:underline">Reset Passkey?</a>
                     </div>
 
-                    <button type="submit" id="submitBtn" class="btn-premium w-full shadow-lg h-14 mt-2">
-                        Verify & Authorize Access
+                    <button type="submit" id="submitBtn" class="btn-gov w-full h-14 text-white uppercase text-xs shadow-lg mt-4">
+                        Secure Access Login
                     </button>
                 </form>
 
-                <div class="mt-8 pt-6 border-t border-slate-100 text-center">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-2">New Case Officer?</p>
-                    <a href="register.html" class="text-[#002e6d] font-black text-[12px] uppercase tracking-[0.2em] hover:text-red-600 transition-all">Initialize Account <i class="fas fa-chevron-right ml-1"></i></a>
+                <div class="mt-8 pt-6 border-t border-gray-100 text-center">
+                    <p class="text-[10px] text-gray-400 font-bold uppercase mb-2">Unauthorized access is monitored</p>
+                    <a href="register.html" class="text-[#002e6d] font-black text-[11px] uppercase tracking-[0.2em] hover:text-red-600 transition-all">Create Federal Account</a>
                 </div>
             </div>
         </div>
     </main>
 
-    <footer class="py-8 text-center text-[9px] text-slate-400 font-bold uppercase tracking-[0.4em]">
-        <i class="fas fa-shield-halved mr-2"></i> Encrypted RSA-4096 Secure Node
+    <footer class="py-10 text-center text-[9px] text-gray-400 font-bold uppercase tracking-[0.5em]">
+        <i class="fas fa-lock mr-2"></i> Encrypted Terminal RSA-4096
     </footer>
 
     <script type="module">
@@ -108,7 +113,7 @@
             }
         };
 
-        const handleAuthSuccess = (email) => {
+        const handleRedirect = (email) => {
             if (email === ADMIN_EMAIL) {
                 window.location.href = "admin-portal.html";
             } else {
@@ -123,15 +128,15 @@
             const pass = document.getElementById('userPass').value;
 
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> AUTHORIZING...';
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> VERIFYING...';
 
             try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, pass);
-                handleAuthSuccess(userCredential.user.email);
-            } catch (error) {
+                const cred = await signInWithEmailAndPassword(auth, email, pass);
+                handleRedirect(cred.user.email);
+            } catch (err) {
                 btn.disabled = false;
-                btn.innerText = "Verify & Authorize Access";
-                alertBox.innerText = "AUTH ERROR: " + error.message;
+                btn.innerText = "Secure Access Login";
+                alertBox.innerText = "ACCESS DENIED: " + err.code.replace('auth/', '').replace(/-/g, ' ').toUpperCase();
                 alertBox.classList.remove('hidden');
             }
         };
@@ -139,10 +144,10 @@
         googleBtn.onclick = async () => {
             try {
                 const provider = new GoogleAuthProvider();
-                const result = await signInWithPopup(auth, provider);
-                handleAuthSuccess(result.user.email);
-            } catch (error) {
-                alertBox.innerText = "GOOGLE AUTH ERROR: " + error.message;
+                const res = await signInWithPopup(auth, provider);
+                handleRedirect(res.user.email);
+            } catch (err) {
+                alertBox.innerText = "AUTH ERROR: " + err.message;
                 alertBox.classList.remove('hidden');
             }
         };
