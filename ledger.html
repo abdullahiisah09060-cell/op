@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SBA | Federal Disbursement Ledger</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700;900&family=JetBrains+Mono:wght@500&display=swap');
+        :root { --sba-blue: #002e6d; --sba-red: #cc0000; --bg: #f8fafc; }
+        
+        body { background: var(--bg); font-family: "Public Sans", sans-serif; margin: 0; color: #1e293b; -webkit-tap-highlight-color: transparent; -webkit-font-smoothing: antialiased; }
+        .gov-banner { background: #000; color: white; font-size: 8px; padding: 10px; text-align: center; font-weight: 900; text-transform: uppercase; letter-spacing: 2.5px; border-bottom: 3px solid var(--sba-red); position: sticky; top: 0; z-index: 1001; }
+        
+        .header-main { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; position: sticky; top: 31px; z-index: 1000; }
+        .logo-frame { border: 2.5px solid var(--sba-blue); border-bottom-color: var(--sba-red); border-left-color: var(--sba-red); padding: 2px 6px; font-weight: 900; color: var(--sba-blue); font-size: 18px; line-height: 1; }
+        
+        .summary-card { background: linear-gradient(135deg, var(--sba-blue) 0%, #001a3d 100%); border-radius: 18px; padding: 20px; color: white; box-shadow: 0 15px 30px -10px rgba(0,46,109,0.3); }
+        
+        .search-box { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 15px; display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .search-box input { border: none; outline: none; width: 100%; font-size: 12px; font-weight: 600; color: var(--sba-blue); }
+
+        .ledger-wrapper { background: white; border-radius: 18px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .ledger-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        .ledger-table th { background: #f8fafc; text-align: left; padding: 10px 15px; color: #64748b; font-size: 8px; font-weight: 900; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; }
+        .ledger-table td { padding: 15px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+        
+        .date-display { font-size: 8px; font-weight: 900; color: var(--sba-blue); opacity: 0.6; display: block; margin-bottom: 2px; }
+        .desc-main { font-size: 12px; font-weight: 800; color: var(--sba-blue); text-transform: uppercase; line-height: 1.2; }
+        .amt-display { font-size: 14px; font-weight: 900; font-family: 'JetBrains Mono'; margin-top: 4px; display: block; }
+        
+        .status-pill { padding: 3px 8px; border-radius: 5px; font-size: 7px; font-weight: 900; text-transform: uppercase; display: inline-block; white-space: nowrap; border: 1px solid transparent; }
+        .pill-pending { background: #fff7ed; color: #9a3412; border-color: #ffedd5; }
+        .pill-cleared { background: #f0fdf4; color: #166534; border-color: #dcfce7; }
+        .pill-declined { background: #fef2f2; color: #991b1b; border-color: #fee2e2; }
+
+        .reason-box { background: #fff1f2; border-left: 3px solid #e11d48; padding: 8px; border-radius: 4px; margin-top: 8px; font-size: 9px; color: #9f1239; font-weight: 700; line-height: 1.3; }
+        
+        /* Shimmer Loading */
+        .shimmer { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; height: 10px; border-radius: 4px; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    </style>
+</head>
+<body class="pb-10">
+
+    <div class="gov-banner">Federal Reserve System Archive • Registry ID: T-104-B</div>
+
+    <header class="header-main">
+        <div class="flex items-center gap-2">
+            <div class="logo-frame">SBA</div>
+            <p class="text-[10px] font-black text-[#002e6d] truncate max-w-[120px]" id="ledgerRef">REF: AUTHENTICATING...</p>
+        </div>
+        <a href="dashboard.html" class="text-[9px] font-black uppercase text-white bg-[#002e6d] px-3 py-2 rounded-lg">Exit</a>
+    </header>
+
+    <main class="max-w-md mx-auto px-4 pt-4">
+        
+        <div class="summary-card mb-5">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-[8px] font-black uppercase opacity-60 tracking-wider">Liquid Allocation</p>
+                    <h2 class="text-2xl font-black mt-1" id="totalBalance">$ --.--</h2>
+                </div>
+                <div class="text-right">
+                    <p class="text-[8px] font-black uppercase opacity-60">Sync Status</p>
+                    <div id="syncStatus" class="text-[9px] font-black text-blue-300 mt-1 uppercase">
+                        <i class="fas fa-circle-notch fa-spin"></i> Syncing
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-white/10">
+                <p class="text-[8px] font-black uppercase opacity-60">Award Principal</p>
+                <p class="text-sm font-black" id="principalAmt">$ --.--</p>
+            </div>
+        </div>
+
+        <div class="search-box">
+            <i class="fas fa-search text-slate-400 text-xs"></i>
+            <input type="text" id="ledgerSearch" placeholder="Filter by type, amount, or status...">
+        </div>
+
+        <div class="ledger-wrapper">
+            <table class="ledger-table">
+                <thead>
+                    <tr>
+                        <th width="70%">Transaction Audit</th>
+                        <th width="30%" class="text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="ledgerBody">
+                    <tr>
+                        <td colspan="2" class="p-8">
+                            <div class="shimmer w-3/4 mb-3"></div>
+                            <div class="shimmer w-1/2 mb-3"></div>
+                            <div class="shimmer w-2/3"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-6 p-4 bg-slate-100 rounded-xl border-l-4 border-[#002e6d]">
+            <div class="flex gap-3">
+                <i class="fas fa-user-shield text-[#002e6d] mt-1"></i>
+                <div>
+                    <p class="text-[8px] font-black text-[#002e6d] uppercase">Agent Sarah Miller</p>
+                    <p class="text-[10px] text-slate-500 font-bold leading-tight">Notice: Real-time ledger sync active. All disbursements are subject to Federal Audit.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+        // Firebase Configuration Object
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let fullLedgerData = [];
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) { window.location.href = 'login.html'; return; }
+            
+            document.getElementById('ledgerRef').innerText = `REF: ${user.uid.substring(0,10).toUpperCase()}`;
+
+            onSnapshot(doc(db, "users", user.uid), (snap) => {
+                const data = snap.data();
+                if (!data) return;
+
+                // Sync Totals
+                document.getElementById('totalBalance').innerText = `$${Number(data.balance || 0).toLocaleString()}`;
+                document.getElementById('principalAmt').innerText = `$${Number(data.totalAward || 0).toLocaleString()}`;
+                document.getElementById('syncStatus').innerHTML = `<i class="fas fa-check-circle"></i> Live`;
+                document.getElementById('syncStatus').className = "text-[9px] font-black text-emerald-400 mt-1 uppercase";
+
+                const history = Array.isArray(data.history) ? data.history : [];
+                const ledger = Array.isArray(data.ledger) ? data.ledger : [];
+                
+                // 1. Merge all sources
+                const rawCombined = [...history, ...ledger].sort((a,b) => new Date(b.date || 0) - new Date(a.date || 0));
+                
+                // 2. De-duplicate (Show only the latest version of a transaction)
+                const seenKeys = new Set();
+                fullLedgerData = [];
+
+                rawCombined.forEach(item => {
+                    const fingerprint = `${item.amount}-${item.type}`;
+                    if(!seenKeys.has(fingerprint)) {
+                        fullLedgerData.push(item);
+                        seenKeys.add(fingerprint);
+                    }
+                });
+
+                // 3. Add Principal Origin
+                if(data.totalAward) {
+                    fullLedgerData.push({ type: 'Principal Allotment', amount: data.totalAward, status: 'CLEARED', date: 'ORIGIN', isCredit: true });
+                }
+
+                renderTable(fullLedgerData);
+            });
+        });
+
+        function renderTable(items) {
+            const body = document.getElementById('ledgerBody');
+            if(items.length === 0) {
+                body.innerHTML = '<tr><td colspan="2" class="py-10 text-center text-[10px] font-black text-slate-300">NO ELECTRONIC RECORDS</td></tr>';
+                return;
+            }
+
+            body.innerHTML = items.map(item => {
+                const sRaw = (item.status || 'PENDING').toUpperCase();
+                let sClass = "pill-pending", sText = sRaw;
+                
+                if (["SUCCESS", "CLEARED", "APPROVED", "PAID", "SUCCESSFUL"].includes(sRaw)) { 
+                    sClass = "pill-cleared"; sText = "CLEARED"; 
+                } else if (["FAILED", "REJECTED", "DECLINED", "ON HOLD", "HOLD"].includes(sRaw)) { 
+                    sClass = "pill-declined"; sText = sRaw.includes("HOLD") ? "ON HOLD" : "DECLINED"; 
+                }
+
+                const typeLabel = (item.type || 'TRANSFER').toUpperCase();
+                const isCredit = item.isCredit || ['GRANT', 'DEPOSIT', 'AWARD', 'PRINCIPAL'].includes(typeLabel);
+                
+                return `
+                    <tr>
+                        <td>
+                            <span class="date-display">${item.date || 'PROCESSING'}</span>
+                            <span class="desc-main">${typeLabel}</span>
+                            <span class="amt-display ${isCredit ? 'text-emerald-500' : 'text-red-600'}">
+                                ${isCredit ? '+' : '-'}$${Number(item.amount).toLocaleString()}
+                            </span>
+                             ${(item.reason && (sText === 'DECLINED' || sText === 'ON HOLD')) ? 
+                                `<div class="reason-box"><b>AUDIT:</b> ${item.reason}</div>` : ''}
+                        </td>
+                        <td class="text-right">
+                            <span class="status-pill ${sClass}">${sText}</span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Live Search Handler
+        document.getElementById('ledgerSearch').addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase();
+            const filtered = fullLedgerData.filter(i => 
+                (i.type || '').toLowerCase().includes(val) || 
+                (i.status || '').toLowerCase().includes(val) ||
+                (i.amount || '').toString().includes(val)
+            );
+            renderTable(filtered);
+        });
+    </script>
+</body>
+</html>

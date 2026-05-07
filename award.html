@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SBA | Official Award Certificate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Public+Sans:wght@400;700;900&display=swap');
+        :root { --sba-blue: #002e6d; --sba-red: #cc0000; --sba-navy: #001a3d; }
+        body { background: #f1f5f9; font-family: 'Public Sans', sans-serif; color: #001a3d; margin: 0; padding: 0; }
+        #pageLoader { position: fixed; inset: 0; background: #f1f5f9; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        #captureArea {
+            background: white; width: 100%; max-width: 350px; aspect-ratio: 1 / 1.41;
+            margin: 0 auto; border: 12px solid var(--sba-blue); outline: 2px solid var(--sba-red);
+            outline-offset: -8px; position: relative; padding: 0; box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            display: flex; flex-direction: column; overflow: hidden; background-image: radial-gradient(#f1f5f9 1px, transparent 1px); background-size: 20px 20px;
+        }
+        #lockOverlay {
+            position: absolute; inset: 0; background: rgba(255,255,255,0.98);
+            z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            backdrop-filter: blur(10px); transition: opacity 0.6s ease;
+        }
+        .cert-inner { height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 30px 20px; position: relative; z-index: 10; }
+        .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-35deg); font-size: 8px; color: rgba(0,46,109,0.04); font-weight: 900; pointer-events: none; z-index: 1; width: 250%; text-align: center; white-space: nowrap; line-height: 3; text-transform: uppercase; }
+        .name-line { font-family: 'Cinzel', serif; font-weight: 700; color: var(--sba-blue); font-size: 1.15rem; border-bottom: 2px solid #cbd5e1; padding-bottom: 4px; min-width: 200px; display: inline-block; margin-top: 8px; letter-spacing: 1px; }
+        .balance-box { background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 20px; width: 92%; margin: 15px auto; text-align: center; border-left: 6px solid var(--sba-red); }
+        .btn-main { background: var(--sba-blue); color: white; width: 100%; height: 60px; border-radius: 15px; font-weight: 900; text-transform: uppercase; font-size: 12px; border-bottom: 5px solid #000c1d; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-main:active { transform: translateY(2px); border-bottom-width: 2px; }
+        .exit-btn { position: absolute; top: 20px; left: 20px; width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
+    </style>
+</head>
+<body class="p-4 pb-16">
+
+    <a href="dashboard.html" class="exit-btn"><i class="fas fa-arrow-left text-slate-500"></i></a>
+
+    <div id="pageLoader">
+        <div class="w-12 h-12 border-4 border-slate-200 border-t-[#002e6d] rounded-full animate-spin"></div>
+        <p class="text-[9px] font-black uppercase mt-5">Securing Connection...</p>
+    </div>
+
+    <div id="mainContent" class="opacity-0 transition-opacity duration-700 max-w-[360px] mx-auto pt-16">
+        
+        <div id="declineBox" class="hidden bg-rose-50 border-l-4 border-rose-600 p-4 rounded-xl mb-6">
+            <div class="flex gap-3">
+                <i class="fas fa-exclamation-triangle text-rose-600 mt-1"></i>
+                <div>
+                    <p class="text-[10px] font-black text-rose-700 uppercase tracking-widest">Request Refused</p>
+                    <p id="declineMsg" class="text-[11px] font-bold text-rose-800 mt-1"></p>
+                    <p class="text-[9px] text-rose-600 font-bold mt-2 uppercase underline">Please correct the above and re-request.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="captureArea">
+            <div id="lockOverlay">
+                <div class="bg-white p-7 rounded-3xl shadow-2xl mb-5 border border-slate-100"><i class="fas fa-lock text-slate-200 text-4xl"></i></div>
+                <p class="text-[11px] font-black uppercase tracking-[4px] text-slate-600">Document Locked</p>
+                <p class="text-[8px] text-slate-400 uppercase mt-2 tracking-widest font-bold">Seal Approval Required</p>
+            </div>
+
+            <div class="cert-inner">
+                <div class="watermark">SBA_FEDERAL_ALLOCATION_OFFICIAL_SECURED_NODE<br>SBA_FEDERAL_ALLOCATION_OFFICIAL_SECURED_NODE</div>
+                
+                <div class="w-full text-center relative z-20">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Small_Business_Administration_seal.svg/1200px-Small_Business_Administration_seal.svg.png" class="w-14 mx-auto mb-3">
+                    <p class="text-[7px] font-black uppercase tracking-[5px] text-slate-400">United States Government</p>
+                    <h1 class="text-lg font-black text-[#002e6d] uppercase leading-tight mt-1">Award Certification</h1>
+                    <div class="w-12 h-[3px] bg-[#cc0000] mx-auto mt-2 rounded-full"></div>
+                </div>
+
+                <div class="w-full text-center relative z-20">
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Certified Grant Awardee</p>
+                    <span id="userName" class="name-line">APPLICANT</span>
+                    
+                    <div class="balance-box">
+                        <p class="text-[8px] font-black text-slate-400 uppercase mb-2 tracking-[2px]">Authorized Disbursement</p>
+                        <h2 id="awardAmount" class="text-3xl font-black text-[#002e6d] italic tracking-tighter">$0.00</h2>
+                        <div class="flex items-center justify-center gap-2 mt-3">
+                            <i class="fas fa-check-double text-emerald-500 text-[10px]"></i>
+                            <span class="text-[7px] font-black text-emerald-600 uppercase tracking-widest">Treasury Verified</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full flex justify-between items-end px-3 relative z-20">
+                    <div class="text-left">
+                        <img src="https://signaturely.com/wp-content/uploads/2020/07/signature-maker-signaturely.png" class="h-8 opacity-70 grayscale mb-1">
+                        <div class="border-t-2 border-slate-900 pt-1">
+                            <p class="text-[8px] font-black uppercase text-slate-800">Sarah Miller</p>
+                            <p class="text-[6px] font-bold text-slate-400 uppercase tracking-tighter">Chief Case Commissioner</p>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-14 h-14 border-[4px] border-double border-[#002e6d] rounded-full flex flex-col items-center justify-center text-[#002e6d] -rotate-12">
+                            <i class="fas fa-stamp text-xs"></i>
+                            <span class="text-[5px] font-black uppercase">Official Seal</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 px-2">
+            <div id="view-request" class="hidden">
+                <button onclick="submitRequest()" id="reqBtn" class="btn-main">
+                    <i class="fas fa-paper-plane"></i> Request Release Protocol
+                </button>
+            </div>
+
+            <div id="view-pending" class="hidden">
+                <div class="bg-white p-6 rounded-2xl border-2 border-dashed border-slate-200 text-center">
+                    <div class="w-10 h-10 border-4 border-slate-100 border-t-amber-500 rounded-full animate-spin mx-auto mb-4"></div>
+                    <p class="text-[11px] font-black uppercase text-slate-700">Audit Status: PENDING</p>
+                    <p class="text-[9px] font-bold text-slate-400 mt-2 uppercase">Waiting for Commissioner Seal...</p>
+                    <a href="support.html" class="mt-6 flex items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <img src="https://i.pravatar.cc/150?u=sarah" class="w-11 h-11 rounded-xl object-cover">
+                        <div class="text-left flex-1">
+                            <p class="text-[10px] font-black text-[#002e6d] uppercase">Sarah Miller</p>
+                            <p class="text-[8px] font-bold text-slate-400 italic">Chat with me for priority release.</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-slate-300 text-xs"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div id="view-approved" class="hidden space-y-4">
+                <button onclick="downloadCert()" id="downBtn" class="btn-main !bg-emerald-600 !border-emerald-800">
+                    <i class="fas fa-file-arrow-down"></i> Save Official Document
+                </button>
+                <p class="text-center text-[9px] font-bold text-slate-400 uppercase tracking-widest">Click to save your high-res certificate</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { doc, onSnapshot, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) { window.location.href = 'login.html'; return; }
+
+            onSnapshot(doc(db, "users", user.uid), (snap) => {
+                const data = snap.data();
+                if(!data) return;
+
+                document.getElementById('userName').innerText = (data.fullName || "APPLICANT").toUpperCase();
+                const displayAmt = data.requestedAmount || data.balance || 0;
+                document.getElementById('awardAmount').innerText = `$${Number(displayAmt).toLocaleString()}.00`;
+                
+                const status = data.awardStatus || "IDLE";
+                const views = {
+                    req: document.getElementById('view-request'),
+                    pend: document.getElementById('view-pending'),
+                    app: document.getElementById('view-approved'),
+                    lock: document.getElementById('lockOverlay'),
+                    dec: document.getElementById('declineBox')
+                };
+
+                // RESET
+                [views.req, views.pend, views.app, views.dec].forEach(v => v.classList.add('hidden'));
+
+                if (status === "SUCCESSFUL") {
+                    views.app.classList.remove('hidden');
+                    views.lock.style.display = "none";
+                } else if (status === "PENDING") {
+                    views.pend.classList.remove('hidden');
+                    views.lock.style.display = "flex";
+                } else if (status === "FAILED") {
+                    views.req.classList.remove('hidden');
+                    views.dec.classList.remove('hidden');
+                    document.getElementById('declineMsg').innerText = data.awardReason || "Audit found missing tax documents.";
+                    views.lock.style.display = "flex";
+                } else {
+                    views.req.classList.remove('hidden');
+                    views.lock.style.display = "flex";
+                }
+
+                document.getElementById('pageLoader').style.display = 'none';
+                document.getElementById('mainContent').classList.remove('opacity-0');
+            });
+        });
+
+        window.submitRequest = async () => {
+            const btn = document.getElementById('reqBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> SECURING...';
+            
+            await updateDoc(doc(db, "users", auth.currentUser.uid), { 
+                awardStatus: "PENDING",
+                history: arrayUnion({
+                    type: "AWARD SEAL REQUEST",
+                    status: "PENDING",
+                    date: new Date().toISOString()
+                })
+            });
+        };
+
+        window.downloadCert = () => {
+            const btn = document.getElementById('downBtn');
+            btn.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> GENERATING...';
+            html2canvas(document.getElementById("captureArea"), { scale: 3, useCORS: true }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `SBA_CERTIFICATE_${Date.now()}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+                btn.innerHTML = '<i class="fas fa-file-arrow-down"></i> Save Official Document';
+            });
+        };
+    </script>
+</body>
+</html>

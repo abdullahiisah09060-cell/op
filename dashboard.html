@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SBA | Executive Grant Mainframe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;900&display=swap');
+        :root { --sba-blue: #002e6d; --sba-red: #cc0000; --sba-navy: #001a3d; --emerald: #10b981; }
+        
+        body { background: #f1f5f9; font-family: 'Public Sans', sans-serif; color: #0f172a; margin: 0; padding-bottom: 120px; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        
+        .gov-header { background: #eeeeee; color: #666; font-size: 10px; padding: 8px 20px; border-bottom: 1px solid #ddd; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; gap: 8px; letter-spacing: 1px; }
+        .header-bg { background: linear-gradient(135deg, var(--sba-navy) 0%, var(--sba-blue) 100%); padding: 30px 20px 95px; border-bottom: 6px solid var(--sba-red); border-bottom-left-radius: 35px; border-bottom-right-radius: 35px; box-shadow: 0 15px 30px rgba(0,46,109,0.25); position: relative; }
+        
+        .u-avatar { width: 50px; height: 50px; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 18px; text-transform: uppercase; }
+        .user-name-display { font-size: 16px; font-weight: 900; color: white; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .logout-btn-top { background: var(--sba-red); color: white; font-size: 10px; font-weight: 900; padding: 8px 14px; border-radius: 6px; text-transform: uppercase; border-bottom: 3px solid #800000; cursor: pointer; transition: 0.2s; }
+        .logout-btn-top:active { transform: translateY(2px); border-bottom-width: 1px; }
+
+        .balance-card { background: white; border-radius: 25px; padding: 22px; margin: -65px 15px 0; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; position: relative; z-index: 10; }
+        .balance-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 5px; }
+        
+        .balance-row { display: flex; align-items: center; gap: 10px; white-space: nowrap; overflow: hidden; }
+        #balance { font-size: 28px; font-weight: 900; color: var(--sba-navy); letter-spacing: -1px; display: inline-block; }
+        
+        .icon-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-top: 25px; }
+        .icon-btn { width: 45px; height: 45px; background: #f8fafc; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--sba-blue); border: 1px solid #e2e8f0; margin: 0 auto 6px; }
+
+        .pipeline-card { background: white; border-radius: 20px; padding: 22px; margin: 20px 15px; border: 1px solid #e2e8f0; }
+        .dot { width: 14px; height: 14px; background: #e2e8f0; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 0 1px #cbd5e1; z-index: 2; }
+        .dot.active { background: var(--emerald); box-shadow: 0 0 15px rgba(16, 185, 129, 0.6); }
+        .pipe-line { position: absolute; height: 3px; background: #f1f5f9; top: 6px; left: 10%; right: 10%; z-index: 1; }
+
+        .task-item { display: flex; align-items: center; padding: 18px; background: white; border-radius: 20px; margin: 0 15px 12px; border: 1px solid #e2e8f0; border-left: 6px solid var(--sba-blue); text-decoration: none; }
+        .terminal-box { background: #000a1a; border-radius: 15px; padding: 15px; margin: 25px 15px; border-left: 5px solid var(--sba-red); font-family: monospace; font-size: 11px; color: #10b981; }
+        
+        .trx-card { background: white; border-radius: 20px; padding: 20px; margin: 0 15px 25px; border: 1px solid #e2e8f0; }
+        .trx-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed #e2e8f0; }
+
+        .nav-dock { position: fixed; bottom: 0; left: 0; right: 0; background: white; height: 95px; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #e2e8f0; padding-bottom: 25px; z-index: 1000; border-top-left-radius: 30px; border-top-right-radius: 30px; }
+        .nav-link { display: flex; flex-direction: column; align-items: center; color: #94a3b8; font-size: 10px; font-weight: 900; text-transform: uppercase; text-decoration: none; }
+        .nav-link.active { color: var(--sba-blue); }
+        .qr-action { width: 65px; height: 65px; background: var(--sba-navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -55px; border: 6px solid #f1f5f9; color: white; font-size: 24px; }
+    </style>
+</head>
+<body>
+
+    <div class="gov-header">
+        <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" class="w-4" alt="Flag"> Official Federal Management Portal
+    </div>
+
+    <div class="header-bg">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="u-avatar" id="uInitials">--</div>
+                <div>
+                    <h2 class="user-name-display" id="uNameDisplay">Loading...</h2>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                        <p class="text-[9px] text-white/60 font-black uppercase tracking-widest">Secure Link Active</p>
+                    </div>
+                </div>
+            </div>
+            <button onclick="handleLogout()" class="logout-btn-top">Log Off</button>
+        </div>
+    </div>
+
+    <div class="balance-card">
+        <div class="balance-header">
+            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Available Allocation</p>
+            <span id="globalStatus" class="bg-amber-100 text-amber-700 border border-amber-200 text-[8px] font-black px-2 py-1 rounded-md uppercase">Review Phase</span>
+        </div>
+        
+        <div class="balance-row">
+            <h2 id="balance">$0.00</h2>
+            <i id="toggleBalance" class="fas fa-eye-slash text-slate-300 text-xs cursor-pointer"></i>
+        </div>
+
+        <div class="icon-grid">
+            <a href="apply.html" class="text-center"><div class="icon-btn"><i class="fas fa-file-invoice"></i></div><span class="text-[8px] font-black text-slate-500 uppercase">Apply</span></a>
+            <a href="deposit.html" class="text-center"><div class="icon-btn"><i class="fas fa-wallet"></i></div><span class="text-[8px] font-black text-slate-500 uppercase">Deposit</span></a>
+            <a href="tax.html" class="text-center"><div class="icon-btn"><i class="fas fa-landmark"></i></div><span class="text-[8px] font-black text-slate-500 uppercase">IRS-Link</span></a>
+            <a href="withdraw.html" class="text-center"><div class="icon-btn"><i class="fas fa-paper-plane"></i></div><span class="text-[8px] font-black text-slate-500 uppercase">Payout</span></a>
+            <a href="award.html" class="text-center"><div class="icon-btn"><i class="fas fa-certificate text-amber-500"></i></div><span class="text-[8px] font-black text-slate-500 uppercase">Award</span></a>
+        </div>
+    </div>
+
+    <div class="pipeline-card">
+        <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-7">Grant Processing Pipeline</h3>
+        <div class="relative flex justify-between px-5">
+            <div class="pipe-line"></div>
+            <div class="flex flex-col items-center gap-3 relative z-10"><div class="dot active"></div><span class="text-[9px] font-black text-slate-800 uppercase">Access</span></div>
+            <div class="flex flex-col items-center gap-3 relative z-10"><div class="dot" id="dot-kyc"></div><span class="text-[9px] font-black text-slate-400 uppercase">Identity</span></div>
+            <div class="flex flex-col items-center gap-3 relative z-10"><div class="dot" id="dot-tax"></div><span class="text-[9px] font-black text-slate-400 uppercase">Tax-V</span></div>
+            <div class="flex flex-col items-center gap-3 relative z-10"><div class="dot" id="dot-payout"></div><span class="text-[9px] font-black text-slate-400 uppercase">Funds</span></div>
+        </div>
+    </div>
+
+    <div class="trx-card">
+        <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-4">Internal Ledger History</h3>
+        <div id="trxList">
+            <div class="trx-item">
+                <div>
+                    <p class="text-[11px] font-black uppercase text-slate-800">Allocation Provision</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">System Generated</p>
+                </div>
+                <span class="text-[12px] font-black text-emerald-600" id="ledgerInitAmt">+$0.00</span>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4 mt-6 pt-5 border-t border-slate-50 cursor-pointer" onclick="location.href='support.html'">
+            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=120" class="w-10 h-10 rounded-xl border-2 border-emerald-500 object-cover" alt="Officer Sarah">
+            <div class="flex-1">
+                <p class="text-[11px] font-black text-slate-800 uppercase leading-none">Officer Sarah Miller</p>
+                <p class="text-[9px] font-bold text-emerald-600 uppercase mt-1">Online • Secure Chat</p>
+            </div>
+            <i class="fas fa-comment-dots text-slate-300"></i>
+        </div>
+    </div>
+
+    <a href="kyc.html" class="task-item" id="kycTask">
+        <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center border border-orange-100">
+            <i class="fas fa-fingerprint text-xl"></i>
+        </div>
+        <div class="ml-4 flex-grow">
+            <p class="text-[13px] font-black uppercase text-slate-800 leading-tight">Identity Verification</p>
+            <p class="text-[9px] text-red-600 font-bold uppercase mt-1" id="kycStatusText">Status: ACTION REQUIRED</p>
+        </div>
+        <i class="fas fa-chevron-right text-slate-300 text-xs"></i>
+    </a>
+
+    <div class="terminal-box">
+        <div class="flex justify-between mb-2 border-b border-white/10 pb-1 text-[8px] font-bold text-white/40 uppercase">
+            <span>Security Node: 2026_X</span>
+            <span id="sysTime">00:00:00</span>
+        </div>
+        <p>> SYNC_STREAMS: <span class="text-white">ONLINE</span></p>
+        <p>> ENCRYPTION_LAYER: 256-BIT [ACTIVE]</p>
+        <p>> NODE_ID: <span id="nodeIdDisplay">...</span></p>
+    </div>
+
+    <nav class="nav-dock">
+        <a href="dashboard.html" class="nav-link active"><i class="fas fa-house-chimney text-lg"></i><span class="mt-1">Home</span></a>
+        <a href="ledger.html" class="nav-link"><i class="fas fa-list-ul text-lg"></i><span class="mt-1">Ledger</span></a>
+        <div class="qr-action" onclick="location.href='kyc.html'"><i class="fas fa-shield-halved"></i></div>
+        <a href="support.html" class="nav-link"><i class="fas fa-headset text-lg"></i><span class="mt-1">Help</span></a>
+        <a href="settings.html" class="nav-link"><i class="fas fa-user-gear text-lg"></i><span class="mt-1">Settings</span></a>
+    </nav>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+        import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+        let currentBalanceValue = 0;
+        let isBalanceHidden = false;
+
+        window.handleLogout = () => { 
+            signOut(auth).then(() => { location.href = 'login.html'; }).catch((e) => { console.error("Logout error:", e); }); 
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) { location.href = 'login.html'; return; }
+            document.getElementById('nodeIdDisplay').innerText = user.uid.substring(0,8).toUpperCase();
+
+            const userRef = doc(db, "users", user.uid);
+            onSnapshot(userRef, (snap) => {
+                if (snap.exists()) {
+                    const data = snap.data();
+                    
+                    const name = data.fullName || user.displayName || "APPLICANT";
+                    document.getElementById('uNameDisplay').innerText = name.toUpperCase();
+                    
+                    const initialsParts = name.split(' ');
+                    let initials = "--";
+                    if (initialsParts.length >= 2) {
+                        initials = initialsParts[0][0] + initialsParts[1][0];
+                    } else if (initialsParts.length === 1) {
+                        initials = initialsParts[0].substring(0, 2);
+                    }
+                    document.getElementById('uInitials').innerText = initials.toUpperCase();
+
+                    currentBalanceValue = Number(data.balance) || 0;
+                    updateBalanceDisplay();
+                    document.getElementById('ledgerInitAmt').innerText = "+" + currentBalanceValue.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+
+                    if (['VERIFIED', 'SUCCESSFUL', 'APPROVED'].includes(data.kycStatus)) {
+                        document.getElementById('dot-kyc').classList.add('active');
+                        const statusText = document.getElementById('kycStatusText');
+                        statusText.innerText = 'Status: IDENTITY SECURED';
+                        statusText.className = 'text-[9px] text-emerald-600 font-black uppercase mt-1';
+                    }
+                    
+                    if (data.depositStatus === 'PENDING') {
+                        document.getElementById('globalStatus').innerText = "Processing Funds";
+                        document.getElementById('globalStatus').className = "bg-blue-100 text-blue-700 border border-blue-200 text-[8px] font-black px-2 py-1 rounded-md uppercase";
+                    }
+                }
+            });
+        });
+
+        window.updateBalanceDisplay = function() {
+            const balEl = document.getElementById('balance');
+            balEl.innerText = isBalanceHidden ? "$ ••••••" : currentBalanceValue.toLocaleString('en-US', { 
+                style: 'currency', 
+                currency: 'USD',
+                minimumFractionDigits: 2
+            });
+        }
+
+        document.getElementById('toggleBalance').onclick = () => {
+            isBalanceHidden = !isBalanceHidden;
+            document.getElementById('toggleBalance').className = isBalanceHidden ? "fas fa-eye text-slate-300 text-xs cursor-pointer" : "fas fa-eye-slash text-slate-300 text-xs cursor-pointer";
+            updateBalanceDisplay();
+        };
+
+        setInterval(() => {
+            const timeEl = document.getElementById('sysTime');
+            if(timeEl) timeEl.innerText = new Date().toLocaleTimeString();
+        }, 1000);
+    </script>
+</body>
+</html>

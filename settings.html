@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SBA | Security & Access</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700;900&display=swap');
+        :root { --sba-navy: #002e6d; --sba-red: #cc0000; --sba-gold: #b69121; }
+        
+        body { background: #f4f7f9; font-family: 'Public Sans', sans-serif; color: #0f172a; margin: 0; -webkit-font-smoothing: antialiased; }
+
+        /* Header Match */
+        .header-container { background: white; padding: 12px 20px; display: flex; align-items: center; border-bottom: 2px solid #e2e8f0; position: sticky; top: 0; z-index: 1000; }
+        .sba-logo-sm { width: 32px; height: 32px; position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .logo-text-sm { font-size: 11px; font-weight: 900; color: var(--sba-navy); z-index: 5; }
+        .brk-top { position: absolute; top: 0; right: 0; width: 70%; height: 40%; border-top: 2.5px solid var(--sba-navy); border-right: 2.5px solid var(--sba-navy); }
+        .brk-btm { position: absolute; bottom: 0; left: 0; width: 70%; height: 40%; border-bottom: 2.5px solid var(--sba-red); border-left: 2.5px solid var(--sba-red); }
+
+        /* Profile Card Upgrade */
+        .profile-hero {
+            background: linear-gradient(135deg, #002e6d 0%, #001a3d 100%);
+            border-radius: 24px; padding: 25px; color: white; margin: 15px;
+            position: relative; overflow: hidden; border-bottom: 4px solid var(--sba-gold);
+        }
+        .profile-hero::after { content: 'CONFIDENTIAL'; position: absolute; top: 10px; right: -20px; font-size: 40px; font-weight: 900; opacity: 0.05; transform: rotate(15deg); }
+
+        /* Settings Sections */
+        .settings-card { background: white; border-radius: 20px; margin: 15px; border: 1px solid #e2e8f0; overflow: hidden; }
+        .section-title { font-size: 9px; font-weight: 900; color: #94a3b8; text-transform: uppercase; padding: 20px 20px 10px; letter-spacing: 1px; }
+        
+        .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid #f1f5f9; cursor: pointer; }
+        .setting-row:last-child { border-bottom: none; }
+        
+        .icon-wrap { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        
+        /* Input & UI Elements */
+        .input-field { 
+            width: 100%; height: 48px; background: #f8fafc; border: 1.5px solid #eef2f6; border-radius: 14px; 
+            padding: 0 15px; font-size: 14px; font-weight: 700; margin-top: 8px; outline: none; transition: 0.2s; 
+        }
+        .input-field:focus { border-color: var(--sba-navy); background: white; }
+
+        .btn-update { 
+            width: 100%; height: 48px; background: var(--sba-navy); color: white; border-radius: 12px; 
+            font-weight: 900; text-transform: uppercase; font-size: 11px; margin-top: 12px;
+        }
+
+        /* Toggle Switch */
+        .switch { position: relative; display: inline-block; width: 34px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #e2e8f0; transition: .4s; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #10b981; }
+        input:checked + .slider:before { transform: translateX(14px); }
+    </style>
+</head>
+<body class="pb-20">
+
+    <header class="header-container">
+        <div class="sba-logo-sm"><div class="brk-top"></div><div class="logo-text-sm">SBA</div><div class="brk-btm"></div></div>
+        <div class="ml-3">
+            <h1 class="text-[10px] font-black leading-none text-[#002e6d] uppercase">Security Center</h1>
+            <p class="text-[7px] font-bold text-slate-400 uppercase tracking-tighter mt-1">Node: Secure-Access-v3</p>
+        </div>
+        <a href="dashboard.html" class="ml-auto w-8 h-8 flex items-center justify-center bg-slate-100 rounded-full text-slate-500">
+            <i class="fas fa-times text-xs"></i>
+        </a>
+    </header>
+
+    <div class="max-w-md mx-auto">
+        
+        <div class="profile-hero">
+            <div class="flex items-center gap-4">
+                <div class="relative">
+                    <div class="w-16 h-16 bg-white/10 rounded-2xl border border-white/20 flex items-center justify-center overflow-hidden">
+                        <i class="fas fa-user-shield text-2xl text-white/50"></i>
+                    </div>
+                    <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 border-4 border-[#002e6d] rounded-full flex items-center justify-center">
+                        <i class="fas fa-check text-[8px] text-white"></i>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="text-xs font-black text-white/50 uppercase tracking-widest leading-none" id="dispUid">SBA-AUTH-...</h2>
+                    <p class="text-xl font-black mt-1" id="dispName">Loading...</p>
+                    <div class="flex items-center gap-2 mt-2">
+                        <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 text-[8px] font-black rounded uppercase border border-emerald-500/30">Verified Identity</span>
+                        <span class="px-2 py-0.5 bg-white/10 text-white/60 text-[8px] font-black rounded uppercase">Tier 1</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="section-title">Security & Access</p>
+        <div class="settings-card">
+            <div class="setting-row">
+                <div class="flex items-center gap-4">
+                    <div class="icon-wrap bg-blue-50 text-blue-600"><i class="fas fa-fingerprint"></i></div>
+                    <div>
+                        <p class="text-[12px] font-black text-slate-800 uppercase leading-none">Biometric Access</p>
+                        <p class="text-[9px] font-bold text-slate-400 mt-1 uppercase">Use FaceID/TouchID for login</p>
+                    </div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="p-5 bg-slate-50/50">
+                <label class="text-[9px] font-black text-slate-400 uppercase ml-1">Update Disbursement PIN</label>
+                <input type="password" id="newPin" class="input-field text-center text-xl tracking-[12px]" maxlength="4" placeholder="0000">
+                <button id="updatePin" class="btn-update bg-amber-600">Update Secure PIN</button>
+            </div>
+        </div>
+
+        <p class="section-title">Account Protocols</p>
+        <div class="settings-card">
+            <div class="setting-row">
+                <div class="flex items-center gap-4">
+                    <div class="icon-wrap bg-slate-100 text-slate-600"><i class="fas fa-envelope"></i></div>
+                    <div>
+                        <p class="text-[12px] font-black text-slate-800 uppercase leading-none">Auth Email</p>
+                        <p class="text-[10px] font-bold text-slate-500 mt-1" id="dispEmail">...</p>
+                    </div>
+                </div>
+                <i class="fas fa-lock text-[10px] text-slate-300"></i>
+            </div>
+            
+            <div class="p-5">
+                <label class="text-[9px] font-black text-slate-400 uppercase ml-1">Change Access Password</label>
+                <input type="password" id="newPass" class="input-field" placeholder="New Secure Password">
+                <button id="updatePass" class="btn-update">Sync New Password</button>
+            </div>
+        </div>
+
+        <p class="section-title">System Integrity</p>
+        <div class="settings-card border-rose-100">
+            <div class="setting-row" onclick="location.href='support.html'">
+                <div class="flex items-center gap-4">
+                    <div class="icon-wrap bg-rose-50 text-rose-600"><i class="fas fa-bug"></i></div>
+                    <div>
+                        <p class="text-[12px] font-black text-rose-700 uppercase leading-none">Report Vulnerability</p>
+                        <p class="text-[9px] font-bold text-rose-400 mt-1 uppercase">Direct line to security node</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right text-[10px] text-rose-200"></i>
+            </div>
+            
+            <div class="setting-row opacity-50">
+                <div class="flex items-center gap-4">
+                    <div class="icon-wrap bg-slate-100 text-slate-400"><i class="fas fa-history"></i></div>
+                    <div>
+                        <p class="text-[12px] font-black text-slate-800 uppercase leading-none">Login History</p>
+                        <p class="text-[9px] font-bold text-slate-400 mt-1 uppercase">Coming soon: IP Tracking</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-8 mt-6">
+            <button onclick="logout()" class="w-full py-4 text-[11px] font-black text-rose-600 border-2 border-rose-100 rounded-2xl uppercase tracking-widest active:bg-rose-50 transition-all">
+                Terminate Secure Session
+            </button>
+        </div>
+
+        <p class="text-center text-[8px] font-bold text-slate-300 uppercase mt-8 mb-4 tracking-[3px]">
+            SBA Central Registry • Build 2.0.4-Alpha
+        </p>
+
+    </div>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { onAuthStateChanged, updatePassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) { window.location.href = 'login.html'; return; }
+            document.getElementById('dispEmail').innerText = user.email;
+            document.getElementById('dispUid').innerText = `SBA-ID-${user.uid.substring(0,10).toUpperCase()}`;
+            
+            const snap = await getDoc(doc(db, "users", user.uid));
+            if (snap.exists()) {
+                const data = snap.data();
+                document.getElementById('dispName').innerText = data.fullName || "AUTHORIZED USER";
+            }
+        });
+
+        // Update Password Logic
+        document.getElementById('updatePass').onclick = async function() {
+            const pass = document.getElementById('newPass').value;
+            if (pass.length < 6) return alert("Security Notice: Password too weak.");
+            this.disabled = true; this.innerText = "SYNCING...";
+            try {
+                await updatePassword(auth.currentUser, pass);
+                alert("PROTOCOL SUCCESS: Access password updated.");
+                document.getElementById('newPass').value = "";
+            } catch (e) { alert("AUTH ERROR: Re-login required for security sync."); }
+            finally { this.disabled = false; this.innerText = "Sync New Password"; }
+        };
+
+        // Update PIN Logic
+        document.getElementById('updatePin').onclick = async function() {
+            const pin = document.getElementById('newPin').value;
+            if (pin.length !== 4 || isNaN(pin)) return alert("Format Error: 4-digit numeric PIN only.");
+            this.disabled = true;
+            try {
+                await updateDoc(doc(db, "users", auth.currentUser.uid), { transactionPin: pin });
+                alert("SECURE PIN UPDATED.");
+                document.getElementById('newPin').value = "";
+            } catch (e) { alert("SYSTEM SYNC ERROR."); }
+            finally { this.disabled = false; }
+        };
+
+        window.logout = () => {
+            if(confirm("Terminate current session?")) {
+                signOut(auth).then(() => location.href='login.html');
+            }
+        };
+    </script>
+</body>
+</html>

