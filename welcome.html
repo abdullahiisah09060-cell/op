@@ -30,7 +30,7 @@
         
         @keyframes scaleUp { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         
-        .btn-portal { background: var(--sba-blue); height: 60px; transition: all 0.2s; box-shadow: 0 4px 15px rgba(0, 46, 109, 0.3); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .btn-portal { background: var(--sba-blue); height: 60px; transition: all 0.2s; box-shadow: 0 4px 15px rgba(0, 46, 109, 0.3); cursor: pointer; display: flex; align-items: center; justify-content: center; border: none; }
         .btn-portal:active { transform: scale(0.98); background: #001a3d; }
     </style>
 </head>
@@ -74,7 +74,7 @@
                 </div>
                 <div class="receipt-row">
                     <span class="receipt-label">Filing ID</span>
-                    <span class="receipt-value text-blue-700" id="trackingId">FETCHING...</span>
+                    <span class="receipt-value text-blue-700" id="trackingId">GENERATING...</span>
                 </div>
                 <div class="receipt-row">
                     <span class="receipt-label">Allocation</span>
@@ -127,12 +127,16 @@
                     const userDoc = await getDoc(doc(db, "users", user.uid));
                     if (userDoc.exists()) {
                         const data = userDoc.data();
+                        // Displays the specific case number if you saved one, otherwise generates a fake professional one
                         document.getElementById('trackingId').innerText = data.caseNumber || `SBA-${shortId}-CERT`;
+                    } else {
+                        document.getElementById('trackingId').innerText = `SBA-${shortId}-CERT`;
                     }
                 } catch (e) { 
                     document.getElementById('trackingId').innerText = `SBA-${shortId}-CERT`;
                 }
             } else {
+                // If not logged in, boot them back to login
                 window.location.href = 'login.html';
             }
         });
