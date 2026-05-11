@@ -1,92 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SBA | Phase 01: Credentials</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        :root { --sba-navy: #002e6d; }
-        body { background: #f0f2f5; font-family: 'Segoe UI', sans-serif; }
-        .auth-card { background: white; border-top: 6px solid var(--sba-navy); box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 400px; border-radius: 4px; }
-        .input-field { height: 48px; border: 1.5px solid #e2e8f0; width: 100%; padding: 0 12px; outline: none; border-radius: 4px; font-size: 14px; }
-        .input-field:focus { border-color: var(--sba-navy); box-shadow: 0 0 0 3px rgba(0, 46, 109, 0.1); }
-        .btn-next { background: var(--sba-navy); height: 50px; color: white; width: 100%; font-weight: 700; text-transform: uppercase; font-size: 12px; border-radius: 4px; }
-        .btn-google { border: 1.5px solid #e2e8f0; height: 48px; width: 100%; font-weight: 600; border-radius: 4px; display: flex; align-items: center; justify-content: center; gap: 10px; background: white; margin-bottom: 20px; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SBA | Phase 01: Credentials</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root { --sba-navy: #002e6d; --sba-blue: #0071bc; }
+        body { background: #f4f7f9; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        
+        .nav-mini { background: white; border-bottom: 1px solid #e2e8f0; padding: 12px 20px; }
+        .auth-card { background: white; border-top: 5px solid var(--sba-navy); box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 420px; border-radius: 4px; }
+        
+        .input-field { height: 46px; border: 1.5px solid #e2e8f0; width: 100%; padding: 0 12px; outline: none; border-radius: 4px; font-size: 14px; transition: 0.2s; }
+        .input-field:focus { border-color: var(--sba-blue); box-shadow: 0 0 0 3px rgba(0, 113, 188, 0.1); }
+        
+        .btn-next { background: var(--sba-navy); height: 48px; color: white; width: 100%; font-weight: 700; text-transform: uppercase; font-size: 12px; border-radius: 4px; letter-spacing: 0.5px; }
+        .btn-next:hover { background: #001e4a; }
+        
+        .btn-google { border: 1.5px solid #e2e8f0; height: 46px; width: 100%; font-weight: 600; border-radius: 4px; display: flex; align-items: center; justify-content: center; gap: 10px; background: white; font-size: 13px; }
+        .btn-google:hover { background: #f8fafc; }
+        
+        .step-bar { height: 4px; flex-grow: 1; border-radius: 2px; background: #e2e8f0; }
+        .step-bar.active { background: var(--sba-navy); }
+    </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-6">
-    <div class="auth-card p-8">
-        <div class="mb-6">
-            <h2 class="text-xl font-black text-gray-800 uppercase">Initialize Case</h2>
-            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Step 1: Security Setup</p>
-        </div>
+<body class="min-h-screen flex flex-col">
 
-        <!-- Google Option First -->
-        <button type="button" id="googleRegBtn" class="btn-google shadow-sm">
-            <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-5">
-            <span class="text-xs uppercase">Enroll with Google</span>
-        </button>
+    <nav class="nav-mini flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="bg-[#002e6d] text-white px-2 py-0.5 font-bold text-lg">SBA</div>
+            <span class="text-[10px] font-bold text-gray-400 uppercase leading-tight hidden sm:block">U.S. Small Business <br> Administration</span>
+        </div>
+        <a href="login.html" class="text-xs font-bold text-[#002e6d] hover:underline uppercase tracking-tighter">Sign In instead</a>
+    </nav>
 
-        <div class="relative flex pb-6 items-center">
-            <div class="flex-grow border-t border-gray-100"></div>
-            <span class="flex-shrink mx-4 text-[10px] font-bold text-gray-300">OR MANUALLY</span>
-            <div class="flex-grow border-t border-gray-100"></div>
-        </div>
+    <div class="flex-grow flex items-center justify-center p-4">
+        <div class="auth-card p-7 sm:p-9">
+            <div class="flex gap-2 mb-6 items-center">
+                <div class="step-bar active"></div>
+                <div class="step-bar"></div>
+                <div class="step-bar"></div>
+            </div>
 
-        <form id="step1Form" class="space-y-4">
-            <div>
-                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Email Address</label>
-                <input type="email" id="email" class="input-field" required placeholder="name@example.com">
-            </div>
-            <div>
-                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Create Passkey</label>
-                <input type="password" id="pass" class="input-field" required placeholder="••••••••">
-            </div>
-            <div>
-                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Confirm Passkey</label>
-                <input type="password" id="confirm" class="input-field" required placeholder="••••••••">
-            </div>
+            <div class="mb-6">
+                <h2 class="text-xl font-black text-gray-800 uppercase tracking-tight">Initialize Case</h2>
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mt-1">Step 1: Security Credentials</p>
+            </div>
 
-            <div class="flex items-start gap-2 py-2">
-                <input type="checkbox" required class="mt-1 w-4 h-4 accent-[#002e6d]">
-                <p class="text-[9px] font-bold text-gray-500 uppercase leading-tight">
-                    I agree to the <a href="terms.html" class="text-blue-700 underline">Terms and Conditions</a> for federal grant applications.
-                </p>
-            </div>
+            <button type="button" id="googleRegBtn" class="btn-google shadow-sm mb-6">
+                <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-5">
+                <span class="uppercase">Enroll with Google</span>
+            </button>
 
-            <button type="submit" class="btn-next shadow-lg">Continue to Details <i class="fas fa-arrow-right ml-2"></i></button>
-        </form>
-    </div>
+            <div class="relative flex pb-6 items-center">
+                <div class="flex-grow border-t border-gray-100"></div>
+                <span class="flex-shrink mx-4 text-[9px] font-bold text-gray-300 tracking-tighter">OR MANUAL SETUP</span>
+                <div class="flex-grow border-t border-gray-100"></div>
+            </div>
 
-    <script type="module">
-        import { auth } from './firebase-config.js';
-        import { signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+            <form id="step1Form" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Business Email</label>
+                    <input type="email" id="email" class="input-field" required placeholder="name@business.gov">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Create Access Key</label>
+                    <input type="password" id="pass" class="input-field" required placeholder="••••••••">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Verify Access Key</label>
+                    <input type="password" id="confirm" class="input-field" required placeholder="••••••••">
+                </div>
 
-        // Manual Submit
-        document.getElementById('step1Form').onsubmit = (e) => {
-            e.preventDefault();
-            const pass = document.getElementById('pass').value;
-            if(pass !== document.getElementById('confirm').value) return alert("Passwords do not match!");
-            
-            sessionStorage.setItem('reg_email', document.getElementById('email').value);
-            sessionStorage.setItem('reg_pass', pass);
-            window.location.href = "register2.html";
-        };
+                <div class="flex items-start gap-2 py-1">
+                    <input type="checkbox" required class="mt-1 w-3.5 h-3.5 accent-[#002e6d]">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase leading-tight">
+                        I accept the <a href="terms.html" class="text-blue-700 underline">Privacy & Security Terms</a> for federal portal access.
+                    </p>
+                </div>
 
-        // Google Submit
-        document.getElementById('googleRegBtn').onclick = async () => {
-            const provider = new GoogleAuthProvider();
-            try {
-                const res = await signInWithPopup(auth, provider);
-                sessionStorage.setItem('reg_email', res.user.email);
-                sessionStorage.setItem('is_google', 'true');
-                window.location.href = "register2.html";
-            } catch (err) {
-                alert("Google Error: " + err.message);
-            }
-        };
-    </script>
+                <button type="submit" class="btn-next shadow-lg mt-2">
+                    Proceed to Details <i class="fas fa-chevron-right ml-2"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="p-6 text-center">
+        <p class="text-[9px] text-gray-400 font-bold uppercase tracking-[0.2em]">
+            <i class="fas fa-shield-alt mr-1"></i> Secure 256-Bit Federal Environment
+        </p>
+    </footer>
+
+    <script type="module">
+        import { auth } from './firebase-config.js';
+        import { signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+        document.getElementById('step1Form').onsubmit = (e) => {
+            e.preventDefault();
+            const pass = document.getElementById('pass').value;
+            if(pass !== document.getElementById('confirm').value) return alert("Error: Keys do not match!");
+            
+            sessionStorage.setItem('reg_email', document.getElementById('email').value);
+            sessionStorage.setItem('reg_pass', pass);
+            window.location.href = "register2.html";
+        };
+
+        document.getElementById('googleRegBtn').onclick = async () => {
+            const provider = new GoogleAuthProvider();
+            try {
+                const res = await signInWithPopup(auth, provider);
+                sessionStorage.setItem('reg_email', res.user.email);
+                sessionStorage.setItem('is_google', 'true');
+                window.location.href = "register2.html";
+            } catch (err) {
+                alert("Auth Error: " + err.message);
+            }
+        };
+    </script>
 </body>
-</html> this one get many issue too even where to click wey person go go bact to login.html no and plenty proble so please update to pro
+</html>
