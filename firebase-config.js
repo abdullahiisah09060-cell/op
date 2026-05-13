@@ -12,16 +12,33 @@ const firebaseConfig = {
   appId: "1:825499942780:web:4f7e5ceb9d6125e9e5aef9"
 };
 
-// Initialize
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 
-// ADMIN CONSTANT
-export const ADMIN_EMAIL = "sba.support@gmail.com";
+// ADMIN CONFIGURATION
+export const ADMIN_EMAIL = "sba.suppor@gmail.com"; // Matches your specific requirement
 
-// SECURE SESSION MANAGEMENT
-export const saveSession = (data) => sessionStorage.setItem('SBA_CORE_DATA', JSON.stringify(data));
-export const getSession = () => JSON.parse(sessionStorage.getItem('SBA_CORE_DATA'));
-export const clearSession = () => { sessionStorage.clear(); auth.signOut(); };
+/**
+ * Utility to check if the current user is the Admin
+ * @param {string} email 
+ * @returns {boolean}
+ */
+export const isAdmin = (email) => email === ADMIN_EMAIL;
+
+// SECURE DATA PERSISTENCE
+// Used to pass data between registration steps before final Firestore commit
+export const saveRegistrationStep = (data) => {
+    const existing = JSON.parse(sessionStorage.getItem('SBA_REG_FLOW')) || {};
+    const updated = { ...existing, ...data };
+    sessionStorage.setItem('SBA_REG_FLOW', JSON.stringify(updated));
+};
+
+export const getRegistrationData = () => JSON.parse(sessionStorage.getItem('SBA_REG_FLOW')) || {};
+
+export const clearSession = () => { 
+    sessionStorage.removeItem('SBA_REG_FLOW');
+    auth.signOut(); 
+};
