@@ -1,10 +1,16 @@
 // ============================================================
-// firebase-config.js — SBA Platform Core Configuration
+// firebase-config.js — SBA Platform Core Configuration (PROD)
 // ============================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getAuth, browserLocalPersistence, setPersistence } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+import { 
+    getAuth, 
+    browserLocalPersistence, 
+    setPersistence, 
+    onAuthStateChanged,
+    signOut 
+} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
 
 // ============================================================
@@ -19,97 +25,100 @@ const firebaseConfig = {
   appId: "1:825499942780:web:4f7e5ceb9d6125e9e5aef9"
 };
 
-// ============================================================
-// INITIALIZE FIREBASE
-// ============================================================
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
-/** Firebase Authentication instance */
 export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const storage = getStorage(app);
 
-// Enforce Local Persistence to handle seamless transitions on mobile browsers
+// Enforce Local Persistence
 setPersistence(auth, browserLocalPersistence).catch((err) => {
   console.error("[SBA] Auth persistence error:", err);
 });
 
-/** Firebase Firestore instance */
-export const db = getFirestore(app);
-
-/** Firebase Storage instance (Fallback configuration) */
-export const storage = getStorage(app);
-
 // ============================================================
-// CLOUDINARY CONFIGURATION (Centralized Upload Configurations)
+// CLOUDINARY CONFIGURATION & HELPERS
 // ============================================================
 export const CLOUDINARY_CONFIG = {
-  CLOUD_NAME: "dcnv6v9g0", // Replace with your verified Cloudinary cloud name if different
-  UPLOAD_PRESET: "sba_uploads", // Replace with your active unsigned upload preset name
+  CLOUD_NAME: "dcnv6v9g0",
+  UPLOAD_PRESET: "sba_uploads",
   UPLOAD_API_URL: "https://api.cloudinary.com/v1_1/dcnv6v9g0/image/upload"
+};
+
+/**
+ * Uploads a file to Cloudinary
+ * @param {File} file - The file object from input
+ * @returns {Promise<string>} The secure URL of the uploaded image
+ */
+export const uploadToCloudinary = async (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", CLOUDINARY_CONFIG.UPLOAD_PRESET);
+
+  try {
+    const response = await fetch(CLOUDINARY_CONFIG.UPLOAD_API_URL, {
+      method: "POST",
+      body: formData,
+    });
+    const data = await response.json();
+    return data.secure_url;
+  } catch (error) {
+    console.error("[SBA] Cloudinary Upload Error:", error);
+    throw error;
+  }
 };
 
 // ============================================================
 // ADMIN CONFIGURATION
 // ============================================================
-
-/** The designated admin email for the SBA platform */
 export const ADMIN_EMAIL = "sba.suppor@gmail.com";
-
-/**
- * Check if a given email belongs to the admin account.
- * @param {string} email - The email address to check.
- * @returns {boolean} True if admin, false otherwise.
- * */
 export const isAdmin = (email) => email && email.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase().trim();
 
 // ============================================================
-// FIRESTORE COLLECTION NAMES (Centralized Source of Truth)
+// FIRESTORE COLLECTION NAMES
 // ============================================================
 export const DB_COLLECTIONS = {
   USERS: "users",
-  DEPOSITS: "deposits",
-  WITHDRAWALS: "withdrawals",
+  TRANSACTIONS: "transactions", // Combined ledger/deposit/withdraw for easier querying
   APPLICATIONS: "applications",
-  AWARDS: "awards",
   KYC: "kyc",
-  SUPPORT: "support",
   NOTIFICATIONS: "notifications",
-  REFERRALS: "referrals",
-  LEDGER: "ledger",
-  VAULT: "vault"
+  SETTINGS: "settings"
 };
 
 // ============================================================
-// PRODUCTION DATABASE PROFILE SCHEMAS
-// Prevents missing data payloads and broken views in admin dashboard.
+// PRODUCTION USER SCHEMA
 // ============================================================
-
-/**
- * Constructs a perfectly normalized, sanitized payload for a new user document.
- * This guarantees that every single field the admin workspace expects to read is initialized cleanly.
- * @param {Object} rawData - Combined inputs from registration step 1 and step 2.
- * @returns {Object} Cleaned, production-ready Firestore document map.
- */
 export const buildNewUserPayload = (rawData) => {
   const timestamp = new Date().toISOString();
   return {
     uid: rawData.uid || "",
-    fullName: rawData.fullName || "",
-    username: rawData.username || "",
-    email: rawData.email ? rawData.email.toLowerCase().trim() : "",
-    phoneNumber: rawData.phoneNumber || "",
-    country: rawData.country || "",
-    gender: rawData.gender || "",
-    referralCode: rawData.referralCode || "",
-    referredBy: rawData.referredBy || "",
-    
-    // Status Trackers
-    accountStatus: "active", // active, suspended, restricted
-    verificationStatus: {
-      emailVerified: false,
-      kycStatus: "unsubmitted", // unsubmitted, pending, approved, rejected
+    personalInfo: {
+        fullName: rawData.fullName || "",
+        username: rawData.username || "",
+        email: rawData.email ? rawData.email.toLowerCase().trim() : "",
+        phoneNumber: rawData.phoneNumber || "",
+        country: rawData.country || "",
+        gender: rawData.gender || "",
+        dob: rawData.dob || "",
     },
-    
-    // Balances & Financial Ledger Foundations
+    bankDetails: {
+        bankName: rawData.bankName || "",
+        accountName: rawData.accountName || "",
+        accountNumber: rawData.accountNumber || "",
+        routingNumber: rawData.routingNumber || ""
+    },
+    referral: {
+        code: rawData.username ? rawData.username.toLowerCase() : "",
+        referredBy: rawData.referredBy || "none",
+        referralCount: 0
+    },
+    status: {
+        accountStatus: "active", // active, suspended, restricted
+        emailVerified: false,
+        kycStatus: "unsubmitted", // unsubmitted, pending, approved, rejected
+        isOnline: true
+    },
     balances: {
       totalDeposit: 0,
       totalWithdrawal: 0,
@@ -117,89 +126,69 @@ export const buildNewUserPayload = (rawData) => {
       vaultBalance: 0,
       awardedGrants: 0
     },
-    
-    // Meta Tracking
-    createdAt: timestamp,
-    updatedAt: timestamp,
-    lastLogin: timestamp
+    metadata: {
+        createdAt: timestamp,
+        updatedAt: timestamp,
+        lastLogin: timestamp
+    }
   };
 };
 
 // ============================================================
-// ASYNC AUTHENTICATION ROUTING HELPERS
-// Resolves asynchronous race-conditions across sub-pages on load.
+// AUTHENTICATION & ROUTING GUARDS
 // ============================================================
 
 /**
- * Promisified observer wrapper to reliably get the currently logged-in user context.
- * @returns {Promise<Object|null>} Resolves with User object or null if unauthorized.
+ * Observer to get current user
  */
 export const getCurrentUser = () => {
   return new Promise((resolve, reject) => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       unsubscribe();
       resolve(user);
     }, reject);
   });
 };
 
-// ============================================================
-// REGISTRATION SESSION FLOW (Multi-step Client Session Memory)
-// ============================================================
+/**
+ * Comprehensive Route Guard
+ * Handles: Unauthenticated, Email Unverified, and Admin Access
+ */
+export const monitorAuthState = (callback) => {
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+            // No user logged in, redirect to login unless already there
+            if (!window.location.pathname.includes("login.html") && 
+                !window.location.pathname.includes("register") &&
+                !window.location.pathname.includes("index.html")) {
+                window.location.href = "login.html";
+            }
+        } else {
+            // Check email verification (Skip for admin)
+            if (!user.emailVerified && user.email !== ADMIN_EMAIL) {
+                if (!window.location.pathname.includes("verify.html")) {
+                    window.location.href = "verify.html";
+                }
+            }
+        }
+        callback(user);
+    });
+};
 
-/** Session storage key — single source of truth */
+// ============================================================
+// SESSION MANAGEMENT
+// ============================================================
 const SESSION_KEY = "SBA_REG_FLOW";
 
-/**
- * Save or merge data into the registration session.
- * @param {Object} data - Key-value pairs to save/merge.
- */
 export const saveRegistrationStep = (data) => {
-  try {
     const existing = JSON.parse(sessionStorage.getItem(SESSION_KEY)) || {};
-    const updated = { ...existing, ...data };
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify(updated));
-  } catch (err) {
-    console.error("[SBA] Failed to save registration step:", err);
-  }
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify({ ...existing, ...data }));
 };
 
-/**
- * Alias for saveRegistrationStep — for semantic clarity across multi-step flows.
- * @param {Object} data - Key-value pairs to save/merge.
- */
-export const updateRegistrationStep = (data) => saveRegistrationStep(data);
+export const getRegistrationData = () => JSON.parse(sessionStorage.getItem(SESSION_KEY)) || {};
 
-/**
- * Retrieve all data stored in the current registration session.
- * @returns {Object} The full registration data object, or empty object.
- */
-export const getRegistrationData = () => {
-  try {
-    return JSON.parse(sessionStorage.getItem(SESSION_KEY)) || {};
-  } catch (err) {
-    console.error("[SBA] Failed to read registration data:", err);
-    return {};
-  }
-};
-
-/**
- * Clear ONLY the registration session data (no sign-out).
- * Call this after successfully committing data to Firestore.
- */
-export const clearRegistrationSession = () => {
-  sessionStorage.removeItem(SESSION_KEY);
-};
-
-/**
- * Full session clear — removes registration data AND signs the user out cleanly.
- * @returns {Promise<void>}
- */
 export const clearSession = async () => {
-  try {
     sessionStorage.removeItem(SESSION_KEY);
-    await auth.signOut();
-  } catch (err) {
-    console.error("[SBA] Failed to clear session:", err);
-  }
+    await signOut(auth);
+    window.location.href = "login.html";
 };
