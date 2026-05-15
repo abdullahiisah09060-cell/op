@@ -2,230 +2,263 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>U.S. Small Business Administration | Federal Grants & Capital Access</title>
+    <!-- Tailwind CSS Engine -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Vector System -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Typography Infrastructure -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Source+Sans+3:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <!-- Core Application Design Styles Linkage -->
+    <link rel="stylesheet" href="style.css">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700;900&display=swap');
-        
-        :root {
-            --sba-blue: #002e6d;
-            --sba-red: #e03c31;
-            --sba-light-blue: #0071bc;
-        }
-        
         body {
             font-family: 'Source Sans 3', sans-serif;
-            background-color: #fcfcfc;
-            color: #333;
+            background-color: #020c1b;
+            color: #f4f6f9;
         }
-
-        .gov-top-bar {
-            background: #f0f0f0;
-            border-bottom: 1px solid #ddd;
+        
+        .gov-banner {
+            background: #0a192f;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             font-size: 12px;
         }
 
-        .nav-link {
+        .custom-nav-link {
+            font-family: 'Inter', sans-serif;
             font-weight: 700;
-            color: var(--sba-blue);
+            color: #8892b0;
             text-transform: uppercase;
             font-size: 13px;
             letter-spacing: 0.5px;
+            transition: all 0.25s ease;
         }
 
-        .hero-grand {
-            background: linear-gradient(90deg, rgba(0,46,109,1) 0%, rgba(0,46,109,0.85) 50%, rgba(0,46,109,0) 100%), 
-                        url('https://www.sba.gov/themes/custom/sba/images/hero-home.jpg'); /* Representative of official imagery */
+        .custom-nav-link:hover {
+            color: #ffffff;
+        }
+
+        .premium-hero {
+            background: linear-gradient(90deg, #020c1b 0%, rgba(2, 12, 27, 0.92) 40%, rgba(2, 12, 27, 0.4) 100%), 
+                        url('https://www.sba.gov/themes/custom/sba/images/hero-home.jpg');
             background-size: cover;
             background-position: center;
-            min-height: 550px;
+            min-height: 600px;
         }
 
-        .alert-ribbon {
-            background: #fff3cd;
-            border-left: 5px solid #ffc107;
-            color: #856404;
+        .emergency-alert {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid #f59e0b;
+            color: #f59e0b;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
 
-        .program-card {
-            border-left: 4px solid var(--sba-light-blue);
-            transition: all 0.2s ease;
+        .interactive-program-card {
+            background: rgba(23, 42, 69, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-left: 4px solid #0071bc;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .program-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        .interactive-program-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px -15px rgba(2, 12, 27, 0.8);
         }
 
-        .official-seal {
-            filter: grayscale(1) brightness(0.5);
-            opacity: 0.1;
+        .ghost-seal-authority {
+            filter: brightness(0.2) opacity(0.12);
             position: absolute;
-            right: -50px;
-            bottom: -50px;
-            width: 300px;
+            right: -40px;
+            bottom: -40px;
+            width: 320px;
+            pointer-events: none;
         }
     </style>
 </head>
-<body>
+<body class="animate-up">
 
-    <!-- SECTION 1: OFFICIAL GOV BANNER -->
-    <section class="gov-top-bar py-2 px-4 md:px-12 flex items-center gap-3">
-        <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" class="w-5" alt="USA Flag">
-        <p class="text-gray-700 font-semibold tracking-tight">An official website of the United States government</p>
+    <!-- SECTION 1: OFFICIAL GOVERNMENT BANNER -->
+    <section class="gov-banner py-2 px-4 md:px-12 flex items-center gap-2.5">
+        <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" class="w-4.5 h-3 shadow-sm object-cover" alt="United States Flag">
+        <p class="text-[11px] font-medium tracking-tight text-[#8892b0]">An official website of the United States government</p>
     </section>
 
-    <!-- SECTION 2: NAVIGATION & LOGO STACK -->
-    <nav class="bg-white border-b-4 border-[#002e6d] px-4 md:px-12 py-5">
+    <!-- SECTION 2: PLATFORM NAVIGATION SYSTEM -->
+    <nav class="bg-[#020c1b]/90 border-b border-white/5 px-4 md:px-12 py-4 sticky top-0 z-[1000] backdrop-filter blur-md -webkit-backdrop-filter: blur-md;">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-5">
-                <div class="bg-[#002e6d] text-white p-3 font-black text-3xl leading-none">SBA</div>
-                <div class="border-l-2 border-gray-200 pl-5">
-                    <h1 class="text-2xl font-black text-[#002e6d] uppercase tracking-tighter leading-none">U.S. Small Business</h1>
-                    <p class="text-sm font-bold text-gray-500 uppercase tracking-widest mt-1">Administration</p>
+            <!-- Brand Mark Stack -->
+            <div class="flex items-center gap-4">
+                <div class="bg-[#002e6d] border border-white/10 text-white px-3 py-2 font-black text-2xl leading-none rounded-sm tracking-tighter">SBA</div>
+                <div class="border-l border-white/10 pl-4">
+                    <h1 class="text-lg md:text-xl font-black text-white uppercase tracking-tighter leading-none">U.S. Small Business</h1>
+                    <p class="text-[10px] font-bold text-[#d4af37] uppercase tracking-[0.2em] mt-1">Administration</p>
                 </div>
             </div>
+            
+            <!-- Desktop Action Elements -->
             <div class="hidden lg:flex items-center gap-8">
-                <a href="#" class="nav-link hover:text-red-600">Funding Programs</a>
-                <a href="#" class="nav-link hover:text-red-600">Federal Contracting</a>
-                <a href="#" class="nav-link hover:text-red-600">Learning Center</a>
-                <a href="login.html" class="bg-gray-100 px-5 py-2 rounded font-bold text-[#002e6d] text-xs uppercase">Log In</a>
-                <a href="register1.html" class="bg-[#e03c31] text-white px-6 py-2.5 rounded font-bold text-xs uppercase shadow-lg">Apply Now</a>
+                <a href="#" class="custom-nav-link">Funding Programs</a>
+                <a href="#" class="custom-nav-link">Federal Contracting</a>
+                <a href="#" class="custom-nav-link">Learning Center</a>
+                <a href="login.html" class="bg-white/5 border border-white/10 px-4 py-2 rounded-md font-bold text-white text-xs uppercase hover:bg-white/10 transition-all">Log In</a>
+                <a href="register1.html" class="bg-[#0071bc] text-white px-5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wide shadow-lg shadow-[#0071bc]/20 hover:bg-[#005691] transition-all">Apply Now</a>
+            </div>
+
+            <!-- Mobile Core Action Trigger Group -->
+            <div class="flex lg:hidden items-center gap-3">
+                <a href="login.html" class="bg-white/5 border border-white/10 px-3 py-2 rounded-md font-bold text-white text-xs uppercase">Log In</a>
+                <a href="register1.html" class="bg-[#0071bc] text-white px-3 py-2 rounded-md font-bold text-xs uppercase tracking-wide">Apply</a>
             </div>
         </div>
     </nav>
 
-    <!-- SECTION 3: EMERGENCY ALERT -->
+    <!-- SECTION 3: SYSTEM RISK EMERGENCY ALERT -->
     <div class="max-w-7xl mx-auto mt-4 px-4">
-        <div class="alert-ribbon p-4 flex items-center gap-4 text-sm font-bold">
-            <i class="fas fa-exclamation-triangle text-xl"></i>
-            <p>2026 DISASTER RELIEF NOTICE: Federal Grant Applications for the current fiscal quarter are now open. Ensure your SAM.gov registration is active.</p>
+        <div class="emergency-alert p-4 rounded-xl flex items-start gap-3 text-xs md:text-sm font-semibold leading-relaxed">
+            <i class="fas fa-exclamation-triangle text-base mt-0.5 flex-shrink-0"></i>
+            <p>2026 FISCAL CAPITAL DEPLOYMENT NOTICE: Applications for federal small business allocation grants are officially active. To safeguard compliance, please complete your portal registration using active state identity profiles matching your local operations.</p>
         </div>
     </div>
 
-    <!-- SECTION 4: MAIN HERO -->
-    <header class="hero-grand mt-6 flex items-center px-4 md:px-12 relative overflow-hidden">
-        <div class="max-w-7xl mx-auto w-full relative z-10">
-            <div class="max-w-2xl text-white">
-                <div class="bg-red-600 inline-block px-4 py-1 text-xs font-black uppercase tracking-[0.2em] mb-6">Fiscal Year 2026</div>
-                <h2 class="text-5xl md:text-7xl font-black leading-tight mb-6">Capital for your <br> Small Business.</h2>
-                <p class="text-xl md:text-2xl opacity-90 mb-10 font-light leading-relaxed">
-                    The SBA helps Americans start, build, and grow businesses through grants, loans, and expert counseling.
+    <!-- SECTION 4: HERO CONTEXT CALL TO ACTION -->
+    <header class="premium-hero mt-4 flex items-center px-4 md:px-12 relative overflow-hidden rounded-xl mx-4 max-w-7xl lg:mx-auto border border-white/5 shadow-2xl">
+        <div class="max-w-7xl mx-auto w-full relative z-10 py-16 lg:py-0">
+            <div class="max-w-2xl">
+                <div class="bg-[#d4af37] text-[#0a192f] inline-block px-3 py-0.5 rounded text-[10px] font-black uppercase tracking-[0.2em] mb-6">Fiscal Operation Block • 2026</div>
+                <h2 class="text-4xl md:text-6xl font-black leading-tight mb-5 text-white tracking-tight">Capital for your <br><span class="text-[#0071bc]">Small Business.</span></h2>
+                <p class="text-base md:text-lg text-[#8892b0] mb-8 font-normal leading-relaxed">
+                    The SBA provides the organizational architecture and liquidity pipelines necessary to initiate, fund, and expand commercial ecosystems through certified federal structural disbursements.
                 </p>
-                <div class="flex flex-col sm:flex-row gap-5">
-                    <a href="register1.html" class="bg-white text-[#002e6d] px-10 py-4 font-black uppercase text-sm tracking-widest shadow-2xl hover:bg-gray-100 transition text-center">
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="register1.html" class="bg-[#0071bc] text-white px-8 py-3.5 rounded-xl font-bold uppercase text-xs tracking-wider shadow-lg shadow-[#0071bc]/20 hover:bg-[#005691] transition-all text-center">
                         Start Application
                     </a>
-                    <a href="#" class="border-2 border-white/50 text-white px-10 py-4 font-black uppercase text-sm tracking-widest hover:bg-white/10 transition text-center">
+                    <a href="#" class="bg-white/5 border border-white/10 text-white px-8 py-3.5 rounded-xl font-bold uppercase text-xs tracking-wider hover:bg-white/10 transition-all text-center">
                         Funding Options
                     </a>
                 </div>
             </div>
         </div>
-        <!-- Ghost Seal for Authority -->
-        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Seal_of_the_United_States_Small_Business_Administration.svg" class="official-seal" alt="Seal">
+        <!-- Ghost Layer Seals -->
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Seal_of_the_United_States_Small_Business_Administration.svg" class="ghost-seal-authority" alt="SBA Official Logo Blueprint">
     </header>
 
-    <!-- SECTION 5: STATS/AUTHORITY BAR -->
-    <div class="bg-[#001a3d] py-10 px-4">
-        <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+    <!-- SECTION 5: DISBURSEMENT PERFORMANCE DATA STATS -->
+    <div class="max-w-7xl mx-auto px-4 mt-6">
+        <div class="bg-[#172a45]/50 border border-white/5 rounded-xl py-8 px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-center backdrop-filter blur-md">
             <div>
-                <p class="text-3xl font-black text-white">$30B+</p>
-                <p class="text-[10px] font-bold text-blue-300 uppercase tracking-widest">Funding Disbursed</p>
+                <p class="text-2xl md:text-3xl font-black text-white">$30.4B</p>
+                <p class="text-[9px] font-bold text-[#8892b0] uppercase tracking-widest mt-1">Disbursed Volume</p>
             </div>
             <div>
-                <p class="text-3xl font-black text-white">1M+</p>
-                <p class="text-[10px] font-bold text-blue-300 uppercase tracking-widest">Businesses Helped</p>
+                <p class="text-2xl md:text-3xl font-black text-[#d4af37]">1.2M</p>
+                <p class="text-[9px] font-bold text-[#8892b0] uppercase tracking-widest mt-1">Entities Maintained</p>
             </div>
             <div>
-                <p class="text-3xl font-black text-white">24/7</p>
-                <p class="text-[10px] font-bold text-blue-300 uppercase tracking-widest">Portal Monitoring</p>
+                <p class="text-2xl md:text-3xl font-black text-white">256-Bit</p>
+                <p class="text-[9px] font-bold text-[#8892b0] uppercase tracking-widest mt-1">Encryption Vault</p>
             </div>
             <div>
-                <p class="text-3xl font-black text-white">100%</p>
-                <p class="text-[10px] font-bold text-blue-300 uppercase tracking-widest">Federal Secure</p>
+                <p class="text-2xl md:text-3xl font-black text-emerald-400">Active</p>
+                <p class="text-[9px] font-bold text-[#8892b0] uppercase tracking-widest mt-1">Federal Compliance</p>
             </div>
         </div>
     </div>
 
-    <!-- SECTION 6: CORE PROGRAMS -->
-    <main class="py-20 px-4 md:px-12">
+    <!-- SECTION 6: TARGET DISTRIBUTION PROGRAM MATRIX -->
+    <main class="py-16 px-4 md:px-12">
         <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
                 <div>
-                    <h2 class="text-3xl font-black text-gray-900 uppercase">Available Assistance</h2>
-                    <p class="text-gray-500 font-bold mt-2">Select the program that matches your business status</p>
+                    <h2 class="text-2xl md:text-3xl font-black text-white uppercase tracking-tight">Available Capital Frameworks</h2>
+                    <p class="text-[#8892b0] text-sm font-medium mt-1">Select the designated funding gateway matching your corporate structure</p>
                 </div>
-                <a href="#" class="text-[#0071bc] font-black text-xs uppercase border-b-2 border-[#0071bc] pb-1">View All Federal Programs</a>
+                <a href="#" class="text-[#0071bc] font-bold text-xs uppercase tracking-wider hover:text-white transition-all border-b border-[#0071bc] pb-0.5">View Operational Allocations</a>
             </div>
 
-            <div class="grid lg:grid-cols-3 gap-8">
-                <!-- Program 1 -->
-                <div class="program-card bg-white p-10 border border-gray-100 shadow-sm">
-                    <i class="fas fa-hand-holding-dollar text-4xl text-[#0071bc] mb-6"></i>
-                    <h3 class="text-xl font-black text-gray-800 mb-4 uppercase">7(a) Loan Program</h3>
-                    <p class="text-gray-600 text-sm leading-relaxed mb-8">The SBA’s primary program for providing financial assistance to small businesses. Valid for working capital and expansion.</p>
-                    <a href="register1.html" class="bg-[#002e6d] text-white px-6 py-3 block text-center font-bold text-xs uppercase tracking-widest">Apply for 7(a)</a>
+            <div class="grid lg:grid-cols-3 gap-6">
+                <!-- Frame 1 -->
+                <div class="interactive-program-card p-8 rounded-xl flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-lg bg-[#0071bc]/10 flex items-center justify-center mb-6 border border-[#0071bc]/20">
+                            <i class="fas fa-hand-holding-dollar text-xl text-[#0071bc]"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-tight">7(a) Liquidity Program</h3>
+                        <p class="text-[#8892b0] text-xs md:text-sm leading-relaxed mb-6">The primary financial vehicle designed to provision operational liquid capital reserves for growth, scaling, and operational asset execution.</p>
+                    </div>
+                    <a href="register1.html" class="bg-[#0071bc] text-white py-3 rounded-lg text-center font-bold text-xs uppercase tracking-wider hover:bg-[#005691] transition-all">Apply for 7(a)</a>
                 </div>
 
-                <!-- Program 2 -->
-                <div class="program-card bg-white p-10 border border-gray-100 shadow-sm" style="border-left-color: #e03c31;">
-                    <i class="fas fa-cloud-showers-heavy text-4xl text-[#e03c31] mb-6"></i>
-                    <h3 class="text-xl font-black text-gray-800 mb-4 uppercase">Disaster Loans</h3>
-                    <p class="text-gray-600 text-sm leading-relaxed mb-8">Economic Injury Disaster Loans (EIDL) provide vital economic support to small businesses to help overcome temporary loss of revenue.</p>
-                    <a href="register1.html" class="bg-[#e03c31] text-white px-6 py-3 block text-center font-bold text-xs uppercase tracking-widest">Claim Disaster Aid</a>
+                <!-- Frame 2 -->
+                <div class="interactive-program-card p-8 rounded-xl flex flex-col justify-between" style="border-left-color: #ef4444;">
+                    <div>
+                        <div class="w-12 h-12 rounded-lg bg-red-500/10 flex items-center justify-center mb-6 border border-red-500/20">
+                            <i class="fas fa-cloud-showers-heavy text-xl text-red-400"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-tight">Disaster Allocation Aid</h3>
+                        <p class="text-[#8892b0] text-xs md:text-sm leading-relaxed mb-6">Economic Injury Disaster relief parameters engineered to provision direct liquidity injections to protect balance sheets against sudden market impacts.</p>
+                    </div>
+                    <a href="register1.html" class="bg-red-600 text-white py-3 rounded-lg text-center font-bold text-xs uppercase tracking-wider hover:bg-red-700 transition-all">Claim Disaster Aid</a>
                 </div>
 
-                <!-- Program 3 -->
-                <div class="program-card bg-white p-10 border border-gray-100 shadow-sm">
-                    <i class="fas fa-building-columns text-4xl text-[#0071bc] mb-6"></i>
-                    <h3 class="text-xl font-black text-gray-800 mb-4 uppercase">504 Fixed Assets</h3>
-                    <p class="text-gray-600 text-sm leading-relaxed mb-8">Provides long-term, fixed rate financing for major fixed assets that promote business growth and job creation.</p>
-                    <a href="register1.html" class="bg-[#002e6d] text-white px-6 py-3 block text-center font-bold text-xs uppercase tracking-widest">Get 504 Financing</a>
+                <!-- Frame 3 -->
+                <div class="interactive-program-card p-8 rounded-xl flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-lg bg-[#0071bc]/10 flex items-center justify-center mb-6 border border-[#0071bc]/20">
+                            <i class="fas fa-building-columns text-xl text-[#0071bc]"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-tight">504 Asset Architecture</h3>
+                        <p class="text-[#8892b0] text-xs md:text-sm leading-relaxed mb-6">Long-term fixed-yield funding instruments targeting structural real estate execution, machinery deployment, and physical infrastructure growth.</p>
+                    </div>
+                    <a href="register1.html" class="bg-[#0071bc] text-white py-3 rounded-lg text-center font-bold text-xs uppercase tracking-wider hover:bg-[#005691] transition-all">Get 504 Financing</a>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- SECTION 7: DETAILED FOOTER (The "Big Join") -->
-    <footer class="bg-[#0a192f] text-white pt-20 pb-10 px-4 md:px-12">
-        <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-12 mb-20">
+    <!-- SECTION 7: DETAILED COMPLIANCE FOOTER SYSTEM -->
+    <footer class="bg-[#0a192f] border-t border-white/5 pt-16 pb-8 px-4 md:px-12 mt-auto">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-10 mb-12">
             <div class="col-span-1 md:col-span-2">
-                <div class="bg-white text-[#002e6d] inline-block px-4 py-1 font-black text-3xl mb-8">SBA</div>
-                <p class="text-gray-400 text-sm leading-relaxed max-w-md">
-                    The U.S. Small Business Administration (SBA) is a United States government agency that provides support to entrepreneurs and small businesses. We are dedicated to maintaining and strengthening the nation's economy.
+                <div class="bg-white text-[#0a192f] inline-block px-3 py-1 font-black text-2xl mb-5 rounded-sm">SBA</div>
+                <p class="text-[#8892b0] text-xs md:text-sm leading-relaxed max-w-sm">
+                    The U.S. Small Business Administration (SBA) acts as an autonomous federal oversight layer to safeguard macroeconomic baseline velocity by directly validating, underwriting, and funding national enterprise frameworks.
                 </p>
             </div>
             <div>
-                <h4 class="font-black text-xs uppercase tracking-[0.2em] mb-8 text-blue-400">Governance</h4>
-                <ul class="space-y-4 text-sm font-bold opacity-70">
-                    <li><a href="#" class="hover:opacity-100 transition">SBA Performance</a></li>
-                    <li><a href="#" class="hover:opacity-100 transition">Inspector General</a></li>
-                    <li><a href="#" class="hover:opacity-100 transition">FOIA Requests</a></li>
-                    <li><a href="#" class="hover:opacity-100 transition">No FEAR Act Data</a></li>
+                <h4 class="font-bold text-[11px] uppercase tracking-[0.2em] mb-5 text-[#d4af37]">Governance</h4>
+                <ul class="space-y-3 text-xs font-semibold text-[#8892b0]">
+                    <li><a href="#" class="hover:text-white transition">SBA Operational Performance</a></li>
+                    <li><a href="#" class="hover:text-white transition">Office of Inspector General</a></li>
+                    <li><a href="#" class="hover:text-white transition">FOIA Statutory Requests</a></li>
+                    <li><a href="#" class="hover:text-white transition">No FEAR Act Public Ledger</a></li>
                 </ul>
             </div>
             <div>
-                <h4 class="font-black text-xs uppercase tracking-[0.2em] mb-8 text-blue-400">Support Center</h4>
-                <ul class="space-y-4 text-sm font-bold opacity-70">
-                    <li><a href="#" class="hover:opacity-100 transition">Contact SBA</a></li>
-                    <li><a href="#" class="hover:opacity-100 transition">Find Local Office</a></li>
-                    <li><a href="#" class="hover:opacity-100 transition">Media Relations</a></li>
-                    <li><a href="#" class="hover:opacity-100 transition">Portal Security</a></li>
+                <h4 class="font-bold text-[11px] uppercase tracking-[0.2em] mb-5 text-[#0071bc]">Support Center</h4>
+                <ul class="space-y-3 text-xs font-semibold text-[#8892b0]">
+                    <li><a href="#" class="hover:text-white transition">Contact SBA Logistics</a></li>
+                    <li><a href="#" class="hover:text-white transition">Locate Regional Offices</a></li>
+                    <li><a href="#" class="hover:text-white transition">Media & Press Intelligence</a></li>
+                    <li><a href="#" class="hover:text-white transition">Portal Encryption Standards</a></li>
                 </ul>
             </div>
         </div>
         
-        <div class="max-w-7xl mx-auto pt-10 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="flex gap-6 text-[10px] font-black uppercase tracking-widest text-gray-500">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Use</a>
-                <a href="#">Accessibility</a>
+        <div class="max-w-7xl mx-auto pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex gap-5 text-[9px] font-bold uppercase tracking-widest text-[#8892b0]">
+                <a href="#" class="hover:text-white transition">Privacy Architecture</a>
+                <a href="#" class="hover:text-white transition">Terms of Use</a>
+                <a href="#" class="hover:text-white transition">Accessibility Protocols</a>
             </div>
-            <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest">
-                © 2026 U.S. Small Business Administration | Government ID: 75-0100-0-1-376
+            <p class="text-[9px] font-semibold text-gray-600 uppercase tracking-widest text-center md:text-right">
+                © 2026 U.S. Small Business Administration | Government ID Reference: 75-0100-0-1-376
             </p>
         </div>
     </footer>
