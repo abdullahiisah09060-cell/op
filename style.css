@@ -1,129 +1,423 @@
-/* * SBA PREMIUM GLOBAL STYLES 2026 
- * Optimized for: Performance, Speed, & High-End UX
- */
+/* ============================================================
+ * SBA PREMIUM GLOBAL STYLES & DESIGN SYSTEM 2026 
+ * Optimized for: Performance, Touch Speed, & Production-Grade UX
+ * Design Paradigm: Premium Dark/Glassmorphic Modern Fintech
+ * ============================================================ */
 
-:root { 
-    --sba-blue: #00274c; 
-    --sba-accent: #0071bc; 
-    --sba-gold: #c5a028; /* Smoother gold */
-    --bg-light: #f8fafc;
-    --card-bg: rgba(255, 255, 255, 0.95);
-    --text-main: #0f172a;
-    --text-muted: #64748b;
-    --success: #10b981;
-    --pending: #f59e0b;
-    --danger: #ef4444;
+ :root { 
+    /* Core Brand Tokens */
+    --sba-blue: #0a192f;         /* Deep Obsidian Blue */
+    --sba-blue-light: #172a45;   /* Secondary surface blue */
+    --sba-accent: #0071bc;       /* Deep high-trust accent */
+    --sba-accent-glow: rgba(0, 113, 188, 0.25);
+    --sba-gold: #d4af37;         /* Burnished Premium Metallic Gold */
+    --sba-gold-glow: rgba(212, 175, 55, 0.2);
+    
+    /* Semantic Dark Mode Canvas Layouts */
+    --bg-dark: #020c1b;          /* Base canvas color */
+    --surface-card: rgba(23, 42, 69, 0.7); /* Translucent glassmorphic platform */
+    --border-glass: rgba(255, 255, 255, 0.08);
+    --border-focus: #0071bc;
+    
+    /* Editorial Typography Matrix */
+    --text-main: #f4f6f9;        /* High contrast crisp white-grey */
+    --text-muted: #8892b0;       /* Accessible secondary text */
+    --text-dark: #0a192f;
+    
+    /* Functional System States */
+    --success: #10b981;          /* Emerald Success */
+    --success-glow: rgba(16, 185, 129, 0.15);
+    --pending: #f59e0b;          /* Amber Warning/Pending state */
+    --pending-glow: rgba(245, 158, 11, 0.15);
+    --danger: #ef4444;           /* Ruby Critical Error */
+    --danger-glow: rgba(239, 68, 68, 0.15);
+    
+    /* Layout Constants */
     --white: #ffffff;
-    --glass: rgba(255, 255, 255, 0.8);
+    --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --border-radius-sm: 8px;
+    --border-radius-md: 14px;
+    --border-radius-lg: 24px;
 }
 
+/* ============================================================
+ * 1. CORE RESET & BASE ARCHITECTURE
+ * ============================================================ */
 * { 
     box-sizing: border-box; 
     -webkit-tap-highlight-color: transparent; 
-    margin: 0; padding: 0;
-    font-family: 'Inter', -apple-system, sans-serif;
+    margin: 0; 
+    padding: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 body { 
-    background: var(--bg-light); 
+    background-color: var(--bg-dark); 
     color: var(--text-main);
-    line-height: 1.6;
+    line-height: 1.5;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-/* --- PREMIUM UI COMPONENTS --- */
+.app-container {
+    width: 100%;
+    max-width: 100%;
+    padding: 20px;
+    margin: 0 auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 
+/* ============================================================
+ * 2. PREMIUM NAVIGATION HEADER
+ * ============================================================ */
 .nav-header { 
-    background: var(--sba-blue); 
-    padding: 18px 20px; 
-    position: sticky; top: 0; z-index: 100;
-    display: flex; justify-content: space-between; align-items: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    border-bottom: 3px solid var(--sba-gold);
+    background: rgba(10, 25, 47, 0.85); 
+    padding: 16px 20px; 
+    position: sticky; 
+    top: 0; 
+    z-index: 1000;
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-glass);
 }
 
 .nav-header h1 {
     color: var(--white); 
-    font-size: 16px; 
+    font-size: 15px; 
     text-transform: uppercase;
-    letter-spacing: 1.5px; 
+    letter-spacing: 2px; 
     font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-/* Glassmorphism Card Effect */
+.nav-header h1 span {
+    color: var(--sba-gold);
+}
+
+/* ============================================================
+ * 3. THE PREMIUM GLASSMORPHISM FRAMEWORK (CARDS)
+ * ============================================================ */
 .card { 
-    background: var(--card-bg); 
-    padding: 25px 20px; 
-    border-radius: 16px; 
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); 
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    margin-bottom: 20px;
-    backdrop-filter: blur(10px);
+    background: var(--surface-card); 
+    padding: 28px 24px; 
+    border-radius: var(--border-radius-md); 
+    border: 1px solid var(--border-glass);
+    box-shadow: 0 20px 40px -15px rgba(2, 12, 27, 0.7);
+    margin-bottom: 24px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transition: var(--transition-smooth);
 }
 
-/* Balanced Balance Display */
+.card:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+/* Financial Matrix Display Engine */
 .balance-card {
-    background: linear-gradient(135deg, #00274c 0%, #004a8f 100%);
+    background: linear-gradient(135deg, var(--sba-blue-light) 0%, var(--sba-blue) 100%);
     color: var(--white);
-    padding: 40px 25px;
-    border-radius: 20px;
+    padding: 32px 24px;
+    border-radius: var(--border-radius-lg);
     text-align: center;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 15px 30px rgba(0,39,76,0.3);
+    border: 1px solid rgba(214, 175, 55, 0.2);
+    box-shadow: 0 15px 35px rgba(0, 113, 188, 0.15);
 }
 
-.balance-card::after {
-    content: ""; position: absolute; top: -50%; left: -50%;
-    width: 200%; height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+.balance-card::before {
+    content: ""; 
+    position: absolute; 
+    top: -50%; 
+    left: -50%;
+    width: 200%; 
+    height: 200%;
+    background: radial-gradient(circle, rgba(0, 113, 188, 0.15) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.balance-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    font-weight: 600;
 }
 
 .balance-amount {
-    font-size: 42px;
+    font-size: 38px;
     font-weight: 800;
-    margin: 8px 0;
+    margin: 6px 0;
     letter-spacing: -1px;
+    color: var(--white);
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
 
-/* Smooth Inputs */
-input, select { 
+/* ============================================================
+ * 4. PRODUCTION INPUT ARCHITECTURE & FORM DESIGN
+ * ============================================================ */
+.form-group {
+    margin-bottom: 20px;
+    position: relative;
+    width: 100%;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+input, select, textarea { 
     width: 100%; 
     padding: 14px 16px; 
-    border-radius: 12px; 
-    border: 1.5px solid #e2e8f0; 
-    font-size: 16px; 
-    background: #ffffff;
-    transition: all 0.3s ease;
+    border-radius: var(--border-radius-md); 
+    border: 1.5px solid var(--border-glass); 
+    font-size: 15px; 
+    font-weight: 500;
+    background: rgba(2, 12, 27, 0.5);
+    color: var(--text-main);
+    transition: var(--transition-smooth);
+    outline: none;
 }
 
-input:focus { 
-    border-color: var(--sba-accent); 
-    box-shadow: 0 0 0 4px rgba(0, 113, 188, 0.1);
+input::placeholder {
+    color: rgba(136, 146, 176, 0.4);
 }
 
-/* Toast Notifications placeholder style */
-.toast {
-    position: fixed; bottom: 20px; left: 50%;
+input:focus, select:focus, textarea:focus { 
+    border-color: var(--border-focus); 
+    background: var(--sba-blue-light);
+    box-shadow: 0 0 0 4px var(--sba-accent-glow);
+}
+
+/* Validation System States */
+input.is-invalid, select.is-invalid {
+    border-color: var(--danger) !important;
+    box-shadow: 0 0 0 4px var(--danger-glow) !important;
+}
+
+input.is-valid, select.is-valid {
+    border-color: var(--success) !important;
+    box-shadow: 0 0 0 4px var(--success-glow) !important;
+}
+
+.error-message {
+    font-size: 12px;
+    color: var(--danger);
+    margin-top: 6px;
+    font-weight: 500;
+    display: none;
+}
+
+/* ============================================================
+ * 5. HIGH-PERFORMANCE BUTTON & INTERACTIVE LAYER
+ * ============================================================ */
+.btn {
+    width: 100%;
+    min-height: 50px;
+    padding: 14px 24px;
+    border-radius: var(--border-radius-md);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: var(--transition-smooth);
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--sba-accent) 0%, #005691 100%);
+    color: var(--white);
+    box-shadow: 0 8px 20px -6px rgba(0, 113, 188, 0.4);
+}
+
+.btn-primary:hover:not(:disabled) {
+    box-shadow: 0 12px 24px -4px rgba(0, 113, 188, 0.6);
+    transform: translateY(-1px);
+}
+
+.btn-primary:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+.btn-gold {
+    background: linear-gradient(135deg, var(--sba-gold) 0%, #a4821c 100%);
+    color: var(--sba-blue);
+    font-weight: 800;
+    box-shadow: 0 8px 20px -6px rgba(212, 175, 55, 0.3);
+}
+
+.btn-gold:hover:not(:disabled) {
+    box-shadow: 0 12px 24px -4px rgba(212, 175, 55, 0.5);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--text-main);
+    border: 1.5px solid var(--border-glass);
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Loading Spinner Matrix Overlay */
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+}
+
+.btn-loading::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 0; left: 0; right: 0; bottom: 0;
+    margin: auto;
+    border: 3px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+/* ============================================================
+ * 6. ASYNC TOAST NOTIFICATION INFRASTRUCTURE
+ * ============================================================ */
+.toast-container {
+    position: fixed;
+    top: 24px;
+    left: 50%;
     transform: translateX(-50%);
-    background: var(--text-main); color: white;
-    padding: 12px 24px; border-radius: 50px;
-    font-size: 14px; font-weight: 600;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-    z-index: 1000;
+    z-index: 9999;
+    width: calc(100% - 40px);
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-/* Animations */
+.toast {
+    width: 100%;
+    background: #0a192f;
+    color: var(--white);
+    padding: 16px 20px;
+    border-radius: var(--border-radius-md);
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 15px 35px rgba(2, 12, 27, 0.8);
+    border-left: 4px solid var(--sba-accent);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    animation: slideDown 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.toast.success { border-left-color: var(--success); }
+.toast.danger { border-left-color: var(--danger); }
+.toast.pending { border-left-color: var(--pending); }
+
+/* ============================================================
+ * 7. CORE UTILITIES & RESPONSIVE GRID SYSTEMS
+ * ============================================================ */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-success { background: var(--success-glow); color: var(--success); }
+.badge-pending { background: var(--pending-glow); color: var(--pending); }
+.badge-danger { background: var(--danger-glow); color: var(--danger); }
+
+/* Bottom Menu Navigation Bar for Mobile Form Factors */
+.bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 68px;
+    background: rgba(10, 25, 47, 0.95);
+    border-top: 1px solid var(--border-glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    z-index: 900;
+}
+
+@media (max-width: 767px) {
+    body { padding-bottom: 68px; } /* Prevent nav overlap */
+}
+
+/* ============================================================
+ * 8. ANIMATION ENGINE HOOKS
+ * ============================================================ */
 @keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(16px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-.animate-up { animation: slideUp 0.5s ease forwards; }
+@keyframes slideDown {
+    from { opacity: 0; transform: translate(-50%, -20px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}
 
-/* Desktop View Optimization */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.animate-up { 
+    animation: slideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+
+/* ============================================================
+ * 9. RESPONSIVE DESKTOP LAYOUT OVERRIDES
+ * ============================================================ */
 @media (min-width: 768px) {
-    .container { max-width: 800px; margin: 40px auto; }
-    .action-grid { grid-template-columns: repeat(4, 1fr); }
+    .app-container { 
+        max-width: 520px; 
+        margin: 40px auto; 
+    }
+    
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
 }
