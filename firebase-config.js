@@ -8,9 +8,17 @@ import {
     browserLocalPersistence, 
     setPersistence, 
     onAuthStateChanged,
-    signOut 
+    signOut,
+    sendEmailVerification
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+import { 
+    getFirestore, 
+    doc, 
+    getDoc, 
+    setDoc, 
+    updateDoc, 
+    serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
 
 // ============================================================
@@ -31,7 +39,7 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 
-// Enforce Local Persistence
+// Enforce Local Persistence (Keeps users logged in across refreshes)
 setPersistence(auth, browserLocalPersistence).catch((err) => {
   console.error("[SBA] Auth persistence error:", err);
 });
@@ -51,6 +59,7 @@ export const CLOUDINARY_CONFIG = {
  * @returns {Promise<string>} The secure URL of the uploaded image
  */
 export const uploadToCloudinary = async (file) => {
+  if (!file) return null;
   const formData = new FormData();
   formData.append("file", file);
   formData.append("upload_preset", CLOUDINARY_CONFIG.UPLOAD_PRESET);
@@ -60,6 +69,7 @@ export const uploadToCloudinary = async (file) => {
       method: "POST",
       body: formData,
     });
+    if (!response.ok) throw new Error("Cloudinary upload failed");
     const data = await response.json();
     return data.secure_url;
   } catch (error) {
@@ -79,7 +89,7 @@ export const isAdmin = (email) => email && email.toLowerCase().trim() === ADMIN_
 // ============================================================
 export const DB_COLLECTIONS = {
   USERS: "users",
-  TRANSACTIONS: "transactions", // Combined ledger/deposit/withdraw for easier querying
+  TRANSACTIONS: "transactions",
   APPLICATIONS: "applications",
   KYC: "kyc",
   NOTIFICATIONS: "notifications",
@@ -87,10 +97,9 @@ export const DB_COLLECTIONS = {
 };
 
 // ============================================================
-// PRODUCTION USER SCHEMA
+// PRODUCTION USER SCHEMA (Deep Synchronization)
 // ============================================================
 export const buildNewUserPayload = (rawData) => {
-  const timestamp = new Date().toISOString();
   return {
     uid: rawData.uid || "",
     personalInfo: {
@@ -117,7 +126,8 @@ export const buildNewUserPayload = (rawData) => {
         accountStatus: "active", // active, suspended, restricted
         emailVerified: false,
         kycStatus: "unsubmitted", // unsubmitted, pending, approved, rejected
-        isOnline: true
+        isOnline: true,
+        lastSeen: serverTimestamp()
     },
     balances: {
       totalDeposit: 0,
@@ -127,9 +137,9 @@ export const buildNewUserPayload = (rawData) => {
       awardedGrants: 0
     },
     metadata: {
-        createdAt: timestamp,
-        updatedAt: timestamp,
-        lastLogin: timestamp
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        registrationStep: rawData.registrationStep || 1
     }
   };
 };
@@ -139,44 +149,50 @@ export const buildNewUserPayload = (rawData) => {
 // ============================================================
 
 /**
- * Observer to get current user
+ * Fetches user data from Firestore
  */
-export const getCurrentUser = () => {
-  return new Promise((resolve, reject) => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      unsubscribe();
-      resolve(user);
-    }, reject);
-  });
+export const getUserData = async (uid) => {
+    try {
+        const userDoc = await getDoc(doc(db, DB_COLLECTIONS.USERS, uid));
+        return userDoc.exists() ? userDoc.data() : null;
+    } catch (error) {
+        console.error("[SBA] Error fetching user data:", error);
+        return null;
+    }
 };
 
 /**
  * Comprehensive Route Guard
- * Handles: Unauthenticated, Email Unverified, and Admin Access
+ * Logic: 
+ * 1. If not logged in -> redirect to login (except public pages)
+ * 2. If logged in but email not verified -> redirect to verify (except Admin)
  */
 export const monitorAuthState = (callback) => {
     onAuthStateChanged(auth, async (user) => {
+        const path = window.location.pathname;
+        const isPublicPage = path.includes("login.html") || 
+                             path.includes("register") || 
+                             path.includes("index.html") || 
+                             path.includes("forgot-password.html");
+
         if (!user) {
-            // No user logged in, redirect to login unless already there
-            if (!window.location.pathname.includes("login.html") && 
-                !window.location.pathname.includes("register") &&
-                !window.location.pathname.includes("index.html")) {
+            if (!isPublicPage) {
                 window.location.href = "login.html";
             }
         } else {
-            // Check email verification (Skip for admin)
+            // Check verification status
             if (!user.emailVerified && user.email !== ADMIN_EMAIL) {
-                if (!window.location.pathname.includes("verify.html")) {
+                if (!path.includes("verify.html") && !isPublicPage) {
                     window.location.href = "verify.html";
                 }
             }
         }
-        callback(user);
+        if (callback) callback(user);
     });
 };
 
 // ============================================================
-// SESSION MANAGEMENT
+// SESSION MANAGEMENT (For Multi-step Registration)
 // ============================================================
 const SESSION_KEY = "SBA_REG_FLOW";
 
