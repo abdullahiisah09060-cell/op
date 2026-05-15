@@ -3,87 +3,280 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SBA | Login Portal</title>
+    <title>SBA Portal | Secure Login</title>
+    
+    <!-- Frameworks -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
     <style>
-        :root { --sba-navy: #002e6d; --sba-red: #cc0000; }
-        body { background: #f0f2f5; font-family: 'Segoe UI', Tahoma, sans-serif; display: flex; flex-direction: column; min-height: 100vh; }
-        .auth-card { background: white; border-top: 6px solid var(--sba-navy); box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 400px; border-radius: 4px; }
-        .logo-box { border: 2.5px solid var(--sba-navy); padding: 2px 6px; display: inline-block; position: relative; }
-        .logo-box::after { content: ""; position: absolute; bottom: -2.5px; left: -2.5px; width: 60%; height: 2.5px; background: var(--sba-red); }
-        .input-field { height: 48px; border: 1.5px solid #e2e8f0; width: 100%; padding: 0 12px; outline: none; transition: 0.2s; border-radius: 4px; }
-        .input-field:focus { border-color: var(--sba-navy); box-shadow: 0 0 0 3px rgba(0, 46, 109, 0.1); }
-        .btn-sba { background: var(--sba-navy); height: 50px; font-weight: 700; color: white; width: 100%; border-radius: 4px; transition: 0.3s; text-transform: uppercase; }
-        .btn-google { border: 1.5px solid #e2e8f0; height: 48px; width: 100%; font-weight: 600; border-radius: 4px; display: flex; align-items: center; justify-content: center; gap: 10px; background: white; }
+        @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600;700;900&display=swap');
+        
+        :root { 
+            --sba-navy: #002e6d; 
+            --sba-red: #cc0000; 
+            --sba-accent: #0071bc;
+        }
+
+        body { 
+            background: #f4f7fa; 
+            font-family: 'Public Sans', sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+        }
+
+        .auth-card { 
+            background: white; 
+            border-top: 6px solid var(--sba-navy); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
+            width: 100%; 
+            max-width: 420px; 
+            border-radius: 8px;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo-box { 
+            border: 3px solid var(--sba-navy); 
+            padding: 4px 8px; 
+            display: inline-block; 
+            position: relative; 
+        }
+        .logo-box::after { 
+            content: ""; position: absolute; bottom: -3px; left: -3px; 
+            width: 65%; height: 3px; background: var(--sba-red); 
+        }
+
+        .input-field { 
+            height: 52px; 
+            border: 1.5px solid #e2e8f0; 
+            width: 100%; 
+            padding: 0 16px; 
+            outline: none; 
+            transition: all 0.2s ease; 
+            border-radius: 6px;
+            font-size: 15px;
+        }
+        .input-field:focus { 
+            border-color: var(--sba-accent); 
+            box-shadow: 0 0 0 4px rgba(0, 113, 188, 0.1); 
+        }
+
+        .btn-sba { 
+            background: var(--sba-navy); 
+            height: 52px; 
+            font-weight: 800; 
+            color: white; 
+            width: 100%; 
+            border-radius: 6px; 
+            transition: all 0.3s ease; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn-sba:hover { background: #001f4d; transform: translateY(-1px); shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .btn-sba:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        .btn-google { 
+            border: 1.5px solid #e2e8f0; 
+            height: 52px; 
+            width: 100%; 
+            font-weight: 700; 
+            border-radius: 6px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 12px; 
+            background: white; 
+            transition: 0.2s;
+            text-transform: uppercase;
+            font-size: 12px;
+            color: #475569;
+        }
+        .btn-google:hover { background: #f8fafc; border-color: #cbd5e1; }
+
+        #error-msg {
+            display: none;
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            border-left: 4px solid #dc2626;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
-<body class="bg-[#f0f2f5]">
-    <div class="bg-[#f8f9fa] border-b py-2 px-4 flex items-center gap-2">
-        <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" class="w-4" alt="USA">
-        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Official website of the U.S. Government</span>
+<body>
+
+    <!-- Official Top Bar -->
+    <div class="bg-[#f8f9fa] border-b py-2.5 px-6 flex items-center gap-3">
+        <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" class="w-5 shadow-sm" alt="USA">
+        <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Official Portal of the U.S. Government</span>
     </div>
 
     <main class="flex-grow flex items-center justify-center p-6">
-        <div class="auth-card p-8">
-            <div class="flex items-center gap-3 mb-10">
-                <div class="logo-box"><span class="text-2xl font-black text-[#002e6d]">SBA</span></div>
-                <div class="leading-tight text-[10px] font-bold text-gray-500 uppercase">
-                    <p>U.S. Small Business</p><p>Administration</p>
+        <div class="auth-card p-8 md:p-10">
+            <!-- Branding -->
+            <div class="flex items-center gap-4 mb-10">
+                <div class="logo-box">
+                    <span class="text-3xl font-black text-[#002e6d] tracking-tighter uppercase">SBA</span>
+                </div>
+                <div class="leading-tight text-[10px] font-black text-slate-400 uppercase tracking-tighter">
+                    <p>U.S. Small Business</p>
+                    <p class="text-[#002e6d]">Administration</p>
                 </div>
             </div>
 
-            <h2 class="text-xl font-black text-gray-800 mb-6 uppercase">Sign In</h2>
-            <form id="loginForm" class="space-y-4">
+            <h2 class="text-2xl font-black text-slate-800 mb-2 uppercase tracking-tight">Portal Access</h2>
+            <p class="text-xs text-slate-500 mb-8 font-medium uppercase tracking-wider">Enter credentials to synchronize node</p>
+
+            <!-- Error Notification -->
+            <div id="error-msg"></div>
+
+            <form id="loginForm" class="space-y-5">
                 <div>
-                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Email Address</label>
+                    <label class="block text-[10px] font-extrabold text-slate-400 uppercase mb-1.5 tracking-widest">Case Email</label>
                     <input type="email" id="email" class="input-field" required placeholder="name@agency.gov">
                 </div>
+                
                 <div>
-                    <div class="flex justify-between mb-1">
-                        <label class="text-[10px] font-bold text-gray-400 uppercase">Passkey</label>
-                        <a href="forgot-password.html" class="text-[10px] font-bold text-blue-700 uppercase">Forgot?</a>
+                    <div class="flex justify-between mb-1.5">
+                        <label class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Access Key</label>
+                        <a href="forgot-password.html" class="text-[10px] font-bold text-blue-600 uppercase tracking-widest hover:underline">Reset Key</a>
                     </div>
                     <div class="relative">
-                        <input type="password" id="password" class="input-field pr-10" required placeholder="••••••••">
-                        <button type="button" onclick="togglePass()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300">
-                            <i id="eyeIcon" class="fas fa-eye"></i>
+                        <input type="password" id="password" class="input-field pr-12" required placeholder="••••••••">
+                        <button type="button" id="togglePassword" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 transition-colors">
+                            <i class="fas fa-eye"></i>
                         </button>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-2">
-                    <input type="checkbox" id="remember" class="w-4 h-4 accent-[#002e6d]">
-                    <label for="remember" class="text-[11px] font-bold text-gray-500 uppercase">Remember this device</label>
+                <div class="flex items-center gap-3 py-1">
+                    <input type="checkbox" id="remember" class="w-4 h-4 rounded border-gray-300 text-[#002e6d] focus:ring-[#002e6d]">
+                    <label for="remember" class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Keep node session active</label>
                 </div>
 
-                <button type="submit" id="loginBtn" class="btn-sba shadow-lg">Access Portal</button>
+                <button type="submit" id="loginBtn" class="btn-sba">
+                    <span>Secure Sign In</span>
+                    <i class="fas fa-arrow-right text-xs"></i>
+                </button>
 
-                <div class="relative flex py-3 items-center">
-                    <div class="flex-grow border-t border-gray-200"></div>
-                    <span class="flex-shrink mx-4 text-[10px] font-bold text-gray-300">OR</span>
-                    <div class="flex-grow border-t border-gray-200"></div>
+                <div class="relative flex py-4 items-center">
+                    <div class="flex-grow border-t border-slate-100"></div>
+                    <span class="flex-shrink mx-4 text-[10px] font-black text-slate-300 tracking-widest">SYSTEM SSO</span>
+                    <div class="flex-grow border-t border-slate-100"></div>
                 </div>
 
-                <button type="button" id="googleBtn" class="btn-google shadow-sm">
-                    <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-5">
-                    <span class="text-xs uppercase">Continue with Google</span>
+                <button type="button" id="googleBtn" class="btn-google">
+                    <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-5" alt="GSA">
+                    <span>Government SSO Login</span>
                 </button>
             </form>
 
-            <div class="mt-8 text-center pt-6 border-t border-gray-50">
-                <p class="text-[10px] text-gray-400 font-bold uppercase mb-2">New Case?</p>
-                <a href="register1.html" class="text-[#002e6d] font-bold text-xs uppercase hover:underline">Register Account</a>
+            <div class="mt-10 text-center pt-8 border-t border-slate-50">
+                <p class="text-[10px] text-slate-400 font-black uppercase mb-3 tracking-widest">New Applicant?</p>
+                <a href="register1.html" class="text-[#002e6d] font-black text-xs uppercase tracking-[0.2em] hover:text-red-600 transition-colors">Create Case File</a>
             </div>
         </div>
     </main>
-    <script>
-        function togglePass() {
-            const p = document.getElementById('password');
-            const i = document.getElementById('eyeIcon');
-            p.type = p.type === 'password' ? 'text' : 'password';
-            i.className = p.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
-        }
+
+    <!-- Authentication Script -->
+    <script type="module">
+        import { auth, ADMIN_EMAIL } from './firebase-config.js';
+        import { 
+            signInWithEmailAndPassword, 
+            GoogleAuthProvider, 
+            signInWithPopup 
+        } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMsg = document.getElementById('error-msg');
+        const googleBtn = document.getElementById('googleBtn');
+
+        // Toggle Password Visibility
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passInput = document.getElementById('password');
+            const icon = this.querySelector('i');
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                passInput.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        });
+
+        // Handle Form Submission
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            // UI State
+            errorMsg.style.display = 'none';
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = `<i class="fas fa-circle-notch animate-spin"></i> Authenticating...`;
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Routing Logic
+                if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                    window.location.href = "admin-portal.html";
+                } else if (!user.emailVerified) {
+                    window.location.href = "verify.html";
+                } else {
+                    window.location.href = "dashboard.html";
+                }
+            } catch (error) {
+                console.error("Login Error:", error);
+                errorMsg.style.display = 'block';
+                
+                // Professional Error Messages
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        errorMsg.innerText = "Error: Case file not found with this email.";
+                        break;
+                    case 'auth/wrong-password':
+                        errorMsg.innerText = "Error: Invalid access key provided.";
+                        break;
+                    case 'auth/too-many-requests':
+                        errorMsg.innerText = "Security Alert: Too many failed attempts. Node locked.";
+                        break;
+                    default:
+                        errorMsg.innerText = "Authentication failed. Please check credentials.";
+                }
+                
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = `<span>Secure Sign In</span><i class="fas fa-arrow-right text-xs"></i>`;
+            }
+        });
+
+        // Google SSO Login
+        googleBtn.addEventListener('click', async () => {
+            const provider = new GoogleAuthProvider();
+            try {
+                await signInWithPopup(auth, provider);
+                window.location.href = "dashboard.html";
+            } catch (error) {
+                errorMsg.style.display = 'block';
+                errorMsg.innerText = "SSO Authentication failed.";
+            }
+        });
     </script>
+
 </body>
 </html>
