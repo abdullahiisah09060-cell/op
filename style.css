@@ -1,420 +1,267 @@
 /* ============================================================
- * SBA PREMIUM GLOBAL STYLES & DESIGN SYSTEM 2026 
- * Optimized for: Performance, Touch Speed, & Production-Grade UX
- * Design Paradigm: Premium Dark/Glassmorphic Modern Fintech
+ * SBA PREMIUM GLOBAL STYLES & DESIGN SYSTEM (V2.0)
+ * Optimized for: Performance, Touch Speed, & Production UX
  * ============================================================ */
 
  :root { 
-    /* Core Brand Tokens */
-    --sba-blue: #0a192f;         /* Deep Obsidian Blue */
-    --sba-blue-light: #172a45;   /* Secondary surface blue */
-    --sba-accent: #0071bc;       /* Deep high-trust accent */
-    --sba-accent-glow: rgba(0, 113, 188, 0.25);
-    --sba-gold: #d4af37;         /* Burnished Premium Metallic Gold */
-    --sba-gold-glow: rgba(212, 175, 55, 0.2);
+    /* Brand Colors - High Trust Fintech Palette */
+    --sba-blue: #0a192f;         
+    --sba-blue-light: #112240;   
+    --sba-blue-bright: #233554;
+    --sba-accent: #0071bc;       
+    --sba-accent-hover: #0088e0;
+    --sba-accent-glow: rgba(0, 113, 188, 0.2);
+    --sba-gold: #d4af37;         
+    --sba-gold-light: #f1d56e;
     
-    /* Semantic Dark Mode Canvas Layouts */
-    --bg-dark: #020c1b;          /* Base canvas color */
-    --surface-card: rgba(23, 42, 69, 0.7); /* Translucent glassmorphic platform */
+    /* Surface Colors */
+    --bg-dark: #020c1b;          
+    --surface-card: rgba(17, 34, 64, 0.7); 
+    --surface-glass: rgba(255, 255, 255, 0.03);
     --border-glass: rgba(255, 255, 255, 0.08);
-    --border-focus: #0071bc;
     
-    /* Editorial Typography Matrix */
-    --text-main: #f4f6f9;        /* High contrast crisp white-grey */
-    --text-muted: #8892b0;       /* Accessible secondary text */
-    --text-dark: #0a192f;
+    /* Text Palette */
+    --text-white: #e6f1ff;
+    --text-main: #ccd6f6;        
+    --text-muted: #8892b0;       
     
-    /* Functional System States */
-    --success: #10b981;          /* Emerald Success */
-    --success-glow: rgba(16, 185, 129, 0.15);
-    --pending: #f59e0b;          /* Amber Warning/Pending state */
-    --pending-glow: rgba(245, 158, 11, 0.15);
-    --danger: #ef4444;           /* Ruby Critical Error */
-    --danger-glow: rgba(239, 68, 68, 0.15);
+    /* Feedback States */
+    --success: #64ffda;          
+    --pending: #ffd700;          
+    --danger: #ff4d4d;           
     
-    /* Layout Constants */
-    --white: #ffffff;
-    --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    --border-radius-sm: 8px;
-    --border-radius-md: 14px;
-    --border-radius-lg: 24px;
+    /* Layout */
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 28px;
+    --shadow-sm: 0 4px 6px rgba(2, 12, 27, 0.2);
+    --shadow-lg: 0 20px 40px rgba(2, 12, 27, 0.5);
 }
 
-/* ============================================================
- * 1. CORE RESET & BASE ARCHITECTURE
- * ============================================================ */
+/* 1. CORE RESET */
 * { 
     box-sizing: border-box; 
     -webkit-tap-highlight-color: transparent; 
-    margin: 0; 
-    padding: 0;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0; padding: 0;
 }
+
+html { scroll-behavior: smooth; }
 
 body { 
     background-color: var(--bg-dark); 
     color: var(--text-main);
-    line-height: 1.5;
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    font-family: 'Inter', -apple-system, sans-serif;
+    line-height: 1.6;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+    overflow-x: hidden;
 }
 
+/* 2. TYPOGRAPHY SYSTEM */
+h1, h2, h3, h4 { color: var(--text-white); font-weight: 700; line-height: 1.2; }
+h1 { font-size: 2rem; margin-bottom: 1rem; }
+h2 { font-size: 1.5rem; margin-bottom: 0.75rem; }
+h3 { font-size: 1.25rem; }
+p { font-size: 15px; margin-bottom: 1rem; color: var(--text-muted); }
+.text-center { text-align: center; }
+.text-gold { color: var(--sba-gold); }
+.text-accent { color: var(--sba-accent); }
+
+/* 3. LAYOUT CONTAINERS */
 .app-container {
     width: 100%;
-    max-width: 100%;
-    padding: 20px;
+    max-width: 480px; /* Perfect for mobile/forms */
     margin: 0 auto;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    padding: 20px;
+    padding-bottom: 100px; /* Space for bottom nav */
 }
 
-/* ============================================================
- * 2. PREMIUM NAVIGATION HEADER
- * ============================================================ */
-.nav-header { 
-    background: rgba(10, 25, 47, 0.85); 
-    padding: 16px 20px; 
-    position: sticky; 
-    top: 0; 
-    z-index: 1000;
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border-glass);
+/* Wide Container for Dashboard/Admin */
+.wide-container {
+    max-width: 1100px;
 }
 
-.nav-header h1 {
-    color: var(--white); 
-    font-size: 15px; 
-    text-transform: uppercase;
-    letter-spacing: 2px; 
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.nav-header h1 span {
-    color: var(--sba-gold);
-}
-
-/* ============================================================
- * 3. THE PREMIUM GLASSMORPHISM FRAMEWORK (CARDS)
- * ============================================================ */
+/* 4. PREMIUM COMPONENTS */
 .card { 
     background: var(--surface-card); 
-    padding: 28px 24px; 
-    border-radius: var(--border-radius-md); 
+    padding: 24px; 
+    border-radius: var(--radius-md); 
     border: 1px solid var(--border-glass);
-    box-shadow: 0 20px 40px -15px rgba(2, 12, 27, 0.7);
-    margin-bottom: 24px;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    transition: var(--transition-smooth);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
 }
 
 .card:hover {
     border-color: rgba(255, 255, 255, 0.15);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
 }
 
-/* Financial Matrix Display Engine */
+/* Balance Dashboard Engine */
 .balance-card {
     background: linear-gradient(135deg, var(--sba-blue-light) 0%, var(--sba-blue) 100%);
-    color: var(--white);
-    padding: 32px 24px;
-    border-radius: var(--border-radius-lg);
+    padding: 30px 20px;
+    border-radius: var(--radius-lg);
     text-align: center;
+    border: 1px solid rgba(212, 175, 55, 0.1);
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(214, 175, 55, 0.2);
-    box-shadow: 0 15px 35px rgba(0, 113, 188, 0.15);
-}
-
-.balance-card::before {
-    content: ""; 
-    position: absolute; 
-    top: -50%; 
-    left: -50%;
-    width: 200%; 
-    height: 200%;
-    background: radial-gradient(circle, rgba(0, 113, 188, 0.15) 0%, transparent 60%);
-    pointer-events: none;
-}
-
-.balance-label {
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--text-muted);
-    font-weight: 600;
 }
 
 .balance-amount {
-    font-size: 38px;
+    font-size: 2.5rem;
     font-weight: 800;
-    margin: 6px 0;
-    letter-spacing: -1px;
-    color: var(--white);
-    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    color: var(--text-white);
+    margin: 10px 0;
+    font-variant-numeric: tabular-nums;
 }
 
-/* ============================================================
- * 4. PRODUCTION INPUT ARCHITECTURE & FORM DESIGN
- * ============================================================ */
-.form-group {
-    margin-bottom: 20px;
-    position: relative;
-    width: 100%;
-}
-
-.form-group label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-muted);
-    margin-bottom: 8px;
-    letter-spacing: 0.5px;
-}
-
-input, select, textarea { 
-    width: 100%; 
-    padding: 14px 16px; 
-    border-radius: var(--border-radius-md); 
-    border: 1.5px solid var(--border-glass); 
-    font-size: 15px; 
-    font-weight: 500;
-    background: rgba(2, 12, 27, 0.5);
-    color: var(--text-main);
-    transition: var(--transition-smooth);
-    outline: none;
-}
-
-input::placeholder {
-    color: rgba(136, 146, 176, 0.4);
-}
-
-input:focus, select:focus, textarea:focus { 
-    border-color: var(--border-focus); 
-    background: var(--sba-blue-light);
-    box-shadow: 0 0 0 4px var(--sba-accent-glow);
-}
-
-/* Validation System States */
-input.is-invalid, select.is-invalid {
-    border-color: var(--danger) !important;
-    box-shadow: 0 0 0 4px var(--danger-glow) !important;
-}
-
-input.is-valid, select.is-valid {
-    border-color: var(--success) !important;
-    box-shadow: 0 0 0 4px var(--success-glow) !important;
-}
-
-.error-message {
-    font-size: 12px;
-    color: var(--danger);
-    margin-top: 6px;
-    font-weight: 500;
-    display: none;
-}
-
-/* ============================================================
- * 5. HIGH-PERFORMANCE BUTTON & INTERACTIVE LAYER
- * ============================================================ */
+/* 5. INTERACTIVE ELEMENTS (BUTTONS) */
 .btn {
     width: 100%;
-    min-height: 50px;
-    padding: 14px 24px;
-    border-radius: var(--border-radius-md);
-    font-size: 15px;
+    padding: 16px;
+    border-radius: var(--radius-md);
+    font-size: 16px;
     font-weight: 700;
-    letter-spacing: 0.5px;
     border: none;
     cursor: pointer;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    transition: var(--transition-smooth);
+    transition: var(--transition);
     text-decoration: none;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--sba-accent) 0%, #005691 100%);
-    color: var(--white);
-    box-shadow: 0 8px 20px -6px rgba(0, 113, 188, 0.4);
+    background: var(--sba-accent);
+    color: white;
+    box-shadow: 0 4px 14px var(--sba-accent-glow);
 }
 
-.btn-primary:hover:not(:disabled) {
-    box-shadow: 0 12px 24px -4px rgba(0, 113, 188, 0.6);
-    transform: translateY(-1px);
-}
-
-.btn-primary:active:not(:disabled) {
-    transform: translateY(1px);
-}
+.btn-primary:hover { background: var(--sba-accent-hover); transform: scale(1.02); }
 
 .btn-gold {
-    background: linear-gradient(135deg, var(--sba-gold) 0%, #a4821c 100%);
+    background: linear-gradient(135deg, var(--sba-gold) 0%, #b8860b 100%);
     color: var(--sba-blue);
-    font-weight: 800;
-    box-shadow: 0 8px 20px -6px rgba(212, 175, 55, 0.3);
-}
-
-.btn-gold:hover:not(:disabled) {
-    box-shadow: 0 12px 24px -4px rgba(212, 175, 55, 0.5);
-    transform: translateY(-1px);
 }
 
 .btn-secondary {
-    background: transparent;
-    color: var(--text-main);
-    border: 1.5px solid var(--border-glass);
+    background: var(--surface-glass);
+    border: 1px solid var(--border-glass);
+    color: var(--text-white);
 }
 
-.btn-secondary:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.2);
-}
+/* 6. FORM DESIGN */
+.form-group { margin-bottom: 20px; }
+.form-label { display: block; font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
 
-.btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none !important;
-    box-shadow: none !important;
-}
-
-/* Loading Spinner Matrix Overlay */
-.btn-loading {
-    position: relative;
-    color: transparent !important;
-    pointer-events: none;
-}
-
-.btn-loading::after {
-    content: "";
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    top: 0; left: 0; right: 0; bottom: 0;
-    margin: auto;
-    border: 3px solid transparent;
-    border-top-color: currentColor;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-}
-
-/* ============================================================
- * 6. ASYNC TOAST NOTIFICATION INFRASTRUCTURE
- * ============================================================ */
-.toast-container {
-    position: fixed;
-    top: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 9999;
-    width: calc(100% - 40px);
-    max-width: 400px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.toast {
+input, select {
     width: 100%;
-    background: #0a192f;
-    color: var(--white);
-    padding: 16px 20px;
-    border-radius: var(--border-radius-md);
-    font-size: 14px;
-    font-weight: 600;
-    box-shadow: 0 15px 35px rgba(2, 12, 27, 0.8);
-    border-left: 4px solid var(--sba-accent);
+    padding: 14px 18px;
+    background: var(--bg-dark);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-sm);
+    color: var(--text-white);
+    font-size: 16px;
+    transition: var(--transition);
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--sba-accent);
+    background: var(--sba-blue-light);
+}
+
+/* 7. MODERN NAVIGATION */
+.nav-header {
+    background: rgba(2, 12, 27, 0.8);
+    backdrop-filter: blur(15px);
+    padding: 15px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    animation: slideDown 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
-.toast.success { border-left-color: var(--success); }
-.toast.danger { border-left-color: var(--danger); }
-.toast.pending { border-left-color: var(--pending); }
-
-/* ============================================================
- * 7. CORE UTILITIES & RESPONSIVE GRID SYSTEMS
- * ============================================================ */
-.badge {
-    display: inline-flex;
     align-items: center;
-    padding: 6px 12px;
-    border-radius: 50px;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border-glass);
 }
 
-.badge-success { background: var(--success-glow); color: var(--success); }
-.badge-pending { background: var(--pending-glow); color: var(--pending); }
-.badge-danger { background: var(--danger-glow); color: var(--danger); }
-
-/* Bottom Menu Navigation Bar for Mobile Form Factors */
 .bottom-nav {
     position: fixed;
     bottom: 0; left: 0; right: 0;
-    height: 68px;
-    background: rgba(10, 25, 47, 0.95);
+    height: 75px;
+    background: rgba(17, 34, 64, 0.95);
+    backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
     border-top: 1px solid var(--border-glass);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    z-index: 900;
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
-@media (max-width: 767px) {
-    body { padding-bottom: 68px; } /* Prevent nav overlap */
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 500;
 }
 
-/* ============================================================
- * 8. ANIMATION ENGINE HOOKS
- * ============================================================ */
+.nav-item.active { color: var(--sba-accent); }
+.nav-item i { font-size: 20px; margin-bottom: 4px; }
+
+/* 8. SKELETON LOADING (PRODUCTION FEEL) */
+.skeleton {
+    background: linear-gradient(90deg, var(--sba-blue-light) 25%, var(--sba-blue-bright) 50%, var(--sba-blue-light) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* 9. TOAST NOTIFICATIONS */
+.toast-container {
+    position: fixed;
+    top: 30px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    width: 90%;
+    max-width: 350px;
+}
+
+.toast {
+    background: #ffffff;
+    color: #000;
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+    animation: slideUp 0.4s ease-out;
+}
+
 @keyframes slideUp {
-    from { opacity: 0; transform: translateY(16px); }
+    from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes slideDown {
-    from { opacity: 0; transform: translate(-50%, -20px); }
-    to { opacity: 1; transform: translate(-50%, 0); }
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.animate-up { 
-    animation: slideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
-}
-
-/* ============================================================
- * 9. RESPONSIVE DESKTOP LAYOUT OVERRIDES
- * ============================================================ */
+/* 10. RESPONSIVE QUERIES */
 @media (min-width: 768px) {
-    .app-container { 
-        max-width: 520px; 
-        margin: 40px auto; 
-    }
-    
+    .app-container { max-width: 600px; }
+    .wide-container { max-width: 1000px; }
     .dashboard-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
