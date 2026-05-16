@@ -22,7 +22,7 @@ import {
 import { getStorage } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
 
 // ============================================================
-// FIREBASE PROJECT CONFIGURATION
+// FIREBASE PROJECT CONFIGURATION (EXACT TARGET MATRIX)
 // ============================================================
 const firebaseConfig = {
   apiKey: "AIzaSyD9sEdygrjz-m1Ou3m9O3L5mXyPEs9LAJM",
@@ -33,13 +33,13 @@ const firebaseConfig = {
   appId: "1:825499942780:web:4f7e5ceb9d6125e9e5aef9"
 };
 
-// Initialize Firebase App Instance
+// Initialize Firebase Core Subsystems
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 
-// Initialize Session Persistence Matrix Instantly
+// Initialize Session Persistence Instantly with Fault Catching
 (async () => {
     try {
         await setPersistence(auth, browserLocalPersistence);
@@ -58,9 +58,9 @@ export const CLOUDINARY_CONFIG = {
 };
 
 /**
- * Uploads an isolated raw file resource payload directly into Cloudinary CDN
+ * Uploads a file resource directly into Cloudinary CDN
  * @param {File} file - Target raw binary asset stream
- * @returns {Promise<string|null>} Dynamic string mapping to cloud secure URL resource
+ * @returns {Promise<string|null>} Secure content URL
  */
 export const uploadToCloudinary = async (file) => {
   if (!file) return null;
@@ -73,7 +73,7 @@ export const uploadToCloudinary = async (file) => {
       method: "POST",
       body: formData,
     });
-    if (!response.ok) throw new Error("Cloudinary CDN rejected binary file ingestion processing parameters.");
+    if (!response.ok) throw new Error("Cloudinary CDN rejected binary file ingestion parameters.");
     const data = await response.json();
     return data.secure_url || null;
   } catch (error) {
@@ -104,33 +104,31 @@ export const DB_COLLECTIONS = {
 };
 
 // ============================================================
-// PRODUCTION USER SCHEMA (Deep Functional Model Mapping)
+// PRODUCTION USER SCHEMA (Institutional Fintech Model Map)
 // ============================================================
 export const buildNewUserPayload = (rawData) => {
   const normalizedEmail = rawData.email ? rawData.email.toLowerCase().trim() : "";
-  const baseUsername = rawData.username ? rawData.username.replace(/[^a-zA-Z0-9]/g, "") : "user";
   
   return {
     uid: rawData.uid || "",
     personalInfo: {
-        fullName: (rawData.fullName || "").trim(),
-        username: baseUsername,
+        firstName: (rawData.firstName || "").trim(),
+        lastName: (rawData.lastName || "").trim(),
         email: normalizedEmail,
         phoneNumber: (rawData.phoneNumber || "").trim(),
-        country: rawData.country || "",
-        gender: rawData.gender || "",
-        dob: rawData.dob || ""
+        country: rawData.country || ""
+    },
+    applicationDetails: {
+        businessName: (rawData.businessName || "").trim(),
+        industryType: rawData.industryType || "",
+        fundingRequested: Number(rawData.fundingRequested) || 0,
+        purposeOfFunds: (rawData.purposeOfFunds || "").trim()
     },
     bankDetails: {
         bankName: rawData.bankName || "",
         accountName: rawData.accountName || "",
         accountNumber: rawData.accountNumber || "",
         routingNumber: rawData.routingNumber || ""
-    },
-    referral: {
-        code: baseUsername.toLowerCase(),
-        referredBy: rawData.referredBy || "none",
-        referralCount: 0
     },
     status: {
         accountStatus: "active", // State Map: active | suspended | restricted
@@ -174,17 +172,20 @@ export const getUserData = async (uid) => {
 export const monitorAuthState = (callback) => {
     return onAuthStateChanged(auth, async (user) => {
         const path = window.location.pathname;
+        const pageName = path.split("/").pop().toLowerCase() || "index.html";
         
-        // Dynamic regular expression matrix mapping parameters to capture clean URLs alongside Vercel deployments
-        const isPublicPage = /\/(index\.html)?$/i.test(path) || 
-                             /login/i.test(path) || 
-                             /register/i.test(path) || 
-                             /forgot-password/i.test(path);
+        const isPublicPage = pageName === "" || 
+                             pageName === "index.html" || 
+                             pageName === "login.html" || 
+                             pageName === "register1.html" || 
+                             pageName === "register2.html" || 
+                             pageName === "forgot-password.html";
 
-        const isVerifyPage = /verify/i.test(path);
+        const isVerifyPage = pageName === "verify.html";
+        const isAdminPage = pageName === "admin-portal.html";
 
         if (!user) {
-            // Unauthenticated intercept mapping parameters
+            // Unauthenticated protection checkpoint
             if (!isPublicPage) {
                 window.location.href = "login.html";
                 return;
@@ -192,7 +193,7 @@ export const monitorAuthState = (callback) => {
         } else {
             const systemAdmin = isAdmin(user.email);
             
-            // Sync user document parameter mappings matching real-time verification conditions
+            // Sync user document parameter mappings matching validation rules
             if (user.emailVerified && !systemAdmin) {
                 try {
                     const userRef = doc(db, DB_COLLECTIONS.USERS, user.uid);
@@ -206,17 +207,26 @@ export const monitorAuthState = (callback) => {
                 }
             }
 
-            // Route execution evaluations matching validation targets
-            if (!user.emailVerified && !systemAdmin) {
-                if (!isVerifyPage && !isPublicPage) {
-                    window.location.href = "verify.html";
+            // Route Management Logic Interceptor
+            if (systemAdmin) {
+                // Administrative access confinement rules
+                if (!isAdminPage) {
+                    window.location.href = "admin-portal.html";
                     return;
                 }
             } else {
-                // If user lands on registration screens while inside an authenticated pipeline state
-                if (isPublicPage && !path.includes("index.html")) {
-                    window.location.href = "dashboard.html";
-                    return;
+                // Regular applicant validation access pathways
+                if (!user.emailVerified) {
+                    if (!isVerifyPage) {
+                        window.location.href = "verify.html";
+                        return;
+                    }
+                } else {
+                    // Prevent authenticated users from loading landing/onboarding routes
+                    if (isPublicPage || isVerifyPage) {
+                        window.location.href = "dashboard.html";
+                        return;
+                    }
                 }
             }
         }
