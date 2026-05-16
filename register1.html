@@ -97,7 +97,7 @@
                         </span>
                         <input type="email" id="email" required 
                             class="input-focus-fix w-full h-11 pl-10 pr-3.5 border border-slate-200 rounded text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-sbaBlue focus:ring-2 focus:ring-sbaBlue/10 transition-all duration-150" 
-                            placeholder="username@corporate.gov">
+                            placeholder="username@corporate.com">
                     </div>
                 </div>
 
@@ -155,16 +155,17 @@
     </footer>
 
     <script type="module">
-        import { auth, saveRegistrationStep } from './firebase-config.js';
-        import { signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+        import { auth, db, saveRegistrationStep, DB_COLLECTIONS } from './firebase-config.js';
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
         const alertBoundary = document.getElementById('alertBoundary');
         const alertIcon = document.getElementById('alertIcon');
         const alertMessage = document.getElementById('alertMessage');
         const step1Form = document.getElementById('step1Form');
         const submitBtn = document.getElementById('submitBtn');
+        const googleRegBtn = document.getElementById('googleRegBtn');
 
-        // Dynamic State-Driven Operational Notification Renderer
         function triggerFormAlert(message, type = 'error') {
             alertBoundary.className = "mb-5 p-3.5 rounded border text-xs font-medium flex items-start gap-2.5 transition-all duration-150";
             if (type === 'error') {
@@ -179,7 +180,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Functional Password Input Field UI Reveal/Hide Interactive Operations Mechanics
         document.querySelectorAll('.togglePasswordVisibility').forEach(button => {
             button.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -195,8 +195,8 @@
             });
         });
 
-        // Strict Dynamic Registration Flow Input Dispatch Submit Interception Filtering System
-        step1Form.onsubmit = function(e) {
+        // Manual Submission Flow
+        step1Form.onsubmit = async function(e) {
             e.preventDefault();
             
             const emailInput = document.getElementById('email').value.trim();
@@ -204,71 +204,90 @@
             const confirmInput = document.getElementById('confirm').value;
             const termsChecked = document.getElementById('termsCheck').checked;
 
-            // Operational Boundary Parsing Invariant Rules Checks Execution
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(emailInput)) {
-                triggerFormAlert("System Invariant Exception: Please provide a valid structured email address context parameter mapping.");
+                triggerFormAlert("Please enter a valid business email address.");
                 return;
             }
 
             if (passwordInput.length < 8) {
-                triggerFormAlert("System Invariant Exception: Access Key formatting structure requires an absolute minimum threshold length of 8 alphanumeric combinations.");
+                triggerFormAlert("Your access key must contain at least 8 characters.");
                 return;
             }
 
             if (passwordInput !== confirmInput) {
-                triggerFormAlert("Data Validation Reconciliation Fault: Key confirmation sequence misaligned. Ensure passwords match perfectly.");
+                triggerFormAlert("Access key confirmation does not match.");
                 return;
             }
 
             if (!termsChecked) {
-                triggerFormAlert("Compliance Access Violation Notice: You must explicitly acknowledge compliance tracking to initialize system provisioning profiles.");
+                triggerFormAlert("You must acknowledge system security compliance to proceed.");
                 return;
             }
 
-            // Lock Action UI Core Mechanics Elements Layout States
             submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fas fa-circle-notch fa-spin mr-2"></i> Initializing Session Security...`;
-            triggerFormAlert("Synchronizing parameters. Formatting temporary secure operational cache pipeline matrices...", "processing");
+            submitBtn.innerHTML = `<i class="fas fa-circle-notch fa-spin mr-2"></i> Registering Case...`;
+            triggerFormAlert("Verifying account availability...", "processing");
 
             try {
-                // Save formatted variables via native unified structural object payload matching configurations
+                // Initialize Account Creation in Firebase Auth
+                const authResult = await createUserWithEmailAndPassword(auth, emailInput, passwordInput);
+                
+                // Cache configuration states cleanly (No open password text storage)
                 saveRegistrationStep({
                     email: emailInput,
-                    password: passwordInput,
                     registrationStep: 2,
-                    isGoogleAccount: false
+                    isGoogleAccount: false,
+                    uid: authResult.user.uid
                 });
 
-                // Advance to registration step two layout profile parameters directly
                 window.location.href = "register2.html";
             } catch (err) {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = `<span>Proceed to Details</span><i class="fas fa-arrow-right text-[10px]"></i>`;
-                triggerFormAlert("Local Storage Compilation Runtime Fault Error Intercept: " + err.message);
+                
+                if (err.code === 'auth/email-already-in-use') {
+                    triggerFormAlert("This business email is already registered inside our platform registry.");
+                } else {
+                    triggerFormAlert(err.message);
+                }
             }
         };
 
-        // Federated Third-Party Identity Access Processing Context Gateway Pipeline Engine
-        document.getElementById('googleRegBtn').onclick = async function() {
+        // Identity Provider Popup Flow
+        googleRegBtn.onclick = async function() {
             const provider = new GoogleAuthProvider();
-            triggerFormAlert("Contacting external trusted authentication identity directory pipelines...", "processing");
+            googleRegBtn.disabled = true;
+            triggerFormAlert("Connecting to secure external identity directory...", "processing");
             
             try {
                 const res = await signInWithPopup(auth, provider);
                 if (res.user && res.user.email) {
+                    const normalizedEmail = res.user.email.toLowerCase().trim();
+                    
+                    // Verify if user record exists inside DB collection
+                    const userDocRef = doc(db, DB_COLLECTIONS.USERS, res.user.uid);
+                    const userDocSnap = await getDoc(userDocRef);
+                    
+                    if (userDocSnap.exists()) {
+                        // User exists already, send straight to system portal dashboard
+                        window.location.href = "dashboard.html";
+                        return;
+                    }
+
                     saveRegistrationStep({
-                        email: res.user.email.toLowerCase().trim(),
+                        email: normalizedEmail,
                         registrationStep: 2,
                         isGoogleAccount: true,
                         uid: res.user.uid
                     });
                     window.location.href = "register2.html";
                 } else {
-                    throw new Error("Target identity server context packet parameters returned blank elements map.");
+                    throw new Error("Identity record signature was rejected. Missing fields.");
                 }
             } catch (err) {
-                triggerFormAlert("Federated Context Execution System Pipeline Fault Notice: " + err.message);
+                googleRegBtn.disabled = false;
+                triggerFormAlert("Federated Connection Error: " + err.message);
             }
         };
     </script>
