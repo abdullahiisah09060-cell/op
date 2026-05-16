@@ -3,94 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SBA | Verify Case</title>
+    <title>SBA Portal | Identity Verification Audit</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sbaNavy: '#002E6D',
+                        sbaBlue: '#0071BC',
+                        sbaRed: '#D32F2F',
+                        sbaDark: '#1E293B',
+                        sbaBg: '#F8FAFC'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700;900&display=swap');
-        :root { --sba-blue: #002e6d; --sba-red: #cc0000; }
-        body { font-family: 'Public Sans', sans-serif; background-color: #f1f5f9; color: #1e293b; }
-        
-        .sba-logo-box { position: relative; display: inline-block; padding: 4px 6px; }
-        .sba-logo-box::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 4px; border-top: 2.5px solid var(--sba-blue); border-left: 2.5px solid var(--sba-blue); border-right: 2.5px solid var(--sba-blue); }
-        .sba-logo-box::after { content: ""; position: absolute; bottom: 0; left: 0; right: 30%; height: 2.5px; background: var(--sba-red); }
-
-        .auth-card { background: white; border-top: 5px solid var(--sba-blue); box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-radius: 4px; }
-        
-        .btn-sba { background: var(--sba-blue); color: white; height: 55px; font-size: 13px; letter-spacing: 1.5px; font-weight: 900; text-transform: uppercase; border-radius: 4px; transition: 0.3s; cursor: pointer; }
-        .btn-sba:disabled { opacity: 0.6; cursor: not-allowed; }
-
-        .verify-pulse { animation: pulse-blue 2s infinite; border-radius: 50%; }
-        @keyframes pulse-blue {
-            0% { box-shadow: 0 0 0 0 rgba(0, 46, 109, 0.4); }
-            70% { box-shadow: 0 0 0 15px rgba(0, 46, 109, 0); }
+        body { 
+            background-color: #F8FAFC;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .verify-pulse { 
+            animation: sba-pulse 2.5s infinite ease-in-out; 
+            border-radius: 50%; 
+        }
+        @keyframes sba-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 46, 109, 0.25); }
+            70% { box-shadow: 0 0 0 16px rgba(0, 46, 109, 0); }
             100% { box-shadow: 0 0 0 0 rgba(0, 46, 109, 0); }
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col antialiased">
 
-    <div class="bg-[#efefef] py-2 px-4 flex items-center gap-2 border-b border-gray-200">
-        <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" class="w-4 shadow-sm" alt="U.S. Flag">
-        <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Official Identity Audit</span>
+    <div class="bg-[#E2E8F0] py-2 px-4 sm:px-8 flex items-center gap-2 border-b border-slate-300">
+        <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" class="w-4 h-auto shadow-sm" alt="U.S. Flag">
+        <span class="text-[9px] font-bold text-slate-600 uppercase tracking-widest">Official Security Access Audit Environment</span>
     </div>
 
-    <nav class="bg-white px-5 py-3 flex justify-center items-center border-b border-gray-100">
-        <div class="flex items-center gap-2">
-            <div class="sba-logo-box">
-                <span class="text-xl font-black text-[#002e6d] tracking-tighter uppercase">SBA</span>
-            </div>
-            <p class="text-[10px] font-black text-[#002e6d] uppercase leading-none">Administration</p>
+    <nav class="bg-white border-b border-slate-200 px-4 py-3.5 sm:px-8 flex justify-between items-center z-10">
+        <div class="flex items-center gap-3">
+            <div class="bg-sbaNavy text-white px-2.5 py-1 font-extrabold text-xl tracking-tight rounded-sm">SBA</div>
+            <div class="h-8 w-[1px] bg-slate-200 hidden sm:block"></div>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider leading-tight hidden sm:block">
+                U.S. Small Business<br><span class="text-sbaNavy">Administration</span>
+            </span>
         </div>
     </nav>
 
-    <main class="flex-grow flex items-center justify-center p-5">
-        <div class="w-full max-w-[420px]">
-            <div class="auth-card p-8">
-                <div class="mb-8 text-center">
-                    <div class="w-20 h-20 bg-slate-50 text-[#002e6d] flex items-center justify-center mx-auto mb-6 border-2 border-[#002e6d] verify-pulse">
-                        <i class="fas fa-envelope-open-text text-3xl"></i>
+    <div class="flex-grow flex items-center justify-center px-4 py-10 sm:py-16">
+        <div class="w-full max-w-[430px]">
+            <div class="bg-white border-t-4 border-sbaNavy rounded shadow-sm p-6 sm:p-10 border border-slate-200">
+                
+                <div class="mb-6 text-center">
+                    <div class="w-16 h-16 bg-slate-50 text-sbaNavy flex items-center justify-center mx-auto mb-5 border-2 border-sbaNavy verify-pulse">
+                        <i id="statusIcon" class="fas fa-envelope-open-text text-2xl"></i>
                     </div>
-                    <h2 class="text-2xl font-black text-slate-800 uppercase tracking-tighter">Account Audit</h2>
-                    <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] mt-2">Activation Link Dispatched</p>
+                    <h1 class="text-xl font-bold text-sbaDark tracking-tight uppercase">Account Verification</h1>
+                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-wider mt-1">Institutional Security Verification Check</p>
                 </div>
 
-                <div class="mb-6 text-center bg-slate-50 p-5 border border-slate-200 rounded-lg">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-2">Verify Ownership Of:</p>
-                    <span id="displayEmail" class="text-[#002e6d] text-base font-black break-all uppercase tracking-tight italic">Detecting...</span>
+                <div class="mb-5 text-center bg-slate-50 p-4 border border-slate-200 rounded">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wide mb-1.5">Awaiting Token Verification For Account:</p>
+                    <span id="displayEmail" class="text-sbaNavy text-sm font-bold break-all tracking-tight select-all">DETECTING IDENTITY MATRIX...</span>
                 </div>
 
-                <div id="alertBox" class="hidden mb-6 p-4 bg-red-50 border-l-4 border-red-600 text-red-700 text-[11px] font-black uppercase italic shadow-sm"></div>
+                <div id="alertBoundary" class="hidden mb-5 p-3.5 rounded border text-xs font-medium flex items-start gap-2.5 transition-all">
+                    <i id="alertIcon" class="fas mt-0.5"></i>
+                    <span id="alertMessage"></span>
+                </div>
 
                 <div class="space-y-4">
-                    <div class="p-5 bg-[#001a3d] border-l-4 border-sky-400">
-                        <p class="text-white text-[11px] font-bold uppercase tracking-wider leading-relaxed">
-                            <i class="fas fa-bolt text-sky-400 mr-2"></i> SYSTEM STATUS: <span id="statusText" class="text-sky-400">WAITING</span><br>
-                            The portal will auto-advance once the link in your email is clicked.
+                    <div class="p-4 bg-sbaNavy text-white border-l-4 border-sbaBlue rounded-r-sm">
+                        <p class="text-[11px] font-semibold tracking-wide leading-relaxed uppercase">
+                            <i class="fas fa-circle-notch fa-spin text-sbaBlue mr-2" id="spinnerIndicator"></i> 
+                            Monitor State: <span id="statusText" class="text-sbaBlue font-bold">SYNCHRONIZING</span><br>
+                            <span class="text-slate-300 font-normal mt-1 block normal-case">The gateway system scans network tokens automatically. The screen will redirect once the link inside your secure registration email is processed.</span>
                         </p>
                     </div>
                     
-                    <button id="checkBtn" class="btn-sba w-full shadow-lg">
-                        Manual Refresh Scan
+                    <button id="checkBtn" class="w-full bg-sbaNavy hover:bg-[#001E4A] text-white font-bold text-xs uppercase tracking-wider h-12 rounded shadow-sm flex items-center justify-center gap-2 transition-all duration-150">
+                        <span>Manual Refresh Identity Scan</span>
+                        <i class="fas fa-rotate text-[10px]"></i>
                     </button>
                 </div>
 
-                <div class="mt-10 text-center border-t pt-6 border-slate-100">
-                    <button id="resendBtn" class="text-[#cc0000] font-black text-[12px] uppercase tracking-widest hover:underline disabled:text-gray-400 disabled:no-underline">
-                        <i class="fas fa-paper-plane mr-2"></i> Resend Security Link
+                <div class="mt-8 text-center border-t pt-5 border-slate-200">
+                    <button id="resendBtn" class="text-sbaRed font-bold text-xs uppercase tracking-wider hover:text-red-800 transition-colors inline-flex items-center justify-center gap-2 disabled:text-slate-300 disabled:no-underline">
+                        <i class="fas fa-paper-plane text-[11px]"></i> <span>Resend Security Activation Link</span>
                     </button>
-                    <p id="timerDisplay" class="hidden text-[9px] text-slate-400 font-bold uppercase mt-2">Available in 60s</p>
+                    <p id="timerDisplay" class="hidden text-[10px] text-slate-400 font-bold uppercase mt-1.5 tracking-wide">Available again in 60s</p>
                 </div>
+
             </div>
 
-            <button id="logoutBtn" class="w-full mt-10 text-slate-400 text-[10px] font-black uppercase tracking-[0.4em] active:text-red-600 transition-colors">
-                <i class="fas fa-power-off mr-2"></i> Terminate Session
+            <button id="logoutBtn" class="w-full mt-8 text-slate-400 hover:text-sbaRed text-[10px] font-bold uppercase tracking-widest transition-colors flex items-center justify-center gap-2">
+                <i class="fas fa-power-off text-[11px]"></i> <span>Terminate Secure Connection Session</span>
             </button>
         </div>
-    </main>
+    </div>
 
-    <footer class="py-6 text-center text-[10px] text-slate-400 font-bold uppercase tracking-[0.4em]">
-        SECURE GOV INTERFACE © 2026 | NODE-V15
+    <footer class="bg-white border-t border-slate-200 p-5 text-center mt-auto">
+        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-[0.25em] flex items-center justify-center gap-1.5">
+            <i class="fas fa-lock text-slate-300"></i> Cryptographic 256-Bit FedRAMP Authenticated Environment
+        </p>
     </footer>
 
     <script type="module">
@@ -99,82 +119,148 @@
         import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         const displayEmail = document.getElementById('displayEmail');
-        const alertBox = document.getElementById('alertBox');
+        const alertBoundary = document.getElementById('alertBoundary');
+        const alertIcon = document.getElementById('alertIcon');
+        const alertMessage = document.getElementById('alertMessage');
         const checkBtn = document.getElementById('checkBtn');
         const resendBtn = document.getElementById('resendBtn');
         const timerDisplay = document.getElementById('timerDisplay');
         const statusText = document.getElementById('statusText');
+        const statusIcon = document.getElementById('statusIcon');
+        const spinnerIndicator = document.getElementById('spinnerIndicator');
 
-        let checkInterval;
+        let checkInterval = null;
 
+        // Dynamic State-Driven Operational Notification Renderer
+        function triggerFormAlert(message, type = 'error') {
+            alertBoundary.className = "mb-5 p-3.5 rounded border text-xs font-medium flex items-start gap-2.5 transition-all duration-150";
+            if (type === 'error') {
+                alertBoundary.classList.add('bg-red-50', 'border-red-200', 'text-red-700');
+                alertIcon.className = "fas fa-circle-exclamation mt-0.5 text-red-500";
+            } else if (type === 'success') {
+                alertBoundary.classList.add('bg-emerald-50', 'border-emerald-200', 'text-emerald-700');
+                alertIcon.className = "fas fa-circle-check mt-0.5 text-emerald-500";
+            } else {
+                alertBoundary.classList.add('bg-blue-50', 'border-blue-200', 'text-blue-700');
+                alertIcon.className = "fas fa-circle-notch fa-spin mt-0.5 text-blue-500";
+            }
+            alertMessage.textContent = message;
+            alertBoundary.classList.remove('hidden');
+        }
+
+        // Complete Verification Operations Lifecycle Finalizer System Routine
+        async function finalizeAudit(user) {
+            if (checkInterval) clearInterval(checkInterval);
+            
+            statusText.innerText = "VERIFIED";
+            statusText.className = "text-emerald-400 font-bold";
+            spinnerIndicator.className = "fas fa-circle-check text-emerald-400 mr-2";
+            statusIcon.className = "fas fa-shield-check text-2xl text-emerald-600";
+            
+            triggerFormAlert("Identity verified successfully. Finalizing encryption keys and profiles...", "success");
+
+            try {
+                // Precise nested field alignment mirroring our institutional firebase configurations structures
+                await updateDoc(doc(db, "users", user.uid), {
+                    "status.isVerified": true,
+                    "status.accountStatus": "ACTIVE",
+                    "metadata.emailVerifiedAt": new Date().toISOString(),
+                    "metadata.registrationStep": 4
+                });
+            } catch (e) {
+                console.warn("[SBA Verification System] Firestore Schema Sync Skipped:", e.message);
+            }
+
+            setTimeout(() => {
+                window.location.href = "welcome.html";
+            }, 1500);
+        }
+
+        // Active State Watcher Subsystem Pipeline Routing Allocation
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
+                if (checkInterval) clearInterval(checkInterval);
                 window.location.href = "login.html";
-            } else {
-                displayEmail.innerText = user.email.toUpperCase();
-                
+                return;
+            }
+
+            displayEmail.textContent = user.email.toLowerCase();
+            statusText.innerText = "POLLING ACTIVE";
+            statusText.className = "text-sky-400 font-bold";
+
+            // Optimization Check: Bypass verification requirement if Federated Google Auth account is verified natively
+            const isGoogleProvider = user.providerData.some(prov => prov.providerId === 'google.com');
+            if (user.emailVerified || isGoogleProvider) {
+                await finalizeAudit(user);
+                return;
+            }
+
+            // Secure asynchronous non-overlapping timing intervals compilation execution
+            if (!checkInterval) {
                 checkInterval = setInterval(async () => {
-                    await user.reload();
-                    if (auth.currentUser.emailVerified) {
-                        clearInterval(checkInterval);
-                        statusText.innerText = "VERIFIED";
-                        await finalizeAudit(auth.currentUser);
+                    if (auth.currentUser) {
+                        try {
+                            await auth.currentUser.reload();
+                            if (auth.currentUser.emailVerified) {
+                                await finalizeAudit(auth.currentUser);
+                            }
+                        } catch (reloadErr) {
+                            console.error("[SBA Polling Instance] Node structural refresh crash:", reloadErr.message);
+                        }
                     }
-                }, 4000);
+                }, 4500);
             }
         });
 
-        async function finalizeAudit(user) {
-            try {
-                await updateDoc(doc(db, "users", user.uid), {
-                    isVerified: true,
-                    accountStatus: "ACTIVE",
-                    emailVerifiedAt: new Date().toISOString()
-                });
-                window.location.href = "welcome.html"; 
-            } catch (e) { 
-                window.location.href = "welcome.html"; 
-            }
-        }
-
-        checkBtn.onclick = async () => {
+        // Manual Query Execution Network Scan Interceptor Call
+        checkBtn.onclick = async function() {
             const user = auth.currentUser;
             if (!user) return;
             
             checkBtn.disabled = true;
-            checkBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> SCANNING NODES...';
+            checkBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> SCANNING NETWORK NODES...';
+            triggerFormAlert("Interrogating federated identity directories for new security tokens...", "processing");
             
-            await user.reload();
-            if (user.emailVerified) {
-                statusText.innerText = "VERIFIED";
-                await finalizeAudit(user);
-            } else {
-                alertBox.innerText = "LINK STATUS: INACTIVE. PLEASE CHECK INBOX/SPAM.";
-                alertBox.classList.remove('hidden');
-                setTimeout(() => {
-                    checkBtn.disabled = false;
-                    checkBtn.innerText = 'Manual Refresh Scan';
-                }, 2000);
+            try {
+                await user.reload();
+                if (user.emailVerified) {
+                    await finalizeAudit(user);
+                } else {
+                    setTimeout(() => {
+                        checkBtn.disabled = false;
+                        checkBtn.innerHTML = '<span>Manual Refresh Identity Scan</span><i class="fas fa-rotate text-[10px]"></i>';
+                        triggerFormAlert("Audit Failure: Token transmission not found. Access key link is currently inactive. Please cross-verify your spam and inbox directory maps.");
+                    }, 1200);
+                }
+            } catch (err) {
+                checkBtn.disabled = false;
+                checkBtn.innerHTML = '<span>Manual Refresh Identity Scan</span><i class="fas fa-rotate text-[10px]"></i>';
+                triggerFormAlert("Network Protocol Resolution Failure: " + err.message);
             }
         };
 
-        resendBtn.onclick = async () => {
+        // Resend Verification Payload Link Action Element Dispatcher 
+        resendBtn.onclick = async function() {
+            if (!auth.currentUser) return;
+            
             try {
                 await sendEmailVerification(auth.currentUser);
+                triggerFormAlert("A fresh cryptographic authorization link has been successfully delivered to your registered inbox.", "success");
                 startResendTimer(60);
-                alert("Security Link Dispatched successfully.");
             } catch (err) { 
-                alert("SECURITY: Request blocked. Please wait."); 
+                triggerFormAlert("Security Rate-Limit Intercept: Token request throttled to protect server infrastructure. Please stand by before dispatching again."); 
             }
         };
 
+        // Linear Registration Cooldown Timer Mechanical Counter
         function startResendTimer(seconds) {
             resendBtn.disabled = true;
             timerDisplay.classList.remove('hidden');
             let timeLeft = seconds;
+            
             const timer = setInterval(() => {
                 timeLeft--;
-                timerDisplay.innerText = `Available in ${timeLeft}s`;
+                timerDisplay.textContent = `Available again in ${timeLeft}s`;
                 if (timeLeft <= 0) {
                     clearInterval(timer);
                     resendBtn.disabled = false;
@@ -183,9 +269,12 @@
             }, 1000);
         }
 
-        document.getElementById('logoutBtn').onclick = () => {
+        // Active Session Explicit Termination Link Escape Path Execution
+        document.getElementById('logoutBtn').onclick = function() {
             if (checkInterval) clearInterval(checkInterval);
-            signOut(auth).then(() => { window.location.href = "login.html"; });
+            signOut(auth)
+                .then(() => { window.location.href = "login.html"; })
+                .catch(() => { window.location.href = "login.html"; });
         };
     </script>
 </body>
