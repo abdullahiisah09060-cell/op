@@ -53,7 +53,7 @@ export const storage = getStorage(app);
 // CLOUDINARY
 // ============================================================
 export const CLOUDINARY_CONFIG = {
-  CLOUD_NAME:   "dcnv6v9g0",
+  CLOUD_NAME:    "dcnv6v9g0",
   UPLOAD_PRESET: "sba_uploads",
   UPLOAD_API_URL: "https://api.cloudinary.com/v1_1/dcnv6v9g0/image/upload"
 };
@@ -101,20 +101,20 @@ export const DB_COLLECTIONS = {
 export const buildNewUserPayload = (rawData) => {
   const email = (rawData.email || "").toLowerCase().trim();
   return {
-    // Flat fields (used across all pages for easy access)
-    uid:        rawData.uid  || "",
-    fullName:   ((rawData.firstName || "") + " " + (rawData.lastName || "")).trim(),
-    firstName:  (rawData.firstName  || "").trim(),
-    lastName:   (rawData.lastName   || "").trim(),
+    // Structural Flat Payload Identifiers
+    uid:         rawData.uid  || "",
+    fullName:    ((rawData.firstName || "") + " " + (rawData.lastName || "")).trim(),
+    firstName:   (rawData.firstName  || "").trim(),
+    lastName:    (rawData.lastName   || "").trim(),
     email,
-    username:   (rawData.username   || "").trim().toLowerCase(),
-    phoneNumber:(rawData.phoneNumber|| "").trim(),
-    country:    rawData.country     || "",
-    gender:     rawData.gender      || "",
-    dob:        rawData.dob         || "",
+    username:    (rawData.username   || "").trim().toLowerCase(),
+    phoneNumber: (rawData.phoneNumber|| "").trim(),
+    country:     rawData.country     || "",
+    gender:      rawData.gender      || "",
+    dob:         rawData.dob         || "",
     allocatedProgram: rawData.allocatedProgram || "SBA Grant Program",
 
-    // Status flags
+    // Flattened System States
     kycStatus:      "IDLE",   // IDLE | UNDER_REVIEW | SUCCESSFUL | FAILED
     applyStatus:    "IDLE",   // IDLE | PENDING | SUCCESSFUL | FAILED
     depositStatus:  "IDLE",
@@ -122,31 +122,30 @@ export const buildNewUserPayload = (rawData) => {
     taxStatus:      "IDLE",
     awardStatus:    "IDLE",
 
-    // Financials
+    // Financial Metrics
     balance:         0,
     requestedAmount: 0,
     totalAward:      0,
 
-    // Chat & Ledger
+    // Communication Ledger Logs
     chatHistory: [],
     ledger:      [],
     history:     [],
 
-    // Security
-    securityPin:  "",
-    withdrawPin:  "",
+    // Security Clearances
+    securityPin:    "",
+    withdrawPin:    "",
     transactionPin: "",
 
-    // Nested status (for firebase-config monitorAuthState)
+    // Platform State Synchronization
     status: {
       accountStatus: "active",
       emailVerified: false,
-      kycStatus:     "unsubmitted",
       isOnline:      true,
       lastSeen:      serverTimestamp()
     },
 
-    // Metadata
+    // Audit Metadata
     metadata: {
       createdAt:        serverTimestamp(),
       updatedAt:        serverTimestamp(),
@@ -171,7 +170,7 @@ export const getUserData = async (uid) => {
 };
 
 // ============================================================
-// AUTH STATE MONITOR & ROUTER
+// AUTH STATE MONITOR & ROUTER ENGINE
 // ============================================================
 export const monitorAuthState = (callback) => {
   return onAuthStateChanged(auth, async (user) => {
@@ -185,14 +184,14 @@ export const monitorAuthState = (callback) => {
     const isAdminPage   = pageName === "admin-portal.html";
 
     if (!user) {
-      if (!isPublicPage) {
+      if (!isPublicPage && !isVerifyPage && !isWelcomePage) {
         window.location.href = "login.html";
         return;
       }
     } else {
       const admin = isAdmin(user.email);
 
-      // Sync verified flag to Firestore (non-blocking)
+      // Async local flag updates
       if (user.emailVerified && !admin) {
         try {
           await updateDoc(doc(db, DB_COLLECTIONS.USERS, user.uid), {
@@ -200,21 +199,26 @@ export const monitorAuthState = (callback) => {
             "status.isOnline":      true,
             "status.lastSeen":      serverTimestamp()
           });
-        } catch (_) { /* non-critical */ }
+        } catch (_) {}
       }
 
       if (admin) {
-        if (!isAdminPage) { window.location.href = "admin-portal.html"; return; }
+        if (!isAdminPage) { 
+          window.location.href = "admin-portal.html"; 
+          return; 
+        }
       } else {
         if (!user.emailVerified) {
-          // Google users are auto-verified
           const isGoogle = user.providerData.some(p => p.providerId === "google.com");
           if (!isGoogle && !isVerifyPage) {
-            window.location.href = "verify.html"; return;
+            window.location.href = "verify.html"; 
+            return;
           }
         } else {
+          // If validated, bypass auth landing forms or processing windows
           if (isPublicPage || isVerifyPage) {
-            window.location.href = "dashboard.html"; return;
+            window.location.href = "dashboard.html"; 
+            return;
           }
         }
       }
