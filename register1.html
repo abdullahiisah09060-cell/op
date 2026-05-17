@@ -1,291 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SBA Portal | Identity Registration System</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        sbaNavy: '#002E6D',
-                        sbaBlue: '#0071BC',
-                        sbaRed: '#D32F2F',
-                        sbaDark: '#1E293B',
-                        sbaBg: '#F8FAFC'
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body { 
-            background-color: #F8FAFC;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
-        .input-focus-fix:focus {
-            font-size: 16px !important;
-        }
-        @media (min-width: 640px) {
-            .input-focus-fix:focus {
-                font-size: 14px !important;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SBA | Create Account — Step 1</title>
+  <link rel="stylesheet" href="global.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .auth-footer { background: var(--surface); border-top: 1px solid var(--border); padding: var(--sp-4) var(--sp-6); text-align: center; font-size: var(--text-xs); color: var(--text-muted); }
+    .divider { display: flex; align-items: center; gap: var(--sp-3); margin: var(--sp-5) 0; }
+    .divider__line { flex: 1; height: 1px; background: var(--border-light); }
+    .divider__text { font-size: var(--text-xs); color: var(--text-muted); font-weight: var(--fw-medium); white-space: nowrap; }
+    .google-btn {
+      width: 100%; height: 46px; border: 1.5px solid var(--border);
+      border-radius: var(--r-md); background: var(--surface);
+      display: flex; align-items: center; justify-content: center; gap: var(--sp-3);
+      font-size: var(--text-sm); font-weight: var(--fw-medium); color: var(--text-secondary);
+      cursor: pointer; transition: all var(--t-fast); font-family: var(--font);
+    }
+    .google-btn:hover { background: var(--bg); border-color: var(--navy); color: var(--navy); }
+    .strength-bar { height: 4px; border-radius: var(--r-full); background: var(--border); overflow: hidden; margin-top: var(--sp-2); }
+    .strength-fill { height: 100%; width: 0; border-radius: var(--r-full); transition: width 0.3s ease, background 0.3s ease; }
+    .strength-text { font-size: var(--text-xs); color: var(--text-muted); margin-top: var(--sp-1); }
+    .checkbox-row { display: flex; align-items: flex-start; gap: var(--sp-3); }
+    .checkbox-row input { width: 16px; height: 16px; accent-color: var(--navy); cursor: pointer; flex-shrink: 0; margin-top: 2px; }
+    .checkbox-row label { font-size: var(--text-sm); color: var(--text-secondary); cursor: pointer; line-height: 1.5; }
+    .checkbox-row label a { color: var(--navy); font-weight: var(--fw-medium); }
+    .checkbox-row label a:hover { text-decoration: underline; }
+  </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased">
+<body class="auth-wrap">
 
-    <!-- Top Navigation Bar -->
-    <nav class="bg-white border-b border-slate-200 px-4 py-3.5 sm:px-8 flex justify-between items-center z-10">
-        <div class="flex items-center gap-3">
-            <div class="bg-sbaNavy text-white px-2.5 py-1 font-extrabold text-xl tracking-tight rounded-sm">SBA</div>
-            <div class="h-8 w-[1px] bg-slate-200 hidden sm:block"></div>
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider leading-tight hidden sm:block">
-                U.S. Small Business<br><span class="text-sbaNavy">Administration</span>
-            </span>
+  <div class="gov-banner">
+    <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="U.S. Flag">
+    Official U.S. Small Business Administration — Secure Registration
+  </div>
+
+  <main class="auth-main" style="padding-top: var(--sp-8); padding-bottom: var(--sp-8);">
+    <div class="auth-card">
+
+      <div class="auth-card__logo">
+        <div class="auth-card__logo-mark">SBA</div>
+        <div class="auth-card__logo-text">U.S. Small Business<br>Administration</div>
+      </div>
+
+      <!-- Step progress -->
+      <div class="auth-steps">
+        <div class="auth-step done"></div>
+        <div class="auth-step"></div>
+        <div class="auth-step"></div>
+      </div>
+
+      <h1 class="auth-card__title">Create your account</h1>
+      <p class="auth-card__subtitle">Step 1 of 2 — Account credentials</p>
+
+      <!-- Alert -->
+      <div id="alertBox" class="alert" style="display:none; margin-bottom:var(--sp-5);">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span id="alertMsg"></span>
+      </div>
+
+      <!-- Google -->
+      <button id="googleBtn" class="google-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        Register with Google
+      </button>
+
+      <div class="divider">
+        <div class="divider__line"></div>
+        <span class="divider__text">or register with email</span>
+        <div class="divider__line"></div>
+      </div>
+
+      <form id="step1Form" novalidate style="display:flex;flex-direction:column;gap:var(--sp-5);">
+
+        <div class="form-group">
+          <label class="form-label form-label--required" for="email">Email Address</label>
+          <div class="input-icon-wrap">
+            <i class="fa-solid fa-envelope input-icon"></i>
+            <input type="email" id="email" class="form-input" placeholder="name@example.com" autocomplete="email" required>
+          </div>
+          <span class="field-error" id="emailErr">Please enter a valid email address.</span>
         </div>
-        <a href="login.html" class="text-xs font-bold text-sbaNavy hover:text-sbaBlue transition-colors uppercase tracking-wider border-b-2 border-transparent hover:border-sbaBlue pb-0.5">
-            Sign In Account
-        </a>
-    </nav>
 
-    <!-- Main Registration Box Container -->
-    <div class="flex-grow flex items-center justify-center px-4 py-10 sm:py-16">
-        <div class="bg-white border-t-4 border-sbaNavy rounded shadow-sm w-full max-w-[440px] p-6 sm:p-10 border border-slate-200">
-            
-            <!-- Dynamic Step Progress Metric Bar -->
-            <div class="flex gap-2.5 mb-8 items-center">
-                <div class="h-1 flex-grow rounded-sm bg-sbaNavy"></div>
-                <div class="h-1 flex-grow rounded-sm bg-slate-200"></div>
-                <div class="h-1 flex-grow rounded-sm bg-slate-200"></div>
-            </div>
-
-            <!-- Context Title -->
-            <div class="mb-8">
-                <h1 class="text-xl font-bold text-sbaDark tracking-tight uppercase">Initialize Secure Case</h1>
-                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-1">Step 1: Authorization Credentials</p>
-            </div>
-
-            <!-- Dynamic Alert Messaging Node Component -->
-            <div id="alertBoundary" class="hidden mb-5 p-3.5 rounded border text-xs font-medium flex items-start gap-2.5 transition-all">
-                <i id="alertIcon" class="fas mt-0.5"></i>
-                <span id="alertMessage"></span>
-            </div>
-
-            <!-- Federated Google Authenticators Provider Interface -->
-            <button type="button" id="googleRegBtn" class="w-full bg-white border border-slate-200 hover:border-slate-300 text-slate-700 font-semibold text-xs uppercase tracking-wider h-11 px-4 rounded flex items-center justify-center gap-2.5 shadow-sm hover:bg-slate-50 transition-all duration-150">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
-                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                </svg>
-                <span>Enroll via Identity Provider</span>
+        <div class="form-group">
+          <label class="form-label form-label--required" for="password">Create Password</label>
+          <div class="input-icon-wrap">
+            <i class="fa-solid fa-lock input-icon"></i>
+            <input type="password" id="password" class="form-input form-input--with-right-icon" placeholder="Minimum 8 characters" autocomplete="new-password" required>
+            <button type="button" id="togglePass" class="input-icon input-icon--right" style="background:none;border:none;cursor:pointer;">
+              <i class="fa-solid fa-eye" style="color:var(--text-muted);font-size:0.85rem;"></i>
             </button>
-
-            <!-- Layout Separator Grid Elements Section Line -->
-            <div class="relative flex py-6 items-center">
-                <div class="flex-grow border-t border-slate-200"></div>
-                <span class="flex-shrink mx-4 text-[9px] font-bold text-slate-400 tracking-wider uppercase">Or Secure Manual Provisioning</span>
-                <div class="flex-grow border-t border-slate-200"></div>
-            </div>
-
-            <!-- Native Credential Provisioning Dispatcher Subsystem Block -->
-            <form id="step1Form" autocomplete="off" novalidate class="space-y-5">
-                
-                <!-- Registration Email Parameters Field Vector -->
-                <div>
-                    <label for="email" class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Business Registration Email</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none text-xs">
-                            <i class="fas fa-envelope"></i>
-                        </span>
-                        <input type="email" id="email" required 
-                            class="input-focus-fix w-full h-11 pl-10 pr-3.5 border border-slate-200 rounded text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-sbaBlue focus:ring-2 focus:ring-sbaBlue/10 transition-all duration-150" 
-                            placeholder="username@corporate.gov">
-                    </div>
-                </div>
-
-                <!-- Primary Security Token Vector (Password Field Block) -->
-                <div>
-                    <label for="pass" class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Create Secure Access Key</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none text-xs">
-                            <i class="fas fa-lock"></i>
-                        </span>
-                        <input type="password" id="pass" required minlength="8"
-                            class="input-focus-fix w-full h-11 pl-10 pr-10 border border-slate-200 rounded text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-sbaBlue focus:ring-2 focus:ring-sbaBlue/10 transition-all duration-150" 
-                            placeholder="••••••••">
-                        <button type="button" class="togglePasswordVisibility absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition-colors text-xs">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Redundant Security Validation Verification Parameter Vector (Confirm Field Block) -->
-                <div>
-                    <label for="confirm" class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Verify Secure Access Key</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none text-xs">
-                            <i class="fas fa-shield-alt"></i>
-                        </span>
-                        <input type="password" id="confirm" required minlength="8"
-                            class="input-focus-fix w-full h-11 pl-10 pr-10 border border-slate-200 rounded text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-sbaBlue focus:ring-2 focus:ring-sbaBlue/10 transition-all duration-150" 
-                            placeholder="••••••••">
-                        <button type="button" class="togglePasswordVisibility absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition-colors text-xs">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Terms, Conditions, Compliance System Tracking Checkbox Nodes -->
-                <div class="flex items-start gap-2.5 py-1">
-                    <input type="checkbox" id="termsCheck" required 
-                        class="mt-0.5 w-4 h-4 rounded border-slate-300 text-sbaNavy focus:ring-sbaNavy accent-sbaNavy cursor-pointer">
-                    <label for="termsCheck" class="text-[10px] font-bold text-slate-400 uppercase tracking-wide leading-normal select-none cursor-pointer">
-                        I hereby authorize authentication and accept the <a href="terms.html" target="_blank" class="text-sbaBlue hover:underline">Privacy & System Security Terms</a> of this authorized institutional environment.
-                    </label>
-                </div>
-
-                <!-- Process Transition Action Control Module -->
-                <button type="submit" id="submitBtn" class="w-full bg-sbaNavy hover:bg-[#001E4A] text-white font-bold text-xs uppercase tracking-wider h-12 rounded shadow-sm flex items-center justify-center gap-2 transition-all duration-150 mt-4">
-                    <span>Proceed to Details</span>
-                    <i class="fas fa-arrow-right text-[10px]"></i>
-                </button>
-            </form>
-
+          </div>
+          <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+          <div class="strength-text" id="strengthText"></div>
+          <span class="field-error" id="passErr">Password must be at least 8 characters.</span>
         </div>
+
+        <div class="form-group">
+          <label class="form-label form-label--required" for="confirm">Confirm Password</label>
+          <div class="input-icon-wrap">
+            <i class="fa-solid fa-shield-halved input-icon"></i>
+            <input type="password" id="confirm" class="form-input form-input--with-right-icon" placeholder="Re-enter password" autocomplete="new-password" required>
+            <button type="button" id="toggleConfirm" class="input-icon input-icon--right" style="background:none;border:none;cursor:pointer;">
+              <i class="fa-solid fa-eye" style="color:var(--text-muted);font-size:0.85rem;"></i>
+            </button>
+          </div>
+          <span class="field-error" id="confirmErr">Passwords do not match.</span>
+        </div>
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="termsCheck">
+          <label for="termsCheck">
+            I agree to the <a href="terms.html" target="_blank">Terms of Service</a> and
+            <a href="#" target="_blank">Privacy Policy</a>
+          </label>
+        </div>
+        <span class="field-error" id="termsErr">You must accept the terms to continue.</span>
+
+        <button type="submit" id="submitBtn" class="btn btn--primary btn--full btn--lg">
+          Continue
+          <i class="fa-solid fa-arrow-right" style="font-size:0.8rem;"></i>
+        </button>
+
+      </form>
+
+      <div class="auth-card__footer">
+        Already have an account? <a href="login.html" style="color:var(--navy);font-weight:var(--fw-semi);">Sign in</a>
+      </div>
     </div>
+  </main>
 
-    <!-- Security Infrastructure Environment Legal Disclaimer Footer -->
-    <footer class="bg-white border-t border-slate-200 p-5 text-center mt-auto">
-        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-[0.25em] flex items-center justify-center gap-1.5">
-            <i class="fas fa-lock text-slate-300"></i> Cryptographic 256-Bit FedRAMP Authenticated Environment
-        </p>
-    </footer>
+  <div class="auth-footer">
+    <i class="fa-solid fa-lock" style="margin-right:6px;"></i>
+    256-bit encrypted connection &nbsp;·&nbsp; Authorized use only
+  </div>
 
-    <!-- Execution Engine Script Block Engine Configuration Modules Links System -->
-    <script type="module">
-        import { auth, saveRegistrationStep } from './firebase-config.js';
-        import { signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+  <script type="module">
+    import { auth, registerWithEmail, saveRegistrationStep } from './firebase-config.js';
+    import { GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
-        const alertBoundary = document.getElementById('alertBoundary');
-        const alertIcon = document.getElementById('alertIcon');
-        const alertMessage = document.getElementById('alertMessage');
-        const step1Form = document.getElementById('step1Form');
-        const submitBtn = document.getElementById('submitBtn');
+    // If already logged in skip to step 2 or dashboard
+    onAuthStateChanged(auth, (user) => {
+      if (user) location.href = 'dashboard.html';
+    });
 
-        // Dynamic State-Driven Operational Notification Renderer
-        function triggerFormAlert(message, type = 'error') {
-            alertBoundary.className = "mb-5 p-3.5 rounded border text-xs font-medium flex items-start gap-2.5 transition-all duration-150";
-            if (type === 'error') {
-                alertBoundary.classList.add('bg-red-50', 'border-red-200', 'text-red-700');
-                alertIcon.className = "fas fa-circle-exclamation mt-0.5 text-red-500";
-            } else {
-                alertBoundary.classList.add('bg-blue-50', 'border-blue-200', 'text-blue-700');
-                alertIcon.className = "fas fa-circle-notch fa-spin mt-0.5 text-blue-500";
-            }
-            alertMessage.textContent = message;
-            alertBoundary.classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+    const alertBox  = document.getElementById('alertBox');
+    const alertMsg  = document.getElementById('alertMsg');
+    const submitBtn = document.getElementById('submitBtn');
 
-        // Functional Password Input Field UI Reveal/Hide Interactive Operations Mechanics
-        document.querySelectorAll('.togglePasswordVisibility').forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetInput = this.parentElement.querySelector('input');
-                const targetIcon = this.querySelector('i');
-                if (targetInput.type === 'password') {
-                    targetInput.type = 'text';
-                    targetIcon.className = "fas fa-eye-slash";
-                } else {
-                    targetInput.type = 'password';
-                    targetIcon.className = "fas fa-eye";
-                }
-            });
+    function showAlert(msg, type = 'error') {
+      alertBox.className = `alert alert--${type}`;
+      alertBox.querySelector('i').className = type === 'error'
+        ? 'fa-solid fa-circle-exclamation'
+        : 'fa-solid fa-circle-notch animate-spin';
+      alertMsg.textContent = msg;
+      alertBox.style.display = 'flex';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function hideAlert() { alertBox.style.display = 'none'; }
+
+    function setLoading(loading) {
+      submitBtn.disabled = loading;
+      submitBtn.innerHTML = loading
+        ? '<i class="fa-solid fa-circle-notch animate-spin"></i> Creating account…'
+        : 'Continue <i class="fa-solid fa-arrow-right" style="font-size:0.8rem;"></i>';
+    }
+
+    // Toggle password visibility
+    function toggleVisibility(btnId, inputId) {
+      document.getElementById(btnId).addEventListener('click', () => {
+        const inp = document.getElementById(inputId);
+        const icon = document.querySelector(`#${btnId} i`);
+        if (inp.type === 'password') { inp.type = 'text'; icon.className = 'fa-solid fa-eye-slash'; }
+        else { inp.type = 'password'; icon.className = 'fa-solid fa-eye'; }
+      });
+    }
+    toggleVisibility('togglePass', 'password');
+    toggleVisibility('toggleConfirm', 'confirm');
+
+    // Password strength
+    document.getElementById('password').addEventListener('input', (e) => {
+      const val = e.target.value;
+      const fill = document.getElementById('strengthFill');
+      const text = document.getElementById('strengthText');
+      let score = 0;
+      if (val.length >= 8) score++;
+      if (/[A-Z]/.test(val)) score++;
+      if (/[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+      const levels = [
+        { w: '25%', c: '#ef4444', t: 'Weak' },
+        { w: '50%', c: '#f97316', t: 'Fair' },
+        { w: '75%', c: '#eab308', t: 'Good' },
+        { w: '100%', c: '#22c55e', t: 'Strong' },
+      ];
+      const lvl = levels[Math.max(0, score - 1)];
+      fill.style.width = val.length ? lvl.w : '0';
+      fill.style.background = lvl.c;
+      text.textContent = val.length ? `Password strength: ${lvl.t}` : '';
+      text.style.color = lvl.c;
+    });
+
+    // Form submit
+    document.getElementById('step1Form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideAlert();
+
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const confirm  = document.getElementById('confirm').value;
+      const terms    = document.getElementById('termsCheck').checked;
+      let valid = true;
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        document.getElementById('emailErr').classList.add('show'); valid = false;
+      } else document.getElementById('emailErr').classList.remove('show');
+
+      if (password.length < 8) {
+        document.getElementById('passErr').classList.add('show'); valid = false;
+      } else document.getElementById('passErr').classList.remove('show');
+
+      if (password !== confirm) {
+        document.getElementById('confirmErr').classList.add('show'); valid = false;
+      } else document.getElementById('confirmErr').classList.remove('show');
+
+      if (!terms) {
+        document.getElementById('termsErr').classList.add('show'); valid = false;
+      } else document.getElementById('termsErr').classList.remove('show');
+
+      if (!valid) return;
+
+      setLoading(true);
+      try {
+        // Create Firebase Auth account here at step 1
+        const user = await registerWithEmail(email, password);
+        saveRegistrationStep({ email, registrationStep: 2, isGoogleAccount: false, uid: user.uid });
+        location.href = 'register2.html';
+      } catch (err) {
+        setLoading(false);
+        const codes = {
+          'auth/email-already-in-use': 'An account with this email already exists. Please sign in instead.',
+          'auth/invalid-email': 'Please enter a valid email address.',
+          'auth/weak-password': 'Password is too weak. Please use at least 8 characters.',
+        };
+        showAlert(codes[err.code] || 'Registration failed: ' + err.message);
+      }
+    });
+
+    // Google registration
+    document.getElementById('googleBtn').addEventListener('click', async () => {
+      hideAlert();
+      const provider = new GoogleAuthProvider();
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        saveRegistrationStep({
+          email: user.email.toLowerCase(),
+          registrationStep: 2,
+          isGoogleAccount: true,
+          uid: user.uid
         });
-
-        // Strict Dynamic Registration Flow Input Dispatch Submit Interception Filtering System
-        step1Form.onsubmit = function(e) {
-            e.preventDefault();
-            
-            const emailInput = document.getElementById('email').value.trim();
-            const passwordInput = document.getElementById('pass').value;
-            const confirmInput = document.getElementById('confirm').value;
-            const termsChecked = document.getElementById('termsCheck').checked;
-
-            // Operational Boundary Parsing Invariant Rules Checks Execution
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(emailInput)) {
-                triggerFormAlert("System Invariant Exception: Please provide a valid structured email address context parameter mapping.");
-                return;
-            }
-
-            if (passwordInput.length < 8) {
-                triggerFormAlert("System Invariant Exception: Access Key formatting structure requires an absolute minimum threshold length of 8 alphanumeric combinations.");
-                return;
-            }
-
-            if (passwordInput !== confirmInput) {
-                triggerFormAlert("Data Validation Reconciliation Fault: Key confirmation sequence misaligned. Ensure passwords match perfectly.");
-                return;
-            }
-
-            if (!termsChecked) {
-                triggerFormAlert("Compliance Access Violation Notice: You must explicitly acknowledge compliance tracking to initialize system provisioning profiles.");
-                return;
-            }
-
-            // Lock Action UI Core Mechanics Elements Layout States
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fas fa-circle-notch fa-spin mr-2"></i> Initializing Session Security...`;
-            triggerFormAlert("Synchronizing parameters. Formatting temporary secure operational cache pipeline matrices...", "processing");
-
-            try {
-                // Save formatted variables via native unified structural object payload matching configurations
-                saveRegistrationStep({
-                    email: emailInput,
-                    password: passwordInput,
-                    registrationStep: 2,
-                    isGoogleAccount: false
-                });
-
-                // Advance to registration step two layout profile parameters directly
-                window.location.href = "register2.html";
-            } catch (err) {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = `<span>Proceed to Details</span><i class="fas fa-arrow-right text-[10px]"></i>`;
-                triggerFormAlert("Local Storage Compilation Runtime Fault Error Intercept: " + err.message);
-            }
-        };
-
-        // Federated Third-Party Identity Access Processing Context Gateway Pipeline Engine
-        document.getElementById('googleRegBtn').onclick = async function() {
-            const provider = new GoogleAuthProvider();
-            triggerFormAlert("Contacting external trusted authentication identity directory pipelines...", "processing");
-            
-            try {
-                const res = await signInWithPopup(auth, provider);
-                if (res.user && res.user.email) {
-                    saveRegistrationStep({
-                        email: res.user.email.toLowerCase().trim(),
-                        registrationStep: 2,
-                        isGoogleAccount: true,
-                        uid: res.user.uid
-                    });
-                    window.location.href = "register2.html";
-                } else {
-                    throw new Error("Target identity server context packet parameters returned blank elements map.");
-                }
-            } catch (err) {
-                triggerFormAlert("Federated Context Execution System Pipeline Fault Notice: " + err.message);
-            }
-        };
-    </script>
+        location.href = 'register2.html';
+      } catch (err) {
+        if (err.code !== 'auth/popup-closed-by-user') {
+          showAlert('Google registration failed. Please try again.');
+        }
+      }
+    });
+  </script>
 </body>
 </html>
