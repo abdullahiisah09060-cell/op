@@ -1,28 +1,29 @@
 // ============================================================
-// firebase-config.js — SBA Platform Core Configuration (PROD)
+// firebase-config.js — SBA Platform Core Configuration
+// Project: small-business-administration
 // ============================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { 
-    getAuth, 
-    browserLocalPersistence, 
-    setPersistence, 
-    onAuthStateChanged,
-    signOut,
-    sendEmailVerification
+import {
+  getAuth,
+  browserLocalPersistence,
+  setPersistence,
+  onAuthStateChanged,
+  signOut,
+  sendEmailVerification
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-import { 
-    getFirestore, 
-    doc, 
-    getDoc, 
-    setDoc, 
-    updateDoc, 
-    serverTimestamp 
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
 
 // ============================================================
-// FIREBASE PROJECT CONFIGURATION (EXACT TARGET MATRIX)
+// FIREBASE PROJECT CONFIGURATION
 // ============================================================
 const firebaseConfig = {
   apiKey: "AIzaSyD9sEdygrjz-m1Ou3m9O3L5mXyPEs9LAJM",
@@ -33,238 +34,230 @@ const firebaseConfig = {
   appId: "1:825499942780:web:4f7e5ceb9d6125e9e5aef9"
 };
 
-// Initialize Firebase Core Subsystems
+// ── Initialize Firebase ──
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-export const db = getFirestore(app);
+export const db   = getFirestore(app);
 export const storage = getStorage(app);
 
-// Initialize Session Persistence Instantly with Fault Catching
+// ── Session Persistence ──
 (async () => {
-    try {
-        await setPersistence(auth, browserLocalPersistence);
-    } catch (err) {
-        console.error("[SBA Core] Critical Exception: Authorization Persistence initialization failed:", err);
-    }
+  try {
+    await setPersistence(auth, browserLocalPersistence);
+  } catch (err) {
+    console.error("[SBA] Auth persistence error:", err);
+  }
 })();
 
 // ============================================================
-// CLOUDINARY CONFIGURATION & HELPERS
+// CLOUDINARY
 // ============================================================
 export const CLOUDINARY_CONFIG = {
-  CLOUD_NAME: "dcnv6v9g0",
+  CLOUD_NAME:   "dcnv6v9g0",
   UPLOAD_PRESET: "sba_uploads",
   UPLOAD_API_URL: "https://api.cloudinary.com/v1_1/dcnv6v9g0/image/upload"
 };
 
-/**
- * Uploads a file resource directly into Cloudinary CDN
- * @param {File} file - Target raw binary asset stream
- * @returns {Promise<string|null>} Secure content URL
- */
 export const uploadToCloudinary = async (file) => {
   if (!file) return null;
   const formData = new FormData();
   formData.append("file", file);
   formData.append("upload_preset", CLOUDINARY_CONFIG.UPLOAD_PRESET);
-
   try {
-    const response = await fetch(CLOUDINARY_CONFIG.UPLOAD_API_URL, {
-      method: "POST",
-      body: formData,
-    });
-    if (!response.ok) throw new Error("Cloudinary CDN rejected binary file ingestion parameters.");
-    const data = await response.json();
+    const res = await fetch(CLOUDINARY_CONFIG.UPLOAD_API_URL, { method: "POST", body: formData });
+    if (!res.ok) throw new Error("Cloudinary upload failed.");
+    const data = await res.json();
     return data.secure_url || null;
-  } catch (error) {
-    console.error("[SBA Core] Cloudinary Subsystem Fault Layer:", error);
-    throw error;
+  } catch (err) {
+    console.error("[SBA] Cloudinary error:", err);
+    throw err;
   }
 };
 
 // ============================================================
-// ADMINISTRATIVE ROOT PROVISIONS
+// ADMIN CONFIGURATION
 // ============================================================
 export const ADMIN_EMAIL = "sba.suppor@gmail.com";
 export const isAdmin = (email) => {
-    if (!email) return false;
-    return email.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase().trim();
+  if (!email) return false;
+  return email.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase().trim();
 };
 
 // ============================================================
-// DATA COLLECTIONS MAP
+// DATABASE COLLECTIONS
 // ============================================================
 export const DB_COLLECTIONS = {
-  USERS: "users",
-  TRANSACTIONS: "transactions",
-  APPLICATIONS: "applications",
-  KYC: "kyc",
+  USERS:         "users",
+  TRANSACTIONS:  "transactions",
+  APPLICATIONS:  "applications",
+  KYC:           "kyc",
   NOTIFICATIONS: "notifications",
-  SETTINGS: "settings"
+  LOGS:          "logs"
 };
 
 // ============================================================
-// PRODUCTION USER SCHEMA (Institutional Fintech Model Map)
+// USER SCHEMA BUILDER
 // ============================================================
 export const buildNewUserPayload = (rawData) => {
-  const normalizedEmail = rawData.email ? rawData.email.toLowerCase().trim() : "";
-  
+  const email = (rawData.email || "").toLowerCase().trim();
   return {
-    uid: rawData.uid || "",
-    personalInfo: {
-        firstName: (rawData.firstName || "").trim(),
-        lastName: (rawData.lastName || "").trim(),
-        email: normalizedEmail,
-        phoneNumber: (rawData.phoneNumber || "").trim(),
-        country: rawData.country || ""
-    },
-    applicationDetails: {
-        businessName: (rawData.businessName || "").trim(),
-        industryType: rawData.industryType || "",
-        fundingRequested: Number(rawData.fundingRequested) || 0,
-        purposeOfFunds: (rawData.purposeOfFunds || "").trim()
-    },
-    bankDetails: {
-        bankName: rawData.bankName || "",
-        accountName: rawData.accountName || "",
-        accountNumber: rawData.accountNumber || "",
-        routingNumber: rawData.routingNumber || ""
-    },
+    // Flat fields (used across all pages for easy access)
+    uid:        rawData.uid  || "",
+    fullName:   ((rawData.firstName || "") + " " + (rawData.lastName || "")).trim(),
+    firstName:  (rawData.firstName  || "").trim(),
+    lastName:   (rawData.lastName   || "").trim(),
+    email,
+    username:   (rawData.username   || "").trim().toLowerCase(),
+    phoneNumber:(rawData.phoneNumber|| "").trim(),
+    country:    rawData.country     || "",
+    gender:     rawData.gender      || "",
+    dob:        rawData.dob         || "",
+    allocatedProgram: rawData.allocatedProgram || "SBA Grant Program",
+
+    // Status flags
+    kycStatus:      "IDLE",   // IDLE | UNDER_REVIEW | SUCCESSFUL | FAILED
+    applyStatus:    "IDLE",   // IDLE | PENDING | SUCCESSFUL | FAILED
+    depositStatus:  "IDLE",
+    withdrawStatus: "IDLE",
+    taxStatus:      "IDLE",
+    awardStatus:    "IDLE",
+
+    // Financials
+    balance:         0,
+    requestedAmount: 0,
+    totalAward:      0,
+
+    // Chat & Ledger
+    chatHistory: [],
+    ledger:      [],
+    history:     [],
+
+    // Security
+    securityPin:  "",
+    withdrawPin:  "",
+    transactionPin: "",
+
+    // Nested status (for firebase-config monitorAuthState)
     status: {
-        accountStatus: "active", // State Map: active | suspended | restricted
-        emailVerified: false,
-        kycStatus: "unsubmitted", // State Map: unsubmitted | pending | approved | rejected
-        isOnline: true,
-        lastSeen: serverTimestamp()
+      accountStatus: "active",
+      emailVerified: false,
+      kycStatus:     "unsubmitted",
+      isOnline:      true,
+      lastSeen:      serverTimestamp()
     },
-    balances: {
-      totalDeposit: 0,
-      totalWithdrawal: 0,
-      availableBalance: 0,
-      vaultBalance: 0,
-      awardedGrants: 0
-    },
+
+    // Metadata
     metadata: {
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-        registrationStep: Number(rawData.registrationStep) || 1
+      createdAt:        serverTimestamp(),
+      updatedAt:        serverTimestamp(),
+      registrationStep: Number(rawData.registrationStep) || 1,
+      emailVerifiedAt:  null
     }
   };
 };
 
 // ============================================================
-// CORE DATA FETCH API
+// FETCH USER DATA
 // ============================================================
 export const getUserData = async (uid) => {
-    if (!uid) return null;
-    try {
-        const userDoc = await getDoc(doc(db, DB_COLLECTIONS.USERS, uid));
-        return userDoc.exists() ? userDoc.data() : null;
-    } catch (error) {
-        console.error("[SBA Core] Data Fetch Exception Engine Intercept:", error);
-        return null;
-    }
+  if (!uid) return null;
+  try {
+    const snap = await getDoc(doc(db, DB_COLLECTIONS.USERS, uid));
+    return snap.exists() ? snap.data() : null;
+  } catch (err) {
+    console.error("[SBA] getUserData error:", err);
+    return null;
+  }
 };
 
 // ============================================================
-// AUTOMATED AUTHENTICATION INTERCEPTOR & SAFE ROUTING ROUTER
+// AUTH STATE MONITOR & ROUTER
 // ============================================================
 export const monitorAuthState = (callback) => {
-    return onAuthStateChanged(auth, async (user) => {
-        const path = window.location.pathname;
-        const pageName = path.split("/").pop().toLowerCase() || "index.html";
-        
-        const isPublicPage = pageName === "" || 
-                             pageName === "index.html" || 
-                             pageName === "login.html" || 
-                             pageName === "register1.html" || 
-                             pageName === "register2.html" || 
-                             pageName === "forgot-password.html";
+  return onAuthStateChanged(auth, async (user) => {
+    const path     = window.location.pathname;
+    const pageName = (path.split("/").pop() || "index.html").toLowerCase();
 
-        const isVerifyPage = pageName === "verify.html";
-        const isAdminPage = pageName === "admin-portal.html";
+    const PUBLIC_PAGES  = ["", "index.html", "login.html", "register1.html", "register2.html", "forgot-password.html", "terms.html"];
+    const isPublicPage  = PUBLIC_PAGES.includes(pageName);
+    const isVerifyPage  = pageName === "verify.html";
+    const isWelcomePage = pageName === "welcome.html";
+    const isAdminPage   = pageName === "admin-portal.html";
 
-        if (!user) {
-            // Unauthenticated protection checkpoint
-            if (!isPublicPage) {
-                window.location.href = "login.html";
-                return;
-            }
+    if (!user) {
+      if (!isPublicPage) {
+        window.location.href = "login.html";
+        return;
+      }
+    } else {
+      const admin = isAdmin(user.email);
+
+      // Sync verified flag to Firestore (non-blocking)
+      if (user.emailVerified && !admin) {
+        try {
+          await updateDoc(doc(db, DB_COLLECTIONS.USERS, user.uid), {
+            "status.emailVerified": true,
+            "status.isOnline":      true,
+            "status.lastSeen":      serverTimestamp()
+          });
+        } catch (_) { /* non-critical */ }
+      }
+
+      if (admin) {
+        if (!isAdminPage) { window.location.href = "admin-portal.html"; return; }
+      } else {
+        if (!user.emailVerified) {
+          // Google users are auto-verified
+          const isGoogle = user.providerData.some(p => p.providerId === "google.com");
+          if (!isGoogle && !isVerifyPage) {
+            window.location.href = "verify.html"; return;
+          }
         } else {
-            const systemAdmin = isAdmin(user.email);
-            
-            // Sync user document parameter mappings matching validation rules
-            if (user.emailVerified && !systemAdmin) {
-                try {
-                    const userRef = doc(db, DB_COLLECTIONS.USERS, user.uid);
-                    await updateDoc(userRef, {
-                        "status.emailVerified": true,
-                        "status.isOnline": true,
-                        "status.lastSeen": serverTimestamp()
-                    });
-                } catch (e) {
-                    console.warn("[SBA Core] Background pipeline notice: Local Document sync deferred:", e);
-                }
-            }
-
-            // Route Management Logic Interceptor
-            if (systemAdmin) {
-                // Administrative access confinement rules
-                if (!isAdminPage) {
-                    window.location.href = "admin-portal.html";
-                    return;
-                }
-            } else {
-                // Regular applicant validation access pathways
-                if (!user.emailVerified) {
-                    if (!isVerifyPage) {
-                        window.location.href = "verify.html";
-                        return;
-                    }
-                } else {
-                    // Prevent authenticated users from loading landing/onboarding routes
-                    if (isPublicPage || isVerifyPage) {
-                        window.location.href = "dashboard.html";
-                        return;
-                    }
-                }
-            }
+          if (isPublicPage || isVerifyPage) {
+            window.location.href = "dashboard.html"; return;
+          }
         }
-        
-        if (callback) callback(user);
-    });
+      }
+    }
+
+    if (callback) callback(user);
+  });
 };
 
 // ============================================================
-// PERSISTENT MULTI-STEP SESSION REGISTRATION SUBSYSTEM
+// MULTI-STEP REGISTRATION SESSION
 // ============================================================
-const SESSION_KEY = "SBA_REGISTRATION_DATA_FLOW";
+const SESSION_KEY = "SBA_REG_DATA";
 
 export const saveRegistrationStep = (data) => {
-    try {
-        const existing = JSON.parse(sessionStorage.getItem(SESSION_KEY)) || {};
-        sessionStorage.setItem(SESSION_KEY, JSON.stringify({ ...existing, ...data }));
-    } catch (e) {
-        console.error("[SBA Core] Session engine write collision:", e);
-    }
+  try {
+    const existing = JSON.parse(sessionStorage.getItem(SESSION_KEY) || "{}");
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify({ ...existing, ...data }));
+  } catch (e) {
+    console.error("[SBA] Session write error:", e);
+  }
 };
 
 export const getRegistrationData = () => {
-    try {
-        return JSON.parse(sessionStorage.getItem(SESSION_KEY)) || {};
-    } catch (e) {
-        console.error("[SBA Core] Session engine read serialization failure:", e);
-        return {};
-    }
+  try {
+    return JSON.parse(sessionStorage.getItem(SESSION_KEY) || "{}");
+  } catch (e) {
+    console.error("[SBA] Session read error:", e);
+    return {};
+  }
+};
+
+export const clearRegistrationData = () => {
+  try { sessionStorage.removeItem(SESSION_KEY); } catch (_) {}
 };
 
 export const clearSession = async () => {
-    try {
-        sessionStorage.removeItem(SESSION_KEY);
-        await signOut(auth);
-        window.location.href = "login.html";
-    } catch (error) {
-        console.error("[SBA Core] Termination sequence fault:", error);
-        window.location.href = "login.html";
-    }
+  try {
+    clearRegistrationData();
+    await signOut(auth);
+    window.location.href = "login.html";
+  } catch (err) {
+    console.error("[SBA] Logout error:", err);
+    window.location.href = "login.html";
+  }
 };
