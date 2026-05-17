@@ -1,6 +1,5 @@
 // ============================================================
 // firebase-config.js — SBA Platform Core Configuration
-// Project: small-business-administration
 // ============================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
@@ -10,7 +9,9 @@ import {
   setPersistence,
   onAuthStateChanged,
   signOut,
-  sendEmailVerification
+  sendEmailVerification,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 import {
   getFirestore,
@@ -34,10 +35,10 @@ const firebaseConfig = {
   appId: "1:825499942780:web:4f7e5ceb9d6125e9e5aef9"
 };
 
-// ── Initialize Firebase ──
+// ── Initialize Firebase (singleton guard) ──
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db   = getFirestore(app);
+export const auth    = getAuth(app);
+export const db      = getFirestore(app);
 export const storage = getStorage(app);
 
 // ── Session Persistence ──
@@ -53,35 +54,33 @@ export const storage = getStorage(app);
 // CLOUDINARY
 // ============================================================
 export const CLOUDINARY_CONFIG = {
-  CLOUD_NAME:    "dcnv6v9g0",
-  UPLOAD_PRESET: "sba_uploads",
+  CLOUD_NAME:     "dcnv6v9g0",
+  UPLOAD_PRESET:  "sba_uploads",
   UPLOAD_API_URL: "https://api.cloudinary.com/v1_1/dcnv6v9g0/image/upload"
 };
 
+/**
+ * Upload a File object to Cloudinary.
+ * Returns the secure URL string, or throws on failure.
+ */
 export const uploadToCloudinary = async (file) => {
   if (!file) return null;
   const formData = new FormData();
   formData.append("file", file);
   formData.append("upload_preset", CLOUDINARY_CONFIG.UPLOAD_PRESET);
-  try {
-    const res = await fetch(CLOUDINARY_CONFIG.UPLOAD_API_URL, { method: "POST", body: formData });
-    if (!res.ok) throw new Error("Cloudinary upload failed.");
-    const data = await res.json();
-    return data.secure_url || null;
-  } catch (err) {
-    console.error("[SBA] Cloudinary error:", err);
-    throw err;
-  }
+  const res = await fetch(CLOUDINARY_CONFIG.UPLOAD_API_URL, { method: "POST", body: formData });
+  if (!res.ok) throw new Error("Cloudinary upload failed.");
+  const data = await res.json();
+  return data.secure_url || null;
 };
 
 // ============================================================
 // ADMIN CONFIGURATION
 // ============================================================
 export const ADMIN_EMAIL = "sba.suppor@gmail.com";
-export const isAdmin = (email) => {
-  if (!email) return false;
-  return email.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase().trim();
-};
+export const isAdmin = (email) =>
+  typeof email === "string" &&
+  email.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase();
 
 // ============================================================
 // DATABASE COLLECTIONS
@@ -100,44 +99,44 @@ export const DB_COLLECTIONS = {
 // ============================================================
 export const buildNewUserPayload = (rawData) => {
   const email = (rawData.email || "").toLowerCase().trim();
+  const firstName = (rawData.firstName || "").trim();
+  const lastName  = (rawData.lastName  || "").trim();
   return {
-    // Structural Flat Payload Identifiers
     uid:         rawData.uid  || "",
-    fullName:    ((rawData.firstName || "") + " " + (rawData.lastName || "")).trim(),
-    firstName:   (rawData.firstName  || "").trim(),
-    lastName:    (rawData.lastName   || "").trim(),
+    fullName:    rawData.fullName || `${firstName} ${lastName}`.trim(),
+    firstName,
+    lastName,
     email,
-    username:    (rawData.username   || "").trim().toLowerCase(),
-    phoneNumber: (rawData.phoneNumber|| "").trim(),
-    country:     rawData.country     || "",
-    gender:      rawData.gender      || "",
-    dob:         rawData.dob         || "",
+    username:    (rawData.username    || "").trim().toLowerCase(),
+    phoneNumber: (rawData.phoneNumber || "").trim(),
+    country:     rawData.country  || "",
+    gender:      rawData.gender   || "",
+    dob:         rawData.dob      || "",
     allocatedProgram: rawData.allocatedProgram || "SBA Grant Program",
 
-    // Flattened System States
-    kycStatus:      "IDLE",   // IDLE | UNDER_REVIEW | SUCCESSFUL | FAILED
-    applyStatus:    "IDLE",   // IDLE | PENDING | SUCCESSFUL | FAILED
+    // Workflow statuses
+    kycStatus:      "IDLE",
+    applyStatus:    "IDLE",
     depositStatus:  "IDLE",
     withdrawStatus: "IDLE",
     taxStatus:      "IDLE",
     awardStatus:    "IDLE",
 
-    // Financial Metrics
+    // Financials
     balance:         0,
     requestedAmount: 0,
     totalAward:      0,
 
-    // Communication Ledger Logs
+    // Logs
     chatHistory: [],
     ledger:      [],
     history:     [],
 
-    // Security Clearances
-    securityPin:    "",
-    withdrawPin:    "",
+    // Security
     transactionPin: "",
+    withdrawPin:    "",
 
-    // Platform State Synchronization
+    // Platform state
     status: {
       accountStatus: "active",
       emailVerified: false,
@@ -145,7 +144,7 @@ export const buildNewUserPayload = (rawData) => {
       lastSeen:      serverTimestamp()
     },
 
-    // Audit Metadata
+    // Audit metadata
     metadata: {
       createdAt:        serverTimestamp(),
       updatedAt:        serverTimestamp(),
@@ -153,6 +152,15 @@ export const buildNewUserPayload = (rawData) => {
       emailVerifiedAt:  null
     }
   };
+};
+
+// ============================================================
+// REGISTRATION — Step 1: Create Firebase Auth account
+// Returns { user } or throws.
+// ============================================================
+export const registerWithEmail = async (email, password) => {
+  const credential = await createUserWithEmailAndPassword(auth, email, password);
+  return credential.user;
 };
 
 // ============================================================
@@ -177,7 +185,7 @@ export const monitorAuthState = (callback) => {
     const path     = window.location.pathname;
     const pageName = (path.split("/").pop() || "index.html").toLowerCase();
 
-    const PUBLIC_PAGES  = ["", "index.html", "login.html", "register1.html", "register2.html", "forgot-password.html", "terms.html"];
+    const PUBLIC_PAGES  = ["", "index.html", "login.html", "register1.html", "register2.html", "forgot-password.html", "forget-password.html", "terms.html"];
     const isPublicPage  = PUBLIC_PAGES.includes(pageName);
     const isVerifyPage  = pageName === "verify.html";
     const isWelcomePage = pageName === "welcome.html";
@@ -191,33 +199,31 @@ export const monitorAuthState = (callback) => {
     } else {
       const admin = isAdmin(user.email);
 
-      // Async local flag updates
-      if (user.emailVerified && !admin) {
+      if (!admin) {
+        // Keep Firestore online presence in sync
         try {
           await updateDoc(doc(db, DB_COLLECTIONS.USERS, user.uid), {
-            "status.emailVerified": true,
-            "status.isOnline":      true,
-            "status.lastSeen":      serverTimestamp()
+            "status.isOnline": true,
+            "status.lastSeen": serverTimestamp()
           });
         } catch (_) {}
       }
 
       if (admin) {
-        if (!isAdminPage) { 
-          window.location.href = "admin-portal.html"; 
-          return; 
+        if (!isAdminPage) {
+          window.location.href = "admin-portal.html";
+          return;
         }
       } else {
         if (!user.emailVerified) {
           const isGoogle = user.providerData.some(p => p.providerId === "google.com");
           if (!isGoogle && !isVerifyPage) {
-            window.location.href = "verify.html"; 
+            window.location.href = "verify.html";
             return;
           }
         } else {
-          // If validated, bypass auth landing forms or processing windows
           if (isPublicPage || isVerifyPage) {
-            window.location.href = "dashboard.html"; 
+            window.location.href = "dashboard.html";
             return;
           }
         }
@@ -229,7 +235,7 @@ export const monitorAuthState = (callback) => {
 };
 
 // ============================================================
-// MULTI-STEP REGISTRATION SESSION
+// MULTI-STEP REGISTRATION SESSION (sessionStorage)
 // ============================================================
 const SESSION_KEY = "SBA_REG_DATA";
 
@@ -246,7 +252,6 @@ export const getRegistrationData = () => {
   try {
     return JSON.parse(sessionStorage.getItem(SESSION_KEY) || "{}");
   } catch (e) {
-    console.error("[SBA] Session read error:", e);
     return {};
   }
 };
@@ -255,13 +260,15 @@ export const clearRegistrationData = () => {
   try { sessionStorage.removeItem(SESSION_KEY); } catch (_) {}
 };
 
+// ============================================================
+// SIGN OUT
+// ============================================================
 export const clearSession = async () => {
   try {
     clearRegistrationData();
     await signOut(auth);
     window.location.href = "login.html";
   } catch (err) {
-    console.error("[SBA] Logout error:", err);
     window.location.href = "login.html";
   }
 };
