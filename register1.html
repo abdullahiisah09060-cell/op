@@ -39,6 +39,7 @@
 </head>
 <body class="min-h-screen flex flex-col antialiased">
 
+    <!-- Top Navigation Bar -->
     <nav class="bg-white border-b border-slate-200 px-4 py-3.5 sm:px-8 flex justify-between items-center z-10">
         <div class="flex items-center gap-3">
             <div class="bg-sbaNavy text-white px-2.5 py-1 font-extrabold text-xl tracking-tight rounded-sm">SBA</div>
@@ -52,25 +53,30 @@
         </a>
     </nav>
 
+    <!-- Main Registration Box Container -->
     <div class="flex-grow flex items-center justify-center px-4 py-10 sm:py-16">
         <div class="bg-white border-t-4 border-sbaNavy rounded shadow-sm w-full max-w-[440px] p-6 sm:p-10 border border-slate-200">
             
+            <!-- Dynamic Step Progress Metric Bar -->
             <div class="flex gap-2.5 mb-8 items-center">
                 <div class="h-1 flex-grow rounded-sm bg-sbaNavy"></div>
                 <div class="h-1 flex-grow rounded-sm bg-slate-200"></div>
                 <div class="h-1 flex-grow rounded-sm bg-slate-200"></div>
             </div>
 
+            <!-- Context Title -->
             <div class="mb-8">
                 <h1 class="text-xl font-bold text-sbaDark tracking-tight uppercase">Initialize Secure Case</h1>
                 <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-1">Step 1: Authorization Credentials</p>
             </div>
 
+            <!-- Dynamic Alert Messaging Node Component -->
             <div id="alertBoundary" class="hidden mb-5 p-3.5 rounded border text-xs font-medium flex items-start gap-2.5 transition-all">
                 <i id="alertIcon" class="fas mt-0.5"></i>
                 <span id="alertMessage"></span>
             </div>
 
+            <!-- Federated Google Authenticators Provider Interface -->
             <button type="button" id="googleRegBtn" class="w-full bg-white border border-slate-200 hover:border-slate-300 text-slate-700 font-semibold text-xs uppercase tracking-wider h-11 px-4 rounded flex items-center justify-center gap-2.5 shadow-sm hover:bg-slate-50 transition-all duration-150">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -81,14 +87,17 @@
                 <span>Enroll via Identity Provider</span>
             </button>
 
+            <!-- Layout Separator Grid Elements Section Line -->
             <div class="relative flex py-6 items-center">
                 <div class="flex-grow border-t border-slate-200"></div>
                 <span class="flex-shrink mx-4 text-[9px] font-bold text-slate-400 tracking-wider uppercase">Or Secure Manual Provisioning</span>
                 <div class="flex-grow border-t border-slate-200"></div>
             </div>
 
+            <!-- Native Credential Provisioning Dispatcher Subsystem Block -->
             <form id="step1Form" autocomplete="off" novalidate class="space-y-5">
                 
+                <!-- Registration Email Parameters Field Vector -->
                 <div>
                     <label for="email" class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Business Registration Email</label>
                     <div class="relative">
@@ -101,6 +110,7 @@
                     </div>
                 </div>
 
+                <!-- Primary Security Token Vector (Password Field Block) -->
                 <div>
                     <label for="pass" class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Create Secure Access Key</label>
                     <div class="relative">
@@ -116,6 +126,7 @@
                     </div>
                 </div>
 
+                <!-- Redundant Security Validation Verification Parameter Vector (Confirm Field Block) -->
                 <div>
                     <label for="confirm" class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Verify Secure Access Key</label>
                     <div class="relative">
@@ -131,6 +142,7 @@
                     </div>
                 </div>
 
+                <!-- Terms, Conditions, Compliance System Tracking Checkbox Nodes -->
                 <div class="flex items-start gap-2.5 py-1">
                     <input type="checkbox" id="termsCheck" required 
                         class="mt-0.5 w-4 h-4 rounded border-slate-300 text-sbaNavy focus:ring-sbaNavy accent-sbaNavy cursor-pointer">
@@ -139,6 +151,7 @@
                     </label>
                 </div>
 
+                <!-- Process Transition Action Control Module -->
                 <button type="submit" id="submitBtn" class="w-full bg-sbaNavy hover:bg-[#001E4A] text-white font-bold text-xs uppercase tracking-wider h-12 rounded shadow-sm flex items-center justify-center gap-2 transition-all duration-150 mt-4">
                     <span>Proceed to Details</span>
                     <i class="fas fa-arrow-right text-[10px]"></i>
@@ -148,12 +161,14 @@
         </div>
     </div>
 
+    <!-- Security Infrastructure Environment Legal Disclaimer Footer -->
     <footer class="bg-white border-t border-slate-200 p-5 text-center mt-auto">
         <p class="text-[9px] text-slate-400 font-bold uppercase tracking-[0.25em] flex items-center justify-center gap-1.5">
             <i class="fas fa-lock text-slate-300"></i> Cryptographic 256-Bit FedRAMP Authenticated Environment
         </p>
     </footer>
 
+    <!-- Execution Engine Script Block Engine Configuration Modules Links System -->
     <script type="module">
         import { auth, saveRegistrationStep } from './firebase-config.js';
         import { signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
