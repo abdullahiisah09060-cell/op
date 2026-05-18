@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>SBA | Secure Sign In</title>
+  <title>SBA | Sign In</title>
   <link rel="stylesheet" href="global.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -21,14 +21,13 @@
     .google-btn:hover { background: var(--bg); border-color: var(--navy); color: var(--navy); }
     .forgot-link { font-size: var(--text-xs); color: var(--navy); font-weight: var(--fw-medium); }
     .forgot-link:hover { text-decoration: underline; }
-    .remember-row { display: flex; align-items: center; justify-content: space-between; }
+    .row-between { display: flex; align-items: center; justify-content: space-between; }
     .checkbox-label { display: flex; align-items: center; gap: var(--sp-2); font-size: var(--text-sm); color: var(--text-secondary); cursor: pointer; }
     .checkbox-label input { width: 15px; height: 15px; accent-color: var(--navy); cursor: pointer; }
   </style>
 </head>
 <body class="auth-wrap">
 
-  <!-- Gov Banner -->
   <div class="gov-banner">
     <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="U.S. Flag">
     Official Portal of the U.S. Small Business Administration
@@ -37,7 +36,6 @@
   <main class="auth-main">
     <div class="auth-card">
 
-      <!-- Logo -->
       <div class="auth-card__logo">
         <div class="auth-card__logo-mark">SBA</div>
         <div class="auth-card__logo-text">U.S. Small Business<br>Administration</div>
@@ -46,13 +44,11 @@
       <h1 class="auth-card__title">Welcome back</h1>
       <p class="auth-card__subtitle">Sign in to access your grant dashboard</p>
 
-      <!-- Alert -->
-      <div id="alertBox" class="alert alert--error" style="display:none; margin-bottom: var(--sp-5);">
+      <div id="alertBox" class="alert alert--error" style="display:none;margin-bottom:var(--sp-5);">
         <i class="fa-solid fa-circle-exclamation"></i>
         <span id="alertMsg"></span>
       </div>
 
-      <!-- Google SSO -->
       <button id="googleBtn" class="google-btn">
         <svg width="18" height="18" viewBox="0 0 24 24">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -69,8 +65,7 @@
         <div class="divider__line"></div>
       </div>
 
-      <!-- Form -->
-      <form id="loginForm" novalidate style="display: flex; flex-direction: column; gap: var(--sp-5);">
+      <form id="loginForm" novalidate style="display:flex;flex-direction:column;gap:var(--sp-5);">
 
         <div class="form-group">
           <label class="form-label" for="email">Email Address</label>
@@ -82,21 +77,21 @@
         </div>
 
         <div class="form-group">
-          <div class="remember-row">
+          <div class="row-between" style="margin-bottom:var(--sp-2);">
             <label class="form-label" for="password">Password</label>
             <a href="forget-password.html" class="forgot-link">Forgot password?</a>
           </div>
           <div class="input-icon-wrap">
             <i class="fa-solid fa-lock input-icon"></i>
             <input type="password" id="password" class="form-input form-input--with-right-icon" placeholder="••••••••" autocomplete="current-password" required>
-            <button type="button" id="togglePass" class="input-icon input-icon--right" style="background:none;border:none;cursor:pointer;">
-              <i class="fa-solid fa-eye" style="color:var(--text-muted);font-size:0.85rem;"></i>
+            <button type="button" id="togglePass" class="input-icon input-icon--right" style="background:none;border:none;">
+              <i class="fa-solid fa-eye" style="color:var(--text-muted);"></i>
             </button>
           </div>
           <span class="field-error" id="passErr">Password is required.</span>
         </div>
 
-        <div class="remember-row">
+        <div class="row-between">
           <label class="checkbox-label">
             <input type="checkbox" id="remember">
             Keep me signed in
@@ -104,8 +99,7 @@
         </div>
 
         <button type="submit" id="loginBtn" class="btn btn--primary btn--full btn--lg">
-          Sign In
-          <i class="fa-solid fa-arrow-right" style="font-size:0.8rem;"></i>
+          Sign In <i class="fa-solid fa-arrow-right" style="font-size:0.8rem;"></i>
         </button>
 
       </form>
@@ -130,18 +124,15 @@
       onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
-    // If already logged in, redirect
+    // Redirect if already logged in
     onAuthStateChanged(auth, (user) => {
-      if (user) {
-        if (user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-          location.href = 'admin-portal.html';
-        } else if (!user.emailVerified) {
-          const isGoogle = user.providerData.some(p => p.providerId === 'google.com');
-          if (!isGoogle) location.href = 'verify.html';
-          else location.href = 'dashboard.html';
-        } else {
-          location.href = 'dashboard.html';
-        }
+      if (!user) return;
+      if (user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+        location.href = 'admin-portal.html';
+      } else if (!user.emailVerified && !user.providerData.some(p => p.providerId === 'google.com')) {
+        location.href = 'verify.html';
+      } else {
+        location.href = 'dashboard.html';
       }
     });
 
@@ -149,84 +140,72 @@
     const alertBox = document.getElementById('alertBox');
     const alertMsg = document.getElementById('alertMsg');
 
-    function showAlert(msg) {
-      alertMsg.textContent = msg;
-      alertBox.style.display = 'flex';
-    }
+    function showAlert(msg) { alertMsg.textContent = msg; alertBox.style.display = 'flex'; }
     function hideAlert() { alertBox.style.display = 'none'; }
 
-    function setLoading(loading) {
-      loginBtn.disabled = loading;
-      loginBtn.innerHTML = loading
-        ? '<i class="fa-solid fa-circle-notch animate-spin"></i> Signing in…'
+    function setLoading(on) {
+      loginBtn.disabled = on;
+      loginBtn.innerHTML = on
+        ? '<i class="fa-solid fa-circle-notch animate-spin"></i>&nbsp; Signing in…'
         : 'Sign In <i class="fa-solid fa-arrow-right" style="font-size:0.8rem;"></i>';
     }
 
-    // Toggle password visibility
     document.getElementById('togglePass').addEventListener('click', () => {
       const inp = document.getElementById('password');
-      const icon = document.querySelector('#togglePass i');
-      if (inp.type === 'password') { inp.type = 'text'; icon.className = 'fa-solid fa-eye-slash'; }
-      else { inp.type = 'password'; icon.className = 'fa-solid fa-eye'; }
+      const ico = document.querySelector('#togglePass i');
+      if (inp.type === 'password') { inp.type = 'text'; ico.className = 'fa-solid fa-eye-slash'; }
+      else { inp.type = 'password'; ico.className = 'fa-solid fa-eye'; }
     });
 
-    // Email/password login
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       hideAlert();
 
-      const email = document.getElementById('email').value.trim();
+      const email    = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
       let valid = true;
 
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        document.getElementById('emailErr').classList.add('show');
-        valid = false;
+        document.getElementById('emailErr').classList.add('show'); valid = false;
       } else { document.getElementById('emailErr').classList.remove('show'); }
 
       if (!password) {
-        document.getElementById('passErr').classList.add('show');
-        valid = false;
+        document.getElementById('passErr').classList.add('show'); valid = false;
       } else { document.getElementById('passErr').classList.remove('show'); }
 
       if (!valid) return;
 
       setLoading(true);
       try {
-        const credential = await signInWithEmailAndPassword(auth, email, password);
-        const user = credential.user;
+        const cred = await signInWithEmailAndPassword(auth, email, password);
+        const user = cred.user;
         if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
           location.href = 'admin-portal.html';
-        } else if (!user.emailVerified) {
-          const isGoogle = user.providerData.some(p => p.providerId === 'google.com');
-          location.href = isGoogle ? 'dashboard.html' : 'verify.html';
+        } else if (!user.emailVerified && !user.providerData.some(p => p.providerId === 'google.com')) {
+          location.href = 'verify.html';
         } else {
           location.href = 'dashboard.html';
         }
       } catch (err) {
         setLoading(false);
         const codes = {
-          'auth/user-not-found': 'No account found with that email address.',
-          'auth/wrong-password': 'Incorrect password. Please try again.',
+          'auth/user-not-found':     'No account found with that email address.',
+          'auth/wrong-password':     'Incorrect password. Please try again.',
           'auth/invalid-credential': 'Incorrect email or password. Please try again.',
-          'auth/too-many-requests': 'Too many failed attempts. Please wait a moment and try again.',
-          'auth/user-disabled': 'This account has been suspended. Contact support.',
+          'auth/too-many-requests':  'Too many failed attempts. Please wait and try again.',
+          'auth/user-disabled':      'This account has been suspended. Contact support.',
         };
         showAlert(codes[err.code] || 'Sign-in failed. Please check your credentials.');
       }
     });
 
-    // Google SSO
     document.getElementById('googleBtn').addEventListener('click', async () => {
       hideAlert();
-      const provider = new GoogleAuthProvider();
       try {
-        await signInWithPopup(auth, provider);
+        await signInWithPopup(auth, new GoogleAuthProvider());
         location.href = 'dashboard.html';
       } catch (err) {
-        if (err.code !== 'auth/popup-closed-by-user') {
-          showAlert('Google sign-in failed. Please try again.');
-        }
+        if (err.code !== 'auth/popup-closed-by-user') showAlert('Google sign-in failed. Please try again.');
       }
     });
   </script>
