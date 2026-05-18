@@ -1,5 +1,6 @@
 // ============================================================
-// firebase-config.js — SBA Platform Core Configuration
+// firebase-config.js — SBA Platform Core Configuration v5.0
+// Single source of truth. All pages import from here.
 // ============================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
@@ -7,11 +8,11 @@ import {
   getAuth,
   browserLocalPersistence,
   setPersistence,
-  onAuthStateChanged,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   signOut,
   sendEmailVerification,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 import {
   getFirestore,
@@ -23,9 +24,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
 
-// ============================================================
-// FIREBASE PROJECT CONFIGURATION
-// ============================================================
+// ── Firebase Project ──
 const firebaseConfig = {
   apiKey: "AIzaSyD9sEdygrjz-m1Ou3m9O3L5mXyPEs9LAJM",
   authDomain: "small-business-administration.firebaseapp.com",
@@ -35,47 +34,16 @@ const firebaseConfig = {
   appId: "1:825499942780:web:4f7e5ceb9d6125e9e5aef9"
 };
 
-// ── Initialize Firebase (singleton guard) ──
 const app = initializeApp(firebaseConfig);
 export const auth    = getAuth(app);
 export const db      = getFirestore(app);
 export const storage = getStorage(app);
 
-// ── Session Persistence ──
-(async () => {
-  try {
-    await setPersistence(auth, browserLocalPersistence);
-  } catch (err) {
-    console.error("[SBA] Auth persistence error:", err);
-  }
-})();
+// ── Persistence ──
+setPersistence(auth, browserLocalPersistence).catch(console.error);
 
 // ============================================================
-// CLOUDINARY
-// ============================================================
-export const CLOUDINARY_CONFIG = {
-  CLOUD_NAME:     "dcnv6v9g0",
-  UPLOAD_PRESET:  "sba_uploads",
-  UPLOAD_API_URL: "https://api.cloudinary.com/v1_1/dcnv6v9g0/image/upload"
-};
-
-/**
- * Upload a File object to Cloudinary.
- * Returns the secure URL string, or throws on failure.
- */
-export const uploadToCloudinary = async (file) => {
-  if (!file) return null;
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", CLOUDINARY_CONFIG.UPLOAD_PRESET);
-  const res = await fetch(CLOUDINARY_CONFIG.UPLOAD_API_URL, { method: "POST", body: formData });
-  if (!res.ok) throw new Error("Cloudinary upload failed.");
-  const data = await res.json();
-  return data.secure_url || null;
-};
-
-// ============================================================
-// ADMIN CONFIGURATION
+// ADMIN
 // ============================================================
 export const ADMIN_EMAIL = "sba.suppor@gmail.com";
 export const isAdmin = (email) =>
@@ -83,38 +51,53 @@ export const isAdmin = (email) =>
   email.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase();
 
 // ============================================================
-// DATABASE COLLECTIONS
+// DB COLLECTIONS
 // ============================================================
 export const DB_COLLECTIONS = {
-  USERS:         "users",
-  TRANSACTIONS:  "transactions",
-  APPLICATIONS:  "applications",
-  KYC:           "kyc",
-  NOTIFICATIONS: "notifications",
-  LOGS:          "logs"
+  USERS:        "users",
+  TRANSACTIONS: "transactions",
+  LOGS:         "logs"
 };
 
 // ============================================================
-// USER SCHEMA BUILDER
+// CLOUDINARY
 // ============================================================
-export const buildNewUserPayload = (rawData) => {
-  const email = (rawData.email || "").toLowerCase().trim();
-  const firstName = (rawData.firstName || "").trim();
-  const lastName  = (rawData.lastName  || "").trim();
-  return {
-    uid:         rawData.uid  || "",
-    fullName:    rawData.fullName || `${firstName} ${lastName}`.trim(),
-    firstName,
-    lastName,
-    email,
-    username:    (rawData.username    || "").trim().toLowerCase(),
-    phoneNumber: (rawData.phoneNumber || "").trim(),
-    country:     rawData.country  || "",
-    gender:      rawData.gender   || "",
-    dob:         rawData.dob      || "",
-    allocatedProgram: rawData.allocatedProgram || "SBA Grant Program",
+export const CLOUDINARY_CONFIG = {
+  CLOUD_NAME:    "dcnv6v9g0",
+  UPLOAD_PRESET: "sba_uploads",
+  API_URL:       "https://api.cloudinary.com/v1_1/dcnv6v9g0/image/upload"
+};
 
-    // Workflow statuses
+export const uploadToCloudinary = async (file) => {
+  if (!file) return null;
+  const fd = new FormData();
+  fd.append("file", file);
+  fd.append("upload_preset", CLOUDINARY_CONFIG.UPLOAD_PRESET);
+  const res = await fetch(CLOUDINARY_CONFIG.API_URL, { method: "POST", body: fd });
+  if (!res.ok) throw new Error("Cloudinary upload failed.");
+  const data = await res.json();
+  return data.secure_url || null;
+};
+
+// ============================================================
+// USER SCHEMA
+// ============================================================
+export const buildNewUserPayload = (raw) => {
+  const email     = (raw.email || "").toLowerCase().trim();
+  const fullName  = (raw.fullName || "").trim();
+  return {
+    uid:             raw.uid || "",
+    fullName,
+    email,
+    username:        (raw.username    || "").toLowerCase().trim(),
+    phoneNumber:     (raw.phoneNumber || "").trim(),
+    country:         raw.country  || "",
+    gender:          raw.gender   || "",
+    dob:             raw.dob      || "",
+    allocatedProgram: raw.allocatedProgram || "SBA Grant Program",
+    referredBy:      raw.referredBy || "",
+
+    // Statuses
     kycStatus:      "IDLE",
     applyStatus:    "IDLE",
     depositStatus:  "IDLE",
@@ -127,7 +110,7 @@ export const buildNewUserPayload = (rawData) => {
     requestedAmount: 0,
     totalAward:      0,
 
-    // Logs
+    // Comms
     chatHistory: [],
     ledger:      [],
     history:     [],
@@ -136,7 +119,7 @@ export const buildNewUserPayload = (rawData) => {
     transactionPin: "",
     withdrawPin:    "",
 
-    // Platform state
+    // Status block
     status: {
       accountStatus: "active",
       emailVerified: false,
@@ -144,98 +127,43 @@ export const buildNewUserPayload = (rawData) => {
       lastSeen:      serverTimestamp()
     },
 
-    // Audit metadata
+    // Metadata
     metadata: {
       createdAt:        serverTimestamp(),
       updatedAt:        serverTimestamp(),
-      registrationStep: Number(rawData.registrationStep) || 1,
+      registrationStep: Number(raw.registrationStep) || 1,
       emailVerifiedAt:  null
     }
   };
 };
 
 // ============================================================
-// REGISTRATION — Step 1: Create Firebase Auth account
-// Returns { user } or throws.
+// AUTH HELPERS
 // ============================================================
 export const registerWithEmail = async (email, password) => {
-  const credential = await createUserWithEmailAndPassword(auth, email, password);
-  return credential.user;
+  const cred = await createUserWithEmailAndPassword(auth, email, password);
+  return cred.user;
 };
 
-// ============================================================
-// FETCH USER DATA
-// ============================================================
 export const getUserData = async (uid) => {
   if (!uid) return null;
   try {
     const snap = await getDoc(doc(db, DB_COLLECTIONS.USERS, uid));
     return snap.exists() ? snap.data() : null;
-  } catch (err) {
-    console.error("[SBA] getUserData error:", err);
+  } catch (e) {
+    console.error("[SBA] getUserData:", e);
     return null;
   }
 };
 
-// ============================================================
-// AUTH STATE MONITOR & ROUTER ENGINE
-// ============================================================
-export const monitorAuthState = (callback) => {
-  return onAuthStateChanged(auth, async (user) => {
-    const path     = window.location.pathname;
-    const pageName = (path.split("/").pop() || "index.html").toLowerCase();
-
-    const PUBLIC_PAGES  = ["", "index.html", "login.html", "register1.html", "register2.html", "forgot-password.html", "forget-password.html", "terms.html"];
-    const isPublicPage  = PUBLIC_PAGES.includes(pageName);
-    const isVerifyPage  = pageName === "verify.html";
-    const isWelcomePage = pageName === "welcome.html";
-    const isAdminPage   = pageName === "admin-portal.html";
-
-    if (!user) {
-      if (!isPublicPage && !isVerifyPage && !isWelcomePage) {
-        window.location.href = "login.html";
-        return;
-      }
-    } else {
-      const admin = isAdmin(user.email);
-
-      if (!admin) {
-        // Keep Firestore online presence in sync
-        try {
-          await updateDoc(doc(db, DB_COLLECTIONS.USERS, user.uid), {
-            "status.isOnline": true,
-            "status.lastSeen": serverTimestamp()
-          });
-        } catch (_) {}
-      }
-
-      if (admin) {
-        if (!isAdminPage) {
-          window.location.href = "admin-portal.html";
-          return;
-        }
-      } else {
-        if (!user.emailVerified) {
-          const isGoogle = user.providerData.some(p => p.providerId === "google.com");
-          if (!isGoogle && !isVerifyPage) {
-            window.location.href = "verify.html";
-            return;
-          }
-        } else {
-          if (isPublicPage || isVerifyPage) {
-            window.location.href = "dashboard.html";
-            return;
-          }
-        }
-      }
-    }
-
-    if (callback) callback(user);
-  });
+export const clearSession = async () => {
+  clearRegistrationData();
+  await signOut(auth).catch(() => {});
+  window.location.href = "login.html";
 };
 
 // ============================================================
-// MULTI-STEP REGISTRATION SESSION (sessionStorage)
+// MULTI-STEP REGISTRATION SESSION
 // ============================================================
 const SESSION_KEY = "SBA_REG_DATA";
 
@@ -243,32 +171,14 @@ export const saveRegistrationStep = (data) => {
   try {
     const existing = JSON.parse(sessionStorage.getItem(SESSION_KEY) || "{}");
     sessionStorage.setItem(SESSION_KEY, JSON.stringify({ ...existing, ...data }));
-  } catch (e) {
-    console.error("[SBA] Session write error:", e);
-  }
+  } catch (e) { console.error("[SBA] Session write:", e); }
 };
 
 export const getRegistrationData = () => {
-  try {
-    return JSON.parse(sessionStorage.getItem(SESSION_KEY) || "{}");
-  } catch (e) {
-    return {};
-  }
+  try { return JSON.parse(sessionStorage.getItem(SESSION_KEY) || "{}"); }
+  catch (e) { return {}; }
 };
 
 export const clearRegistrationData = () => {
   try { sessionStorage.removeItem(SESSION_KEY); } catch (_) {}
-};
-
-// ============================================================
-// SIGN OUT
-// ============================================================
-export const clearSession = async () => {
-  try {
-    clearRegistrationData();
-    await signOut(auth);
-    window.location.href = "login.html";
-  } catch (err) {
-    window.location.href = "login.html";
-  }
 };
